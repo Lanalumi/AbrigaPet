@@ -16,14 +16,19 @@ export default async function NovaConsultaPage({
   ])
 
   return (
-    <div className="flex max-w-[94%] flex-col items-center justify-center p-4">
-      <header className="flex w-full flex-col gap-2 bg-[#FFF9F7] p-4">
-        <h1 className="text-center font-poppins font-semibold text-[#755835]">Registro de consulta</h1>
-        <div className="flex w-full flex-row items-center justify-center gap-2 text-center">
-          <img src="/images/icons/paw.svg" alt="" width={24} height={24} />
-          <span className="font-poppins font-semibold text-[#755835]">Nova consulta</span>
+    <div className="flex w-full max-w-4xl mx-auto flex-col p-6 sm:p-8">
+      <header className="flex flex-col items-center justify-center text-center gap-2 pb-6 mb-6 border-b border-[#755835]/15">
+        <div className="flex items-center justify-center gap-3">
+          <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#755835]/10 text-[#755835] shrink-0">
+            <img src="/images/icons/paw2.svg" alt="Patinha" width={22} height={22} className="object-contain" />
+          </div>
+          <h1 className="text-2xl font-bold text-[#3A250B] font-poppins tracking-tight">Nova consulta</h1>
         </div>
+        <p className="text-xs text-[#755835]/80 font-poppins">
+          Registro de atendimento clínico e histórico de saúde
+        </p>
       </header>
+      
       <FormNewFicha
         animais={animais}
         clinicas={clinicas}

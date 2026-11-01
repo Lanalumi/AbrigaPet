@@ -160,6 +160,7 @@ export default function HomePage() {
         </div>
       </header>
 
+      {/* Linha 1 de Cards */}
       <div className="grid grid-cols-1 items-stretch gap-4 lg:grid-cols-[minmax(16rem,0.9fr)_minmax(18rem,1.35fr)_minmax(16rem,1.1fr)] lg:gap-6">
         <Suspense fallback={<AnimaisCard loading />}>
           <AnimaisMetric />
@@ -172,6 +173,7 @@ export default function HomePage() {
         </Suspense>
       </div>
 
+      {/* Linha 2 de Cards (Gatis, Adoções e Ações Rápidas Alinhadas) */}
       <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-3">
         <Suspense fallback={<LoadingCard title="Gatis" />}>
           <GatisSection />
@@ -179,7 +181,9 @@ export default function HomePage() {
         <Suspense fallback={<LoadingCard title="Adoções do mês" />}>
           <AdocoesSection />
         </Suspense>
-        <CadastrosCard />
+        <div className="h-full [&>div]:h-full [&>div]:flex [&>div]:flex-col [&>div]:justify-between">
+          <CadastrosCard />
+        </div>
       </div>
     </div>
   )

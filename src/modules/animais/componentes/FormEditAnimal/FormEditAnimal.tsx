@@ -285,15 +285,15 @@ export default function FormEditAnimal({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Lado Esquerdo: Formulário de Dados */}
           <div className="lg:col-span-8 flex flex-col gap-5">
-            <fieldset disabled={!editing} className="m-0 border-0 p-0 flex flex-col gap-5 disabled:opacity-95">
+            <fieldset disabled={!editing} className="m-0 border-0 p-0 flex flex-col gap-4 disabled:opacity-95">
               {/* Linha 1: Nome e Data de Chegada */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Field label="Nome" {...register('nome')} id="nome" type="text" />
                 <DateField label="Data de Chegada" id="dataChegada" {...register('dataChegada')} />
               </div>
 
-              {/* Aparência (Espécie, Cor, Raça, Pelagem) */}
-              <div className="[&_fieldset]:border-0 [&_fieldset]:p-0 [&_legend]:hidden [&_label]:text-xs [&_label]:font-semibold [&_label]:text-[#3A250B] [&_div]:flex [&_div]:flex-col [&_div]:gap-1.5 [&_select]:w-full [&_select]:h-[42px] [&_input]:h-[42px]">
+              {/* Aparência (Espécie, Cor, Raça, Pelagem) forçado em Grid de 2 colunas */}
+              <div className="[&_fieldset]:border-0 [&_fieldset]:p-0 [&_fieldset]:m-0 [&_legend]:hidden [&_fieldset]:grid [&_fieldset]:grid-cols-1 sm:[&_fieldset]:grid-cols-2 [&_fieldset]:gap-4 [&_label]:text-xs [&_label]:font-semibold [&_label]:text-[#3A250B] [&_div]:flex [&_div]:flex-col [&_div]:gap-1.5 [&_select]:w-full [&_select]:h-[42px] [&_select]:rounded-lg [&_select]:border-[#e5e7eb] [&_select]:bg-white [&_select]:px-3 [&_input]:w-full [&_input]:h-[42px] [&_input]:rounded-lg [&_input]:border-[#e5e7eb] [&_input]:px-3">
                 <AnimalApearence register={register} editing={editing} />
               </div>
 
@@ -330,7 +330,7 @@ export default function FormEditAnimal({
           </div>
 
           {/* Lado Direito: Card Lateral da Foto e Saúde */}
-          <div className="lg:col-span-4 flex flex-col items-center justify-between gap-6 p-6 rounded-2xl bg-[#FDF8F3] border border-[#755835]/15 h-full">
+          <div className="lg:col-span-4 flex flex-col items-center justify-start gap-6 p-6 rounded-2xl bg-[#FDF8F3] border border-[#755835]/15 h-full">
             {/* Foto do Animal */}
             <div className="w-full flex flex-col items-center">
               <Controller

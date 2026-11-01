@@ -121,21 +121,22 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
   const isLoading = createPessoaMutation.isPending || isSubmitting
 
   return (
-    <div className="w-full max-w-2xl mx-auto rounded-3xl border border-[#755835]/20 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(58,37,11,0.05)] font-poppins">
+    <div className="w-full max-w-4xl mx-auto rounded-3xl border border-[#755835]/20 bg-white p-6 sm:p-10 shadow-[0_10px_30px_rgba(58,37,11,0.05)] font-poppins">
       
-      {/* Cabeçalho com Ícone e Título */}
-      <header className="flex flex-col items-center justify-center text-center gap-2 pb-6 mb-6 border-b border-[#755835]/15">
+      {/* Cabeçalho */}
+      <header className="flex flex-col items-center justify-center text-center gap-2 pb-6 mb-8 border-b border-[#755835]/15">
         <div className="flex items-center justify-center gap-2.5">
-          <div className="flex items-center justify-center w-9 h-9 rounded-2xl bg-[#755835]/10 text-[#755835] shrink-0">
-            <img src="/images/icons/paw2.svg" alt="Patinha" width={20} height={20} className="object-contain" />
+          <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#755835]/10 text-[#755835] shrink-0">
+            <img src="/images/icons/paw2.svg" alt="Patinha" width={22} height={22} className="object-contain" />
           </div>
-          <h1 className="text-xl font-bold text-[#3A250B] tracking-tight">
+          <h1 className="text-2xl font-bold text-[#3A250B] tracking-tight">
             {headings[tipo ?? 'pessoa']}
           </h1>
         </div>
+        <p className="text-xs text-[#755835]/80 font-medium">Preencha os dados cadastrais abaixo</p>
       </header>
 
-      <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
+      <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
         
         {/* Mensagens de Validação de Erro */}
         {validationMessages.length > 0 && (
@@ -152,11 +153,9 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
           </div>
         )}
 
-        {/* Seleção do Tipo de Pessoa (se não passado via prop) */}
-        {role ? (
-          <input type="hidden" {...register('tipo')} />
-        ) : (
-          <div className="w-full pb-1">
+        {/* Seleção do Tipo de Pessoa (Compacto) */}
+        {!role && (
+          <div className="w-full sm:w-1/2 [&_label]:font-bold [&_label]:text-[#3A250B] [&_select]:font-medium [&_select]:text-[#3A250B]">
             <DropDown
               label="Tipo de pessoa"
               options={['Selecione', ...personRoles.map((personRoleOption) => personRoleOption.label)]}
@@ -167,44 +166,51 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
           </div>
         )}
 
-        {/* Grade de 2 Colunas para Informações Pessoais e Endereço */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Nome" id="nome" type="text" {...register('nome')} />
-          <Field label="Rua" id="rua" type="text" {...register('rua')} />
+        {/* Seção 1: Informações Pessoais */}
+        <section className="flex flex-col gap-4">
+          <h2 className="text-sm font-bold text-[#3A250B] border-b border-[#755835]/10 pb-2">Informações Pessoais</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 [&_label]:font-bold [&_label]:text-[#3A250B] [&_input]:font-medium [&_input]:text-[#3A250B]">
+            <Field label="Nome completo" id="nome" type="text" {...register('nome')} />
+            <Field label="CPF" id="cpf" type="text" {...register('cpf')} />
+            <DateField label="Data de nascimento" id="dataNascimento" {...register('dataNascimento')} />
+            <Field label="Telefone" id="telefone" type="tel" {...register('telefone')} />
+          </div>
+        </section>
 
-          <Field label="CPF" id="cpf" type="text" {...register('cpf')} />
-          <Field label="Número" id="numero" type="text" {...register('numero')} />
+        {/* Seção 2: Endereço */}
+        <section className="flex flex-col gap-4 pt-2">
+          <h2 className="text-sm font-bold text-[#3A250B] border-b border-[#755835]/10 pb-2">Endereço</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 [&_label]:font-bold [&_label]:text-[#3A250B] [&_input]:font-medium [&_input]:text-[#3A250B]">
+            <Field label="Rua" id="rua" type="text" {...register('rua')} />
+            <Field label="Número" id="numero" type="text" {...register('numero')} />
+            <Field label="Bairro" id="bairro" type="text" {...register('bairro')} />
+            <Field label="Cidade" id="cidade" type="text" {...register('cidade')} />
+          </div>
+        </section>
 
-          <DateField label="Data de nascimento" id="dataNascimento" {...register('dataNascimento')} />
-          <Field label="Bairro" id="bairro" type="text" {...register('bairro')} />
-
-          <Field label="Telefone" id="telefone" type="tel" {...register('telefone')} />
-          <Field label="Cidade" id="cidade" type="text" {...register('cidade')} />
-        </div>
-
-        {/* Campos Específicos para Voluntários */}
+        {/* Seção 3: Campos Específicos para Voluntários */}
         {tipo === 'voluntario' && (
-          <section className="flex flex-col gap-3 pt-4 border-t border-[#755835]/15">
+          <section className="flex flex-col gap-4 pt-2 border-t border-[#755835]/15">
             <h2 className="text-sm font-bold text-[#3A250B]">Dados do voluntariado</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 [&_label]:font-bold [&_label]:text-[#3A250B] [&_input]:font-medium [&_input]:text-[#3A250B]">
               <DateField label="Data de inscrição" id="dataInscricao" {...register('dataInicio')} />
               <DateField label="Data de saída" id="dataSaida" {...register('dataSaida')} />
             </div>
           </section>
         )}
 
-        {/* Campos Específicos para Adotantes */}
+        {/* Seção 4: Campos Específicos para Adotantes */}
         {tipo === 'adotante' && (
-          <section className="flex flex-col gap-3 pt-4 border-t border-[#755835]/15">
+          <section className="flex flex-col gap-4 pt-2 border-t border-[#755835]/15">
             <h2 className="text-sm font-bold text-[#3A250B]">Dados do adotante</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 [&_label]:font-bold [&_label]:text-[#3A250B] [&_input]:font-medium [&_input]:text-[#3A250B]">
               <DateField label="Data de cadastro" id="dataCadastro" {...register('dataInicio')} />
             </div>
           </section>
         )}
 
-        {/* Botão de Salvar Centralizado */}
-        <div className="flex justify-center items-center pt-4 border-t border-[#755835]/15 mt-2">
+        {/* Botão de Salvar Limpo e Centralizado */}
+        <div className="flex justify-center items-center pt-6 border-t border-[#755835]/15 mt-2">
           {isLoading ? (
             <Button type="submit" disabled icon="/images/icons/save-button.svg">
               Salvando...

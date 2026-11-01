@@ -19,7 +19,7 @@ export default async function AnimalPage({ params }: { params: Promise<{ idAnima
   const animal = await loadAnimal(idAnimal)
 
   return (
-    <div className="flex max-w-[94%] flex-col p-4">
+    <div className="flex w-full max-w-[94%] mx-auto flex-col p-4">
       <FormEditAnimal initialState={animal} id={idAnimal} />
     </div>
   )

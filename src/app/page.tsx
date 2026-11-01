@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { FormEvent, useState } from 'react'
 
-const MOCK_EMAIL = 'admin@cadaspatas.com'
+const MOCK_EMAIL = 'admin@abrigapet.com'
 const MOCK_PASSWORD = '123456'
 
 export default function Login() {
@@ -39,51 +39,51 @@ export default function Login() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center bg-[#FFF9F7] p-6">
-      <div className="w-full max-w-md rounded-2xl border-2 border-[#3A250B]/[30%] bg-white/90 p-6 shadow-md backdrop-blur">
-        <div className="mb-6 flex flex-col items-center gap-2" aria-label="icone">
-          <Image width={72} height={72} src="/images/icone.svg" alt="Icone CadasPatas" />
-          <h1 className="text-2xl font-bold text-[#3A250B]">CadasPatas</h1>
-          <p className="text-sm text-[#3A250B]/70">Entre na sua conta</p>
+      <div className="w-full max-w-lg rounded-3xl border-2 border-[#3A250B]/[30%] bg-white/90 p-8 shadow-md backdrop-blur">
+        <div className="mb-8 flex flex-col items-center gap-2" aria-label="icone">
+          <Image width={72} height={72} src="/images/icone.svg" alt="Icone AbrigaPet" />
+          <h1 className="text-3xl font-bold text-[#3A250B] font-poppins">AbrigaPet</h1>
+          <p className="text-sm font-medium text-[#3A250B]/70 font-poppins">Entre na sua conta</p>
         </div>
 
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <div aria-label="email" className="flex items-center gap-2 rounded border border-[#3A250B]/20 px-3 py-2">
-            <Image src="/images/email.svg" width={16} height={16} alt="icone de email" />
+        <form className="space-y-5" onSubmit={handleSubmit}>
+          <div aria-label="email" className="flex items-center gap-3 rounded-xl border border-[#3A250B]/20 px-4 py-3 bg-white">
+            <Image src="/images/email.svg" width={18} height={18} alt="icone de email" />
             <input
               name="email"
               type="email"
               placeholder="E-mail"
-              className="w-full bg-transparent text-sm outline-none"
+              className="w-full bg-transparent text-sm font-medium outline-none text-[#3A250B]"
               required
             />
           </div>
 
-          <div aria-label="senha" className="space-y-1">
-            <div className="flex items-center gap-2 rounded border border-[#3A250B]/20 px-3 py-2">
-              <Image src="/images/senha.svg" width={16} height={16} alt="icone de senha" />
+          <div aria-label="senha" className="space-y-2">
+            <div className="flex items-center gap-3 rounded-xl border border-[#3A250B]/20 px-4 py-3 bg-white">
+              <Image src="/images/senha.svg" width={18} height={18} alt="icone de senha" />
               <input
                 name="password"
                 type="password"
                 placeholder="Senha"
-                className="w-full bg-transparent text-sm outline-none"
+                className="w-full bg-transparent text-sm font-medium outline-none text-[#3A250B]"
                 required
               />
             </div>
-            <a className="block text-right text-xs text-[#3A250B]/70">Esqueceu a senha?</a>
+            <a className="block cursor-pointer text-right text-xs font-semibold text-[#3A250B]/70 hover:underline">Esqueceu a senha?</a>
           </div>
 
-          {error ? <p className="text-sm text-red-600">{error}</p> : null}
+          {error ? <p className="text-sm font-medium text-red-600">{error}</p> : null}
 
           <button
             type="submit"
-            className="w-full rounded bg-[#3A250B] p-2 text-white transition hover:opacity-90 disabled:opacity-60"
+            className="mt-2 w-full cursor-pointer rounded-xl bg-[#3A250B] p-3.5 font-poppins text-sm font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-default disabled:opacity-60"
             disabled={loading}
           >
             {loading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>
 
-        <p className="mt-4 text-center text-xs text-[#3A250B]/70">Mock login: admin@cadaspatas.com / 123456</p>
+        <p className="mt-6 text-center text-xs font-medium text-[#3A250B]/70">Mock login: admin@abrigapet.com / 123456</p>
       </div>
 
       <div

@@ -1,6 +1,5 @@
 'use client'
 
-import { Button } from '@/global/ui/Button/Button'
 import { Table, TableColumn } from '@/global/ui/Table/Table'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
@@ -47,12 +46,12 @@ export default function ClinicasTable({
     {
       key: 'nome',
       label: 'Nome',
-      sortable: true,
+      sortable: false, // <-- Remove a setinha de ordenação daqui
     },
     {
       key: 'cnpj',
       label: 'CNPJ',
-      sortable: true,
+      sortable: false,
     },
     {
       key: 'telefone',
@@ -61,38 +60,43 @@ export default function ClinicasTable({
     {
       key: 'cidade',
       label: 'Cidade',
-      sortable: true,
+      sortable: false,
     },
     {
       key: 'actions',
       label: 'Ações',
       render: (item) => (
-        <div className="flex gap-2 max-w-40">
-          <img
-            src="/images/icons/green-edit-button.svg"
-            alt="Editar"
-            onClick={() => route.push(`/clinicas/${item.id}`)}
-            className="cursor-pointer"
-          />
-          <Button
-            id="delete-button"
+        <div className="flex items-center justify-start gap-3">
+          <button
             type="button"
+            onClick={() => route.push(`/clinicas/${item.id}`)}
+            className="p-2 rounded-xl bg-[#E8F0FE]/60 hover:bg-[#E8F0FE] text-blue-600 transition-all cursor-pointer flex items-center justify-center"
+            title="Editar clínica"
+          >
+            <img src="/images/icons/green-edit-button.svg" alt="Editar" className="w-4 h-4" />
+          </button>
+          
+          <button
+            type="button"
+            id="delete-button"
             onClick={() => onDelete(item.id)}
             disabled={deleteClinicaMutation.isPending}
+            className="p-2 rounded-xl bg-[#FFF0ED]/60 hover:bg-[#FFF0ED] text-red-600 transition-all cursor-pointer flex items-center justify-center disabled:opacity-50"
+            title="Excluir clínica"
           >
             {deleteClinicaMutation.isPending ? (
-              'Excluindo...'
+              <span className="text-[10px] font-bold">...</span>
             ) : (
-              <img src="/images/icons/red-delete-button.svg" alt="Excluir" className="cursor-pointer" />
+              <img src="/images/icons/red-delete-button.svg" alt="Excluir" className="w-4 h-4" />
             )}
-          </Button>
+          </button>
         </div>
       ),
     },
   ]
 
   return (
-    <div className="flex justify-center ">
+    <div className="w-full">
       <Table
         data={items}
         columns={columns}
