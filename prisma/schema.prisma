@@ -73,6 +73,7 @@ model Animal {
   motivoSaida    String?
   dataSaida      DateTime?
   foto           String?
+  excluidoEm     DateTime?
 
   adocoes               Adocao[]
   consultas             Consulta[]

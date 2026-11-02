@@ -16,6 +16,7 @@ function formatDate(value: Date) {
 async function loadSaudeLists() {
   const [animais, consultas] = await Promise.all([
     prisma.animal.findMany({
+      where: { excluidoEm: null },
       orderBy: { nome: 'asc' },
       select: {
         id: true,
@@ -33,6 +34,7 @@ async function loadSaudeLists() {
       },
     }),
     prisma.consulta.findMany({
+      where: { animal: { excluidoEm: null } },
       orderBy: { dataAtendimento: 'desc' },
       select: {
         id: true,

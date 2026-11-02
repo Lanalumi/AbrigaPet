@@ -78,21 +78,40 @@ export function MetricCard({
     ? 'rounded-2xl border border-[#755835]/15 bg-[#FFF9F7] p-4 shadow-none'
     : 'rounded-3xl border border-[#755835]/20 bg-white p-5 shadow-[0_10px_30px_rgba(58,37,11,0.05)]'
 
+  const layout = nested ? 'flex-row items-center justify-between gap-3' : 'flex-col justify-between gap-4'
   const classes =
-    `flex min-w-0 flex-col justify-between gap-4 font-poppins transition-all hover:border-[#755835]/40 ${surface} ${href ? clickableClass : ''} ${className}`.trim()
+    `flex min-w-0 font-poppins transition-all hover:border-[#755835]/40 ${layout} ${surface} ${href ? clickableClass : ''} ${className}`.trim()
 
-  const body = (
+  const header = (
+    <div className={`flex min-w-0 items-center gap-2 ${nested ? '' : 'justify-between'}`}>
+      <span className="min-w-0 truncate text-xs font-semibold text-[#755835]/80">{title}</span>
+      {badge ? (
+        <span className="shrink-0 rounded-full bg-[#755835]/10 px-2.5 py-0.5 text-[10px] font-bold text-[#755835]">
+          {badge}
+        </span>
+      ) : null}
+    </div>
+  )
+  const errorCopy = error ? <p className="text-xs font-semibold text-[#8A3B3B]">Não foi possível carregar</p> : null
+  const total = (
+    <div className={`shrink-0 font-extrabold tracking-tight text-[#3A250B] ${nested ? 'text-2xl' : 'text-3xl'}`}>
+      {error ? '—' : loading ? '…' : value}
+    </div>
+  )
+
+  const body = nested ? (
     <>
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-xs font-semibold text-[#755835]/80">{title}</span>
-        {badge ? (
-          <span className="shrink-0 rounded-full bg-[#755835]/10 px-2.5 py-0.5 text-[10px] font-bold text-[#755835]">
-            {badge}
-          </span>
-        ) : null}
+      <div className="flex min-w-0 flex-col gap-1">
+        {header}
+        {errorCopy}
       </div>
-      <div className="text-3xl font-extrabold tracking-tight text-[#3A250B]">{error ? '—' : loading ? '…' : value}</div>
-      {error ? <p className="text-xs font-semibold text-[#8A3B3B]">Não foi possível carregar</p> : null}
+      {total}
+    </>
+  ) : (
+    <>
+      {header}
+      {total}
+      {errorCopy}
     </>
   )
 

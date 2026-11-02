@@ -11,13 +11,16 @@ import { ApiError } from '@/lib/client/errors'
 import { parseBrDate } from '@/modules/pessoas/components/FormNewPerson/functions/parseDate'
 import { createFichaMedicaSchema } from '@/schemas/saudeSchema'
 import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { SelectField } from '../../SelectField'
 
 type Option = { id: string; nome: string }
 
-type FichaFormInput = {
+type SavedConsulta = { id: string; animalId: string }
+
+export type FichaFormInput = {
   animalId: string
   clinicaId: string
   motivo: string
@@ -31,30 +34,37 @@ export function FormNewFicha({
   clinicas,
   motivos,
   animalId,
+  existing,
 }: {
   animais: Option[]
   clinicas: Option[]
   motivos: string[]
   animalId?: string
+  existing?: { id: string; totalPrescricoes: number; values: FichaFormInput }
 }) {
   const router = useRouter()
+  const [editing, setEditing] = useState(!existing)
   const initialAnimalId = animais.some((animal) => animal.id === animalId) ? animalId : ''
-  const createFicha = useMutation<{ id: string; animalId: string }, ApiError, FichaFormInput>({
+  const saveFicha = useMutation<SavedConsulta, ApiError, FichaFormInput>({
     mutationFn: (values) =>
-      api(`${API_URL}/fichas`, {
-        method: 'POST',
+      api(existing ? `${API_URL}/fichas/${existing.id}` : `${API_URL}/fichas`, {
+        method: existing ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
       }),
+  })
+  const deleteFicha = useMutation<SavedConsulta, ApiError, string>({
+    mutationFn: (id) => api(`${API_URL}/fichas/${id}`, { method: 'DELETE' }),
   })
 
   const {
     register,
     handleSubmit,
     setError,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<FichaFormInput>({
-    defaultValues: {
+    defaultValues: existing?.values ?? {
       animalId: initialAnimalId ?? '',
       clinicaId: '',
       motivo: '',
@@ -63,6 +73,29 @@ export function FormNewFicha({
       dataRetorno: '',
     },
   })
+
+  const leaveEditMode = () => {
+    if (existing) reset(existing.values)
+    setEditing(false)
+  }
+
+  const onDelete = () => {
+    if (!existing || deleteFicha.isPending) return
+    const total = existing.totalPrescricoes
+    const extra = total === 0 ? '' : total === 1 ? ' e sua medicação' : ` e suas ${total} medicações`
+    if (!confirm(`Tem certeza que deseja excluir esta consulta${extra}?`)) return
+
+    deleteFicha.mutate(existing.id, {
+      onSuccess: (deleted) => {
+        toast.success('Consulta excluída com sucesso')
+        router.push(`/animais/${deleted.animalId}/fichamedica`)
+        router.refresh()
+      },
+      onError: (error) => {
+        toast.error(error instanceof ApiError ? error.message : 'Erro ao excluir consulta')
+      },
+    })
+  }
 
   const onSubmit = (values: FichaFormInput) => {
     const dataAtendimento = parseBrDate(values.dataAtendimento)
@@ -96,20 +129,21 @@ export function FormNewFicha({
       return
     }
 
-    createFicha.mutate(
+    saveFicha.mutate(
       {
         ...values,
         dataAtendimento: result.data.dataAtendimento.toISOString(),
         dataRetorno: result.data.dataRetorno ? result.data.dataRetorno.toISOString() : '',
       },
       {
-        onSuccess: (created) => {
-          toast.success('Consulta registrada')
-          router.push(`/animais/${created.animalId}/fichamedica?consulta=${created.id}`)
+        onSuccess: (saved) => {
+          toast.success(existing ? 'Consulta atualizada' : 'Consulta registrada')
+          router.push(`/animais/${saved.animalId}/fichamedica?consulta=${saved.id}`)
           router.refresh()
         },
         onError: (error) => {
-          toast.error(error instanceof ApiError ? error.message : 'Erro ao registrar consulta')
+          const fallback = existing ? 'Erro ao atualizar consulta' : 'Erro ao registrar consulta'
+          toast.error(error instanceof ApiError ? error.message : fallback)
         },
       },
     )
@@ -118,7 +152,7 @@ export function FormNewFicha({
   const validationMessages = Object.values(errors)
     .map((error) => error?.message)
     .filter((message): message is string => Boolean(message))
-  const isLoading = createFicha.isPending || isSubmitting
+  const isLoading = saveFicha.isPending || isSubmitting
 
   return (
     <div className="flex flex-col items-center justify-center gap-4 rounded-xl border border-[#3A250B]/30 bg-white p-4 shadow-[2px_4px_14px_rgba(58,37,11,0.1)]">
@@ -147,58 +181,93 @@ export function FormNewFicha({
               </ul>
             </div>
           )}
-          <div className="flex flex-col gap-4 md:flex-row">
-            <div className="flex flex-col gap-4">
-              <SelectField label="Animal" id="animalId" {...register('animalId')}>
-                <option value="">Selecione</option>
-                {animais.map((animal) => (
-                  <option key={animal.id} value={animal.id}>
-                    {animal.nome}
-                  </option>
-                ))}
-              </SelectField>
-              <SelectField label="Clínica" id="clinicaId" {...register('clinicaId')}>
-                <option value="">Selecione</option>
-                {clinicas.map((clinica) => (
-                  <option key={clinica.id} value={clinica.id}>
-                    {clinica.nome}
-                  </option>
-                ))}
-              </SelectField>
-              <Field label="Motivo" id="motivo" type="text" list="motivos" {...register('motivo')} />
-              <datalist id="motivos">
-                {motivos.map((motivo) => (
-                  <option key={motivo} value={motivo} />
-                ))}
-              </datalist>
+          <fieldset disabled={!editing} className="m-0 flex flex-col gap-4 border-0 p-0">
+            <div className="flex flex-col gap-4 md:flex-row">
+              <div className="flex flex-col gap-4">
+                <SelectField label="Animal" id="animalId" {...register('animalId')}>
+                  <option value="">Selecione</option>
+                  {animais.map((animal) => (
+                    <option key={animal.id} value={animal.id}>
+                      {animal.nome}
+                    </option>
+                  ))}
+                </SelectField>
+                <SelectField label="Clínica" id="clinicaId" {...register('clinicaId')}>
+                  <option value="">Selecione</option>
+                  {clinicas.map((clinica) => (
+                    <option key={clinica.id} value={clinica.id}>
+                      {clinica.nome}
+                    </option>
+                  ))}
+                </SelectField>
+                <Field label="Motivo" id="motivo" type="text" list="motivos" {...register('motivo')} />
+                <datalist id="motivos">
+                  {motivos.map((motivo) => (
+                    <option key={motivo} value={motivo} />
+                  ))}
+                </datalist>
+              </div>
+              <div className="flex flex-col gap-4">
+                <DateField label="Data de atendimento" id="dataAtendimento" {...register('dataAtendimento')} />
+                <DateField label="Data de retorno" id="dataRetorno" {...register('dataRetorno')} />
+              </div>
             </div>
-            <div className="flex flex-col gap-4">
-              <DateField label="Data de atendimento" id="dataAtendimento" {...register('dataAtendimento')} />
-              <DateField label="Data de retorno" id="dataRetorno" {...register('dataRetorno')} />
+            <div className="flex w-full justify-center">
+              <TextArea
+                label="Observação"
+                id="observacao"
+                placeholder="Descreva o atendimento..."
+                {...register('observacao')}
+              />
             </div>
-          </div>
-          <div className="flex w-full justify-center">
-            <TextArea
-              label="Observação"
-              id="observacao"
-              placeholder="Descreva o atendimento..."
-              {...register('observacao')}
-            />
-          </div>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            {isLoading ? (
-              <Button type="submit" disabled icon="/images/icons/save-button.svg">
-                Salvando...
+          </fieldset>
+          {existing ? (
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              {!editing ? (
+                <>
+                  <Button type="button" green icon="/images/icons/edit-button.svg" onClick={() => setEditing(true)}>
+                    Editar Consulta
+                  </Button>
+                  <Button type="button" onClick={() => router.back()}>
+                    Voltar
+                  </Button>
+                </>
+              ) : (
+                <>
+                  {isLoading ? (
+                    <Button type="submit" disabled icon="/images/icons/save-button.svg">
+                      Salvando...
+                    </Button>
+                  ) : (
+                    <Button type="submit" green icon="/images/icons/save-button.svg">
+                      Salvar Alterações
+                    </Button>
+                  )}
+                  <Button type="button" red onClick={onDelete}>
+                    {deleteFicha.isPending ? 'Excluindo...' : 'Excluir'}
+                  </Button>
+                  <Button type="button" onClick={leaveEditMode}>
+                    Cancelar
+                  </Button>
+                </>
+              )}
+            </div>
+          ) : (
+            <div className="flex flex-wrap items-center justify-center gap-4">
+              {isLoading ? (
+                <Button type="submit" disabled icon="/images/icons/save-button.svg">
+                  Salvando...
+                </Button>
+              ) : (
+                <Button type="submit" green icon="/images/icons/save-button.svg">
+                  Salvar
+                </Button>
+              )}
+              <Button type="button" onClick={() => router.push('/saude')}>
+                Cancelar
               </Button>
-            ) : (
-              <Button type="submit" green icon="/images/icons/save-button.svg">
-                Salvar
-              </Button>
-            )}
-            <Button type="button" onClick={() => router.push('/saude')}>
-              Cancelar
-            </Button>
-          </div>
+            </div>
+          )}
         </form>
       )}
     </div>

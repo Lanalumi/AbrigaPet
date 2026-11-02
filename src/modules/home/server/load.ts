@@ -102,7 +102,7 @@ function soonestDose(labels: string[]) {
 
 const loadGatos = cache(async (): Promise<HomeGato[]> => {
   const animals = await prisma.animal.findMany({
-    where: { especie: { equals: 'gato', mode: 'insensitive' } },
+    where: { excluidoEm: null, especie: { equals: 'gato', mode: 'insensitive' } },
     orderBy: { nome: 'asc' },
     select: {
       id: true,
@@ -212,6 +212,7 @@ async function section<T>(label: string, load: () => Promise<T>): Promise<Sectio
 export function loadAnimaisResumo() {
   return section('animais', async (): Promise<HomeAnimais> => {
     const animals = await prisma.animal.findMany({
+      where: { excluidoEm: null },
       orderBy: { nome: 'asc' },
       select: {
         id: true,

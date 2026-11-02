@@ -98,6 +98,7 @@ async function loadCommunityLists() {
     clinicas: clinicas.map((clinica) => ({
       id: clinica.id,
       nome: clinica.nome,
+      href: `/clinicas/${clinica.id}`,
       searchText: [clinica.nome, clinica.cnpj, clinica.cidade, clinica.telefone, clinica.bairro, clinica.rua].join(' '),
       sortValues: {
         nome: clinica.nome,

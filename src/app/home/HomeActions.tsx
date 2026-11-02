@@ -308,7 +308,7 @@ export function CadastrosCard() {
 
   return (
     <DashboardCard title="Ações rápidas" description="Atalhos para cadastros frequentes no abrigo" className="h-full">
-      <div className="mt-2 grid grid-cols-2 gap-3 [&_button]:w-full [&_button]:h-full [&_button]:min-h-[44px]">
+      <div className="mt-2 grid grid-cols-2 gap-3">
         {registers.map((item) => (
           <Button
             key={item.href}
@@ -317,7 +317,6 @@ export function CadastrosCard() {
             fill
             icon="/images/icons/add-button.svg"
             onClick={() => router.push(item.href)}
-            className="w-full text-[11px] sm:text-xs"
           >
             {item.label}
           </Button>

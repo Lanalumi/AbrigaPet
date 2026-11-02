@@ -249,9 +249,13 @@ export function FormEditPerson({ initialState }: { initialState: EditablePerson 
               <ul className="flex flex-col gap-2">
                 {saved.adocoes.map((adocao) => (
                   <li key={adocao.animalId} className="text-sm font-semibold text-[#755835]">
-                    <Link href={`/animais/${adocao.animalId}`} className="text-[#8AA36C] hover:underline">
-                      {adocao.nome}
-                    </Link>
+                    {adocao.excluido ? (
+                      <span className="text-[#755835]/70">{`${adocao.nome} (excluído)`}</span>
+                    ) : (
+                      <Link href={`/animais/${adocao.animalId}`} className="text-[#8AA36C] hover:underline">
+                        {adocao.nome}
+                      </Link>
+                    )}
                     <span>{` — ${adocao.dataAdocao}`}</span>
                   </li>
                 ))}

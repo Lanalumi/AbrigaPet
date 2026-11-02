@@ -155,7 +155,7 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
 
         {/* Seleção do Tipo de Pessoa (Compacto) */}
         {!role && (
-          <div className="w-full sm:w-1/2 [&_label]:font-bold [&_label]:text-[#3A250B] [&_select]:font-medium [&_select]:text-[#3A250B]">
+          <div className="w-full sm:w-1/2">
             <DropDown
               label="Tipo de pessoa"
               options={['Selecione', ...personRoles.map((personRoleOption) => personRoleOption.label)]}
