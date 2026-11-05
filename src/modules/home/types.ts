@@ -38,19 +38,21 @@ export type HomeAdocao = {
   id: string
   dataAdocao: string
   animal: {
+    id: string
     nome: string
     foto: string | null
     especieLabel: string
     situacaoLabel: string
   }
   adotante: {
+    id: string
     nome: string
     telefone: string
     cidade: string
     rua: string
     numero: number
     bairro: string
-  } | null
+  }
 }
 
 export type HomeAnimalResumo = {

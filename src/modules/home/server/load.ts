@@ -2,7 +2,7 @@ import { prisma } from '@/lib/db'
 import { cache } from 'react'
 import { nextDoseLabel } from '@/modules/animais/prescricao/schedule'
 import { personRole } from '@/modules/pessoas/personRole'
-import { deriveSituacao, normalizeMotivoSaida, situacaoAnimalLabel } from '@/schemas/animalSchema'
+import { deriveSituacao, situacaoAnimalLabel } from '@/schemas/animalSchema'
 import type { HomeAdocao, HomeAnimais, HomeComunidade, HomeGatil, HomeGato, HomeMedicamento } from '../types'
 
 const TIME_ZONE = 'America/Sao_Paulo'
@@ -299,54 +299,42 @@ export function loadGatis() {
 export function loadAdocoesDoMes() {
   return section('adocoes', async (): Promise<HomeAdocao[]> => {
     const { start, end } = currentMonthRange()
-    const animals = await prisma.animal.findMany({
+    const adocoes = await prisma.adocao.findMany({
       where: {
-        motivoSaida: { not: null },
-        dataSaida: { gte: start, lt: end },
+        dataAdocao: { gte: start, lt: end },
+        animal: { excluidoEm: null },
       },
-      orderBy: { dataSaida: 'desc' },
+      orderBy: { dataAdocao: 'desc' },
       select: {
-        id: true,
-        nome: true,
-        foto: true,
-        especie: true,
-        motivoSaida: true,
-        dataSaida: true,
-        adocoes: {
-          orderBy: { dataAdocao: 'desc' },
-          take: 1,
+        dataAdocao: true,
+        animal: {
+          select: { id: true, nome: true, foto: true, especie: true, motivoSaida: true },
+        },
+        pessoa: {
           select: {
-            pessoa: {
-              select: {
-                nome: true,
-                telefone: true,
-                cidade: true,
-                rua: true,
-                numero: true,
-                bairro: true,
-              },
-            },
+            id: true,
+            nome: true,
+            telefone: true,
+            cidade: true,
+            rua: true,
+            numero: true,
+            bairro: true,
           },
         },
       },
     })
 
-    return animals.flatMap((animal) => {
-      if (normalizeMotivoSaida(animal.motivoSaida) !== 'adocao' || !animal.dataSaida) return []
-
-      return [
-        {
-          id: animal.id,
-          dataAdocao: formatDate(animal.dataSaida),
-          animal: {
-            nome: animal.nome,
-            foto: animal.foto,
-            especieLabel: labelOf(animal.especie),
-            situacaoLabel: situacaoAnimalLabel[deriveSituacao(animal.motivoSaida, true)],
-          },
-          adotante: animal.adocoes[0]?.pessoa ?? null,
-        },
-      ]
-    })
+    return adocoes.map((adocao) => ({
+      id: `${adocao.pessoa.id}:${adocao.animal.id}`,
+      dataAdocao: formatDate(adocao.dataAdocao),
+      animal: {
+        id: adocao.animal.id,
+        nome: adocao.animal.nome,
+        foto: adocao.animal.foto,
+        especieLabel: labelOf(adocao.animal.especie),
+        situacaoLabel: situacaoAnimalLabel[deriveSituacao(adocao.animal.motivoSaida, true)],
+      },
+      adotante: adocao.pessoa,
+    }))
   })
 }

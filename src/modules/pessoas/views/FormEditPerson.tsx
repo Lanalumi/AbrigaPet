@@ -4,13 +4,13 @@ import { Button } from '@/global/ui/Button/Button'
 import { DateField } from '@/global/ui/DateField/DateField'
 import { Field } from '@/global/ui/Field/Field'
 import { ApiError } from '@/lib/client/errors'
+import { AdocoesSection, type AnimalDisponivel } from '@/modules/pessoas/components/AdocoesSection/AdocoesSection'
 import { useDeleteAdotante } from '@/modules/pessoas/hooks/useDeleteAdotante'
 import { useDeleteVoluntario } from '@/modules/pessoas/hooks/useDeleteVoluntario'
 import { useUpdatePessoa } from '@/modules/pessoas/hooks/useUpdatePessoa'
 import type { EditablePerson } from '@/modules/pessoas/server/loadPessoa'
 import { updatePersonFieldsSchema } from '@/schemas/personSchema'
 import Image from 'next/image'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -44,7 +44,13 @@ function formValuesFrom(person: EditablePerson): PersonFormInput {
   }
 }
 
-export function FormEditPerson({ initialState }: { initialState: EditablePerson }) {
+export function FormEditPerson({
+  initialState,
+  animaisDisponiveis = [],
+}: {
+  initialState: EditablePerson
+  animaisDisponiveis?: AnimalDisponivel[]
+}) {
   const router = useRouter()
   const updatePessoaMutation = useUpdatePessoa()
   const deleteVoluntarioMutation = useDeleteVoluntario()
@@ -53,7 +59,7 @@ export function FormEditPerson({ initialState }: { initialState: EditablePerson 
   const [editing, setEditing] = useState(false)
   const [noChangesMessage, setNoChangesMessage] = useState<string | null>(null)
   const isVolunteer = saved.role === 'voluntario'
-  const listHref = isVolunteer ? '/voluntarios' : '/adotantes'
+  const listHref = '/comunidade'
   const editLabel = isVolunteer ? 'Editar Voluntário' : 'Editar Adotante'
   const deleteMutation = isVolunteer ? deleteVoluntarioMutation : deleteAdotanteMutation
 
@@ -243,27 +249,12 @@ export function FormEditPerson({ initialState }: { initialState: EditablePerson 
         </fieldset>
 
         {!isVolunteer && (
-          <section className="flex flex-col gap-3 pt-4 border-t border-[#755835]/15">
-            <h2 className="text-sm font-bold text-[#3A250B]">Animais adotados</h2>
-            {saved.adocoes.length > 0 ? (
-              <ul className="flex flex-col gap-2">
-                {saved.adocoes.map((adocao) => (
-                  <li key={adocao.animalId} className="text-sm font-semibold text-[#755835]">
-                    {adocao.excluido ? (
-                      <span className="text-[#755835]/70">{`${adocao.nome} (excluído)`}</span>
-                    ) : (
-                      <Link href={`/animais/${adocao.animalId}`} className="text-[#8AA36C] hover:underline">
-                        {adocao.nome}
-                      </Link>
-                    )}
-                    <span>{` — ${adocao.dataAdocao}`}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm font-semibold text-[#755835]/70">Nenhum animal adotado</p>
-            )}
-          </section>
+          <AdocoesSection
+            idAdotante={initialState.id}
+            adocoes={initialState.adocoes}
+            disponiveis={animaisDisponiveis}
+            editing={editing}
+          />
         )}
 
         <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-[#755835]/15 mt-2">

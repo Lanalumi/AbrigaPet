@@ -238,7 +238,7 @@ export function AdocoesPanel({ adocoes }: { adocoes: HomeAdocao[] }) {
   const [adocao, setAdocao] = useState<HomeAdocao | null>(null)
 
   return (
-    <DashboardCard title="Adoções do mês" description="Animais que saíram por adoção neste mês" className="h-full">
+    <DashboardCard title="Adoções do mês" description="Animais adotados neste mês" className="h-full">
       {adocoes.length === 0 ? (
         <EmptyCopy>Nenhuma adoção neste mês</EmptyCopy>
       ) : (
@@ -249,7 +249,7 @@ export function AdocoesPanel({ adocoes }: { adocoes: HomeAdocao[] }) {
                 title={item.animal.nome}
                 image={{ src: item.animal.foto, alt: `Foto de ${item.animal.nome}` }}
                 infos={[
-                  { label: 'Adotante', value: item.adotante?.nome },
+                  { label: 'Adotante', value: item.adotante.nome },
                   { label: 'Data', value: item.dataAdocao },
                 ]}
                 role="button"
@@ -279,22 +279,34 @@ export function AdocoesPanel({ adocoes }: { adocoes: HomeAdocao[] }) {
                   <InfoLine label="Situação" value={adocao.animal.situacaoLabel} />
                 </dl>
               </div>
-              {adocao.adotante ? (
-                <section className="flex flex-col gap-1">
-                  <h2 className="font-poppins text-base font-bold text-[#755835]">Adotante</h2>
-                  <dl className="flex flex-col gap-1">
-                    <InfoLine label="Nome" value={adocao.adotante.nome} />
-                    <InfoLine label="Telefone" value={adocao.adotante.telefone} />
-                    <InfoLine label="Cidade" value={adocao.adotante.cidade} />
-                    <InfoLine label="Rua" value={adocao.adotante.rua} />
-                    <InfoLine label="Número" value={adocao.adotante.numero} />
-                    <InfoLine label="Bairro" value={adocao.adotante.bairro} />
-                  </dl>
-                </section>
-              ) : null}
+              <section className="flex flex-col gap-1">
+                <h2 className="font-poppins text-base font-bold text-[#755835]">Adotante</h2>
+                <dl className="flex flex-col gap-1">
+                  <InfoLine label="Nome" value={adocao.adotante.nome} />
+                  <InfoLine label="Telefone" value={adocao.adotante.telefone} />
+                  <InfoLine label="Cidade" value={adocao.adotante.cidade} />
+                  <InfoLine label="Rua" value={adocao.adotante.rua} />
+                  <InfoLine label="Número" value={adocao.adotante.numero} />
+                  <InfoLine label="Bairro" value={adocao.adotante.bairro} />
+                </dl>
+              </section>
               <dl>
                 <InfoLine label="Data da adoção" value={adocao.dataAdocao} />
               </dl>
+              <div className="flex flex-wrap gap-4">
+                <Link
+                  href={`/animais/${adocao.animal.id}`}
+                  className="w-fit font-poppins text-sm font-semibold text-[#8AA36C] hover:underline"
+                >
+                  Ver animal
+                </Link>
+                <Link
+                  href={`/adotantes/${adocao.adotante.id}`}
+                  className="w-fit font-poppins text-sm font-semibold text-[#8AA36C] hover:underline"
+                >
+                  Ver adotante
+                </Link>
+              </div>
             </div>
           ) : null
         }

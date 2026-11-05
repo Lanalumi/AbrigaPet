@@ -1,7 +1,13 @@
 import { prisma } from '@/lib/db'
 import { deleteAnimalById } from '@/modules/animais/server/service'
 import type { Animal as PrismaAnimal } from '@/generated/prisma/client'
-import { animalPublicSchema, deriveSituacao, saidaPairError, updateAnimalSchema } from '@/schemas/animalSchema'
+import {
+  animalPublicSchema,
+  deriveSituacao,
+  normalizeMotivoSaida,
+  saidaPairError,
+  updateAnimalSchema,
+} from '@/schemas/animalSchema'
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
 
@@ -77,21 +83,47 @@ export const PATCH = async (request: Request, { params }: { params: Promise<{ id
       }
     }
 
-    const animal = await prisma.animal.update({
-      data: {
-        ...rest,
-        ...(motivoSaida !== undefined && {
-          motivoSaida,
-        }),
-        ...(dataSaida !== undefined && {
-          dataSaida,
-        }),
-        ...(foto !== undefined && {
-          foto: foto || null,
-        }),
-      },
-      where: { id: idAnimal, excluidoEm: null },
-      include: { _count: { select: { adocoes: true } } },
+    if (motivoSaida === 'adocao') {
+      const existing = await prisma.animal.findFirst({
+        where: { id: idAnimal, excluidoEm: null },
+        select: { motivoSaida: true, _count: { select: { adocoes: true } } },
+      })
+      const wasAdocao = normalizeMotivoSaida(existing?.motivoSaida) === 'adocao'
+      if (existing && !wasAdocao && existing._count.adocoes === 0) {
+        return NextResponse.json(
+          { message: 'Para registrar uma adoção, vincule o animal pela página do adotante' },
+          { status: 400 },
+        )
+      }
+    }
+
+    const animal = await prisma.$transaction(async (tx) => {
+      const updated = await tx.animal.update({
+        data: {
+          ...rest,
+          ...(motivoSaida !== undefined && {
+            motivoSaida,
+          }),
+          ...(dataSaida !== undefined && {
+            dataSaida,
+          }),
+          ...(foto !== undefined && {
+            foto: foto || null,
+          }),
+        },
+        where: { id: idAnimal, excluidoEm: null },
+      })
+
+      if (motivoSaida !== undefined && motivoSaida !== 'adocao') {
+        await tx.adocao.deleteMany({ where: { animalId: idAnimal } })
+      } else if (motivoSaida === 'adocao' && dataSaida) {
+        await tx.adocao.updateMany({ where: { animalId: idAnimal }, data: { dataAdocao: dataSaida } })
+      }
+
+      return tx.animal.findUniqueOrThrow({
+        where: { id: updated.id },
+        include: { _count: { select: { adocoes: true } } },
+      })
     })
 
     return NextResponse.json(toPublicAnimal(animal, animal._count.adocoes > 0), { status: 200 })

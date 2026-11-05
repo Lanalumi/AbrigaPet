@@ -7,6 +7,7 @@ import { Button } from '@/global/ui/Button/Button'
 import { DateField } from '@/global/ui/DateField/DateField'
 import { Field } from '@/global/ui/Field/Field'
 import { CheckBox } from '@/global/ui/CheckBox/CheckBox'
+import { ApiError } from '@/lib/client/errors'
 import { UpdateAnimal, Animal } from '../../types'
 import { useUpdateAnimal } from '../../hooks/useUpdateAnimal'
 import {
@@ -233,8 +234,8 @@ export default function FormEditAnimal({
           toast.success('Animal atualizado com sucesso')
           router.refresh()
         },
-        onError: () => {
-          toast.error('Erro ao atualizar animal')
+        onError: (error) => {
+          toast.error(error instanceof ApiError ? error.message : 'Erro ao atualizar animal')
         },
       },
     )

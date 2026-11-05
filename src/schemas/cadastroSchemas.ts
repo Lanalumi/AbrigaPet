@@ -1,3 +1,4 @@
+import { parseStoredDate } from '@/modules/pessoas/components/FormNewPerson/functions/parseDate'
 import { z } from 'zod'
 import { updateAnimalSchema } from './animalSchema'
 
@@ -6,9 +7,8 @@ export const idSchema = z.string().uuid('ID inválido')
 export const createAnimalSchema = updateAnimalSchema
 
 export const createAdocaoSchema = z.object({
-  adotanteId: z.string().uuid('ID do adotante inválido'),
-  animalId: z.string().uuid('ID do animal inválido'),
-  dataAdocao: z.preprocess((val) => new Date(val as string), z.date()),
+  animalId: z.string().uuid('Selecione um animal'),
+  dataAdocao: z.preprocess((val) => parseStoredDate(val) ?? val, z.date('Data inválida. Use dd/mm/aaaa')),
 })
 
 export const createFichaMedicaSchema = z.object({
