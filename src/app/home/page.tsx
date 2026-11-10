@@ -12,6 +12,8 @@ import type { HomeAnimalResumo } from '@/modules/home/types'
 import { DashboardCard, ErrorCard, LoadingCard, MetricCard } from './HomePage'
 import { AdocoesPanel, CadastrosCard, GatisPanel, MedicacaoPanel } from './HomeActions'
 
+export const dynamic = 'force-dynamic'
+
 function AnimalMiniCard({ animal }: { animal: HomeAnimalResumo }) {
   const foto = animal.foto?.trim()
 
