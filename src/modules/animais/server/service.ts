@@ -64,10 +64,7 @@ export async function listAnimals(rawQuery: unknown) {
 export async function getAnimalById(raw: unknown) {
   const id = idSchema.parse(raw)
   const foundAnimal = await animalById(id)
-
-  if (!foundAnimal) {
-    throw new Error('Animal not found')
-  }
+  if (!foundAnimal) return null
 
   return toPublic(foundAnimal)
 }
