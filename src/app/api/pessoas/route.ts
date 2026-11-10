@@ -1,3 +1,4 @@
+import { hashPassword, isUniqueViolation, normalizeEmail } from '@/lib/auth/credentials'
 import { prisma } from '@/lib/db'
 import { createPersonSchema } from '@/schemas/personSchema'
 import { NextResponse } from 'next/server'
@@ -11,11 +12,7 @@ async function findOrCreateTipo(tipo: 'voluntario' | 'adotante') {
   if (existing) return existing
 
   return prisma.tipoPessoa.create({
-    data: {
-      tipo,
-      email: `${tipo}@cadaspatas.local`,
-      senha: 'unused',
-    },
+    data: { tipo },
   })
 }
 
@@ -24,6 +21,8 @@ export async function POST(request: Request) {
     const body = await request.json()
     const data = createPersonSchema.parse(body)
     const tipo = await findOrCreateTipo(data.tipo)
+    const email = normalizeEmail(data.email)
+    const senhaHash = data.tipo === 'voluntario' && data.senha ? await hashPassword(data.senha) : null
 
     const pessoa = await prisma.pessoa.create({
       data: {
@@ -38,6 +37,8 @@ export async function POST(request: Request) {
         cidade: data.cidade,
         dataInicio: data.dataInicio,
         dataSaida: data.dataSaida,
+        email: email || null,
+        senhaHash,
       },
     })
 
@@ -47,12 +48,17 @@ export async function POST(request: Request) {
         id: pessoa.id,
         nome: pessoa.nome,
         tipo: data.tipo,
+        email: pessoa.email,
       },
       { status: 201 },
     )
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json({ message: 'Dados inválidos', error: error.flatten().fieldErrors }, { status: 400 })
+    }
+
+    if (isUniqueViolation(error)) {
+      return NextResponse.json({ message: 'Este e-mail já está em uso.' }, { status: 400 })
     }
 
     console.error('[POST /api/pessoas]', error)

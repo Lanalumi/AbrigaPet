@@ -27,6 +27,8 @@ type PersonFormInput = {
   cidade: string
   dataInicio: string
   dataSaida: string
+  email: string
+  senha: string
 }
 
 function formValuesFrom(person: EditablePerson): PersonFormInput {
@@ -41,6 +43,8 @@ function formValuesFrom(person: EditablePerson): PersonFormInput {
     cidade: person.cidade,
     dataInicio: person.dataInicio,
     dataSaida: person.dataSaida,
+    email: person.email,
+    senha: '',
   }
 }
 
@@ -109,6 +113,8 @@ export function FormEditPerson({
       cidade: values.cidade.trim(),
       dataInicio: values.dataInicio.trim(),
       dataSaida: isVolunteer ? values.dataSaida.trim() || null : saved.dataSaida || null,
+      email: values.email.trim(),
+      senha: values.senha.trim() || undefined,
     }
 
     const current = {
@@ -122,9 +128,12 @@ export function FormEditPerson({
       cidade: saved.cidade.trim(),
       dataInicio: saved.dataInicio.trim(),
       dataSaida: saved.dataSaida.trim() || null,
+      email: saved.email.trim(),
     }
 
-    const changed = (Object.keys(payload) as (keyof typeof payload)[]).some((key) => payload[key] !== current[key])
+    const changed =
+      Boolean(payload.senha) ||
+      (Object.keys(current) as (keyof typeof current)[]).some((key) => payload[key] !== current[key])
     if (!changed) {
       setNoChangesMessage('Nenhum campo alterado')
       return
@@ -171,7 +180,13 @@ export function FormEditPerson({
       <header className="flex flex-col items-center justify-center text-center gap-2 pb-6 mb-6 border-b border-[#755835]/15">
         <div className="flex items-center justify-center gap-3">
           <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#755835]/10 text-[#755835] shrink-0">
-            <Image src="/images/icons/paw2.svg" alt="Patinha" width={22} height={22} className="h-auto w-auto object-contain" />
+            <Image
+              src="/images/icons/paw2.svg"
+              alt="Patinha"
+              width={22}
+              height={22}
+              className="h-auto w-auto object-contain"
+            />
           </div>
           <h1 className="text-2xl font-bold text-[#3A250B] tracking-tight">{saved.nome}</h1>
           <span className="bg-[#FFF9F7] text-[#755835] border border-[#755835]/40 text-xs font-semibold px-3 py-1 rounded-xl shadow-xs">
@@ -228,6 +243,21 @@ export function FormEditPerson({
             <Field label="Bairro" id="bairro" type="text" {...register('bairro')} />
             <Field label="Telefone" id="telefone" type="tel" {...register('telefone')} />
             <Field label="Cidade" id="cidade" type="text" {...register('cidade')} />
+            <Field
+              label={isVolunteer ? 'E-mail' : 'E-mail para contato'}
+              id="email"
+              type="email"
+              {...register('email')}
+            />
+            {isVolunteer && (
+              <Field
+                label="Senha"
+                id="senha"
+                type="password"
+                placeholder="Deixe em branco para manter a senha"
+                {...register('senha')}
+              />
+            )}
           </div>
 
           {isVolunteer ? (
