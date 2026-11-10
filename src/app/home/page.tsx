@@ -104,7 +104,7 @@ function ComunidadeCard({
       href="/comunidade"
       className="h-full"
     >
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      <div className="flex flex-col gap-3">
         {comunidadeCards.map((card) => (
           <MetricCard
             key={card.key}
@@ -181,9 +181,7 @@ export default function HomePage() {
         <Suspense fallback={<LoadingCard title="Adoções do mês" />}>
           <AdocoesSection />
         </Suspense>
-        <div className="h-full [&>div]:h-full [&>div]:flex [&>div]:flex-col [&>div]:justify-between">
-          <CadastrosCard />
-        </div>
+        <CadastrosCard />
       </div>
     </div>
   )

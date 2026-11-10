@@ -9,16 +9,14 @@ type DropDownProps = Omit<ComponentProps<'select'>, 'value'> & {
 
 export const DropDown = ({ label, options, value, id, ...selectProps }: DropDownProps) => {
   return (
-    <>
-      <div className="flex flex-col max-w-60">
-        {label && (
-          <label className="font-poppins font-semibold text-base text-[#755835]" htmlFor={id}>
-            {label}
-          </label>
-        )}
-      </div>
+    <div className="flex w-full max-w-[200px] flex-col gap-1">
+      {label && (
+        <label className="font-poppins text-xs font-semibold text-[#3A250B]" htmlFor={id}>
+          {label}
+        </label>
+      )}
       <select
-        className=" font-poppins font-semibold text-base text-[#755835] bg-[#FFF9F7] border border-[#3A250B]/30 rounded-sm p-2 focus:outline-none max-w-30"
+        className="h-[42px] w-full cursor-pointer rounded-xl border border-[#755835]/30 bg-[#FDF8F3] px-3 py-2 font-poppins text-xs font-medium text-[#3A250B] outline-none transition-all focus:ring-2 focus:ring-[#755835]/30 disabled:cursor-default"
         {...selectProps}
         id={id}
       >
@@ -28,6 +26,6 @@ export const DropDown = ({ label, options, value, id, ...selectProps }: DropDown
           </option>
         ))}
       </select>
-    </>
+    </div>
   )
 }

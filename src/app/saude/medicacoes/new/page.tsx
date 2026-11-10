@@ -19,8 +19,9 @@ export default async function NovaMedicacaoPage({
   const selectedConsultaId = Array.isArray(consultaId) ? consultaId[0] : consultaId
 
   const [animais, consultas, medicamentos] = await Promise.all([
-    prisma.animal.findMany({ select: { id: true, nome: true }, orderBy: { nome: 'asc' } }),
+    prisma.animal.findMany({ where: { excluidoEm: null }, select: { id: true, nome: true }, orderBy: { nome: 'asc' } }),
     prisma.consulta.findMany({
+      where: { animal: { excluidoEm: null } },
       orderBy: { dataAtendimento: 'desc' },
       select: {
         id: true,

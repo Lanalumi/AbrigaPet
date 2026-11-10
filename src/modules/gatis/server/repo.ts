@@ -41,3 +41,15 @@ export const localizacaoCreate = (data: Prisma.LocalizacaoCreateInput) => prisma
 
 export const localizacaoUpdate = (id: string, data: Prisma.LocalizacaoUpdateInput) =>
   prisma.localizacao.update({ where: { id }, data })
+
+export const localizacaoFindWithHistory = (id: string) =>
+  prisma.localizacao.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      _count: { select: { historicos: true } },
+      historicos: { where: { dataSaida: null }, select: { id: true }, take: 1 },
+    },
+  })
+
+export const localizacaoDelete = (id: string) => prisma.localizacao.delete({ where: { id } })

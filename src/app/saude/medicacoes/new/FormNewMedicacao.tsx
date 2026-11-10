@@ -8,15 +8,16 @@ import { api } from '@/lib/http/api'
 import { ApiError } from '@/lib/client/errors'
 import { createMedicacaoSchema } from '@/schemas/saudeSchema'
 import { useRouter } from 'next/navigation'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { SelectField } from '../../SelectField'
 
 type Option = { id: string; nome: string }
 type ConsultaOption = { id: string; animalId: string; label: string }
+type SavedMedicacao = { id: string; consultaId: string; animalId: string }
 
-type MedicacaoFormInput = {
+export type MedicacaoFormInput = {
   animalId: string
   consultaId: string
   medicamento: string
@@ -33,29 +34,33 @@ export function FormNewMedicacao({
   medicamentos,
   animalId,
   consultaId,
+  existing,
 }: {
   animais: Option[]
   consultas: ConsultaOption[]
   medicamentos: string[]
   animalId?: string
   consultaId?: string
+  existing?: { id: string; values: MedicacaoFormInput }
 }) {
   const router = useRouter()
+  const [editing, setEditing] = useState(!existing)
   const initialAnimalId = animais.some((animal) => animal.id === animalId) ? animalId : ''
   const initialConsultaId =
     initialAnimalId && consultas.some((consulta) => consulta.id === consultaId && consulta.animalId === initialAnimalId)
       ? consultaId
       : ''
-  const createMedicacao = useMutation<{ id: string; consultaId: string; animalId: string }, ApiError, MedicacaoFormInput>(
-    {
-      mutationFn: (values) =>
-        api(`${API_URL}/medicacoes`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(values),
-        }),
-    },
-  )
+  const saveMedicacao = useMutation<SavedMedicacao, ApiError, MedicacaoFormInput>({
+    mutationFn: (values) =>
+      api(existing ? `${API_URL}/medicacoes/${existing.id}` : `${API_URL}/medicacoes`, {
+        method: existing ? 'PATCH' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(values),
+      }),
+  })
+  const deleteMedicacao = useMutation<SavedMedicacao, ApiError, string>({
+    mutationFn: (id) => api(`${API_URL}/medicacoes/${id}`, { method: 'DELETE' }),
+  })
 
   const {
     register,
@@ -63,9 +68,10 @@ export function FormNewMedicacao({
     setError,
     watch,
     setValue,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<MedicacaoFormInput>({
-    defaultValues: {
+    defaultValues: existing?.values ?? {
       animalId: initialAnimalId ?? '',
       consultaId: initialConsultaId ?? '',
       medicamento: '',
@@ -76,6 +82,27 @@ export function FormNewMedicacao({
       duracaoTratamento: '',
     },
   })
+
+  const leaveEditMode = () => {
+    if (existing) reset(existing.values)
+    setEditing(false)
+  }
+
+  const onDelete = () => {
+    if (!existing || deleteMedicacao.isPending) return
+    if (!confirm('Tem certeza que deseja excluir esta medicação?')) return
+
+    deleteMedicacao.mutate(existing.id, {
+      onSuccess: (deleted) => {
+        toast.success('Medicação excluída com sucesso')
+        router.push(`/animais/${deleted.animalId}/fichamedica?consulta=${deleted.consultaId}`)
+        router.refresh()
+      },
+      onError: (error) => {
+        toast.error(error instanceof ApiError ? error.message : 'Erro ao excluir medicação')
+      },
+    })
+  }
 
   const selectedAnimalId = watch('animalId')
   const consultasDoAnimal = useMemo(
@@ -100,20 +127,21 @@ export function FormNewMedicacao({
       return
     }
 
-    createMedicacao.mutate(
+    saveMedicacao.mutate(
       {
         ...values,
         quantidade: String(result.data.quantidade),
         tipo: result.data.tipo ?? '',
       },
       {
-        onSuccess: (created) => {
-          toast.success('Medicação cadastrada')
-          router.push(`/animais/${created.animalId}/fichamedica?consulta=${created.consultaId}`)
+        onSuccess: (saved) => {
+          toast.success(existing ? 'Medicação atualizada' : 'Medicação cadastrada')
+          router.push(`/animais/${saved.animalId}/fichamedica?consulta=${saved.consultaId}`)
           router.refresh()
         },
         onError: (error) => {
-          toast.error(error instanceof ApiError ? error.message : 'Erro ao cadastrar medicação')
+          const fallback = existing ? 'Erro ao atualizar medicação' : 'Erro ao cadastrar medicação'
+          toast.error(error instanceof ApiError ? error.message : fallback)
         },
       },
     )
@@ -122,7 +150,7 @@ export function FormNewMedicacao({
   const validationMessages = Object.values(errors)
     .map((error) => error?.message)
     .filter((message): message is string => Boolean(message))
-  const isLoading = createMedicacao.isPending || isSubmitting
+  const isLoading = saveMedicacao.isPending || isSubmitting
 
   return (
     <div className="w-full max-w-4xl mx-auto rounded-3xl border border-[#755835]/20 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(58,37,11,0.05)] mt-4">
@@ -162,7 +190,7 @@ export function FormNewMedicacao({
           )}
 
           {/* Grid do Formulário - Hierarquia Visual Corrigida */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start [&_label]:text-[13px] [&_label]:font-bold [&_label]:text-[#3A250B] [&_div]:flex [&_div]:flex-col [&_div]:gap-1.5 [&_select]:w-full [&_select]:h-[42px] [&_select]:rounded-lg [&_select]:border-[#755835]/20 [&_select]:bg-white [&_select]:px-3 [&_select]:text-sm [&_select]:font-medium [&_select]:text-[#755835] [&_input]:w-full [&_input]:h-[42px] [&_input]:rounded-lg [&_input]:border-[#755835]/20 [&_input]:bg-white [&_input]:px-3 [&_input]:text-sm [&_input]:font-medium [&_input]:text-[#755835] [&_input::placeholder]:font-normal [&_input::placeholder]:text-[#755835]/40">
+          <fieldset disabled={!editing} className="m-0 border-0 p-0 grid grid-cols-1 md:grid-cols-2 gap-6 items-start [&_label]:text-[13px] [&_label]:font-bold [&_label]:text-[#3A250B] [&_div]:flex [&_div]:flex-col [&_div]:gap-1.5 [&_select]:w-full [&_select]:h-[42px] [&_select]:rounded-lg [&_select]:border-[#755835]/20 [&_select]:bg-white [&_select]:px-3 [&_select]:text-sm [&_select]:font-medium [&_select]:text-[#755835] [&_input]:w-full [&_input]:h-[42px] [&_input]:rounded-lg [&_input]:border-[#755835]/20 [&_input]:bg-white [&_input]:px-3 [&_input]:text-sm [&_input]:font-medium [&_input]:text-[#755835] [&_input::placeholder]:font-normal [&_input::placeholder]:text-[#755835]/40">
             
             {/* Coluna Esquerda */}
             <div className="flex flex-col gap-5">
@@ -216,28 +244,61 @@ export function FormNewMedicacao({
               <Field label="Frequência" id="frequencia" type="text" placeholder="Ex: A cada 12 horas" {...register('frequencia')} />
               <Field label="Duração do tratamento" id="duracaoTratamento" type="text" placeholder="Ex: 7 dias" {...register('duracaoTratamento')} />
             </div>
-          </div>
+          </fieldset>
 
           {/* Rodapé com Botões */}
-          <div className="flex flex-wrap items-center justify-end gap-3 pt-6 mt-2 border-t border-[#755835]/15">
-            <button
-              type="button"
-              onClick={() => router.push('/saude')}
-              className="cursor-pointer rounded-xl border border-[#755835]/30 bg-[#FDF8F3] hover:bg-[#755835]/10 px-6 py-2.5 font-poppins text-[13px] font-bold text-[#3A250B] transition-all"
-            >
-              Cancelar
-            </button>
+          {existing ? (
+            <div className="flex flex-wrap items-center justify-end gap-3 pt-6 mt-2 border-t border-[#755835]/15">
+              {!editing ? (
+                <>
+                  <Button type="button" onClick={() => router.back()}>
+                    Voltar
+                  </Button>
+                  <Button type="button" green icon="/images/icons/edit-button.svg" onClick={() => setEditing(true)}>
+                    Editar Medicação
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button type="button" onClick={leaveEditMode}>
+                    Cancelar
+                  </Button>
+                  <Button type="button" red onClick={onDelete}>
+                    {deleteMedicacao.isPending ? 'Excluindo...' : 'Excluir'}
+                  </Button>
+                  {isLoading ? (
+                    <Button type="submit" disabled icon="/images/icons/save-button.svg">
+                      Salvando...
+                    </Button>
+                  ) : (
+                    <Button type="submit" green icon="/images/icons/save-button.svg">
+                      Salvar Alterações
+                    </Button>
+                  )}
+                </>
+              )}
+            </div>
+          ) : (
+            <div className="flex flex-wrap items-center justify-end gap-3 pt-6 mt-2 border-t border-[#755835]/15">
+              <button
+                type="button"
+                onClick={() => router.push('/saude')}
+                className="cursor-pointer rounded-xl border border-[#755835]/30 bg-[#FDF8F3] hover:bg-[#755835]/10 px-6 py-2.5 font-poppins text-[13px] font-bold text-[#3A250B] transition-all"
+              >
+                Cancelar
+              </button>
 
-            {isLoading ? (
-              <Button type="submit" disabled icon="/images/icons/save-button.svg">
-                Salvando...
-              </Button>
-            ) : (
-              <Button type="submit" green icon="/images/icons/save-button.svg">
-                Salvar Medicação
-              </Button>
-            )}
-          </div>
+              {isLoading ? (
+                <Button type="submit" disabled icon="/images/icons/save-button.svg">
+                  Salvando...
+                </Button>
+              ) : (
+                <Button type="submit" green icon="/images/icons/save-button.svg">
+                  Salvar Medicação
+                </Button>
+              )}
+            </div>
+          )}
         </form>
       )}
     </div>

@@ -9,7 +9,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ idA
   const { idAnimal } = await params
 
   const animal = await prisma.animal.findUnique({
-    where: { id: idAnimal },
+    where: { id: idAnimal, excluidoEm: null },
     select: { id: true },
   })
 
@@ -48,7 +48,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ idA
     const data = createPesoSchema.parse(body)
 
     const animal = await prisma.animal.findUnique({
-      where: { id: idAnimal },
+      where: { id: idAnimal, excluidoEm: null },
       select: { id: true },
     })
 

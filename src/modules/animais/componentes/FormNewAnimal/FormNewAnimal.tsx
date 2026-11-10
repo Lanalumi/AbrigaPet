@@ -112,8 +112,7 @@ export const FormNewAnimal = () => {
   const isLoading = createAnimalMutation.isPending || isSubmitting
 
   // Classe utilitária para padronizar e forçar os Dropdowns a colocarem a label em cima da caixa
-  const dropdownFixClass =
-    'w-full [&>div]:flex [&>div]:flex-col [&>div]:items-start [&>div]:gap-1.5 [&_select]:w-full [&_label]:font-semibold [&_label]:text-[#3A250B]'
+  const dropdownFixClass = 'w-full'
 
   return (
     <div className="w-full max-w-5xl mx-auto rounded-3xl border border-[#755835]/20 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(58,37,11,0.05)]">

@@ -4,13 +4,13 @@ import { Button } from '@/global/ui/Button/Button'
 import { DateField } from '@/global/ui/DateField/DateField'
 import { Field } from '@/global/ui/Field/Field'
 import { ApiError } from '@/lib/client/errors'
+import { AdocoesSection, type AnimalDisponivel } from '@/modules/pessoas/components/AdocoesSection/AdocoesSection'
 import { useDeleteAdotante } from '@/modules/pessoas/hooks/useDeleteAdotante'
 import { useDeleteVoluntario } from '@/modules/pessoas/hooks/useDeleteVoluntario'
 import { useUpdatePessoa } from '@/modules/pessoas/hooks/useUpdatePessoa'
 import type { EditablePerson } from '@/modules/pessoas/server/loadPessoa'
 import { updatePersonFieldsSchema } from '@/schemas/personSchema'
 import Image from 'next/image'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -27,6 +27,8 @@ type PersonFormInput = {
   cidade: string
   dataInicio: string
   dataSaida: string
+  email: string
+  senha: string
 }
 
 function formValuesFrom(person: EditablePerson): PersonFormInput {
@@ -41,10 +43,18 @@ function formValuesFrom(person: EditablePerson): PersonFormInput {
     cidade: person.cidade,
     dataInicio: person.dataInicio,
     dataSaida: person.dataSaida,
+    email: person.email,
+    senha: '',
   }
 }
 
-export function FormEditPerson({ initialState }: { initialState: EditablePerson }) {
+export function FormEditPerson({
+  initialState,
+  animaisDisponiveis = [],
+}: {
+  initialState: EditablePerson
+  animaisDisponiveis?: AnimalDisponivel[]
+}) {
   const router = useRouter()
   const updatePessoaMutation = useUpdatePessoa()
   const deleteVoluntarioMutation = useDeleteVoluntario()
@@ -53,7 +63,7 @@ export function FormEditPerson({ initialState }: { initialState: EditablePerson 
   const [editing, setEditing] = useState(false)
   const [noChangesMessage, setNoChangesMessage] = useState<string | null>(null)
   const isVolunteer = saved.role === 'voluntario'
-  const listHref = isVolunteer ? '/voluntarios' : '/adotantes'
+  const listHref = '/comunidade'
   const editLabel = isVolunteer ? 'Editar Voluntário' : 'Editar Adotante'
   const deleteMutation = isVolunteer ? deleteVoluntarioMutation : deleteAdotanteMutation
 
@@ -103,6 +113,8 @@ export function FormEditPerson({ initialState }: { initialState: EditablePerson 
       cidade: values.cidade.trim(),
       dataInicio: values.dataInicio.trim(),
       dataSaida: isVolunteer ? values.dataSaida.trim() || null : saved.dataSaida || null,
+      email: values.email.trim(),
+      senha: values.senha.trim() || undefined,
     }
 
     const current = {
@@ -116,9 +128,12 @@ export function FormEditPerson({ initialState }: { initialState: EditablePerson 
       cidade: saved.cidade.trim(),
       dataInicio: saved.dataInicio.trim(),
       dataSaida: saved.dataSaida.trim() || null,
+      email: saved.email.trim(),
     }
 
-    const changed = (Object.keys(payload) as (keyof typeof payload)[]).some((key) => payload[key] !== current[key])
+    const changed =
+      Boolean(payload.senha) ||
+      (Object.keys(current) as (keyof typeof current)[]).some((key) => payload[key] !== current[key])
     if (!changed) {
       setNoChangesMessage('Nenhum campo alterado')
       return
@@ -165,7 +180,13 @@ export function FormEditPerson({ initialState }: { initialState: EditablePerson 
       <header className="flex flex-col items-center justify-center text-center gap-2 pb-6 mb-6 border-b border-[#755835]/15">
         <div className="flex items-center justify-center gap-3">
           <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#755835]/10 text-[#755835] shrink-0">
-            <Image src="/images/icons/paw2.svg" alt="Patinha" width={22} height={22} className="h-auto w-auto object-contain" />
+            <Image
+              src="/images/icons/paw2.svg"
+              alt="Patinha"
+              width={22}
+              height={22}
+              className="h-auto w-auto object-contain"
+            />
           </div>
           <h1 className="text-2xl font-bold text-[#3A250B] tracking-tight">{saved.nome}</h1>
           <span className="bg-[#FFF9F7] text-[#755835] border border-[#755835]/40 text-xs font-semibold px-3 py-1 rounded-xl shadow-xs">
@@ -222,6 +243,21 @@ export function FormEditPerson({ initialState }: { initialState: EditablePerson 
             <Field label="Bairro" id="bairro" type="text" {...register('bairro')} />
             <Field label="Telefone" id="telefone" type="tel" {...register('telefone')} />
             <Field label="Cidade" id="cidade" type="text" {...register('cidade')} />
+            <Field
+              label={isVolunteer ? 'E-mail' : 'E-mail para contato'}
+              id="email"
+              type="email"
+              {...register('email')}
+            />
+            {isVolunteer && (
+              <Field
+                label="Senha"
+                id="senha"
+                type="password"
+                placeholder="Deixe em branco para manter a senha"
+                {...register('senha')}
+              />
+            )}
           </div>
 
           {isVolunteer ? (
@@ -243,23 +279,12 @@ export function FormEditPerson({ initialState }: { initialState: EditablePerson 
         </fieldset>
 
         {!isVolunteer && (
-          <section className="flex flex-col gap-3 pt-4 border-t border-[#755835]/15">
-            <h2 className="text-sm font-bold text-[#3A250B]">Animais adotados</h2>
-            {saved.adocoes.length > 0 ? (
-              <ul className="flex flex-col gap-2">
-                {saved.adocoes.map((adocao) => (
-                  <li key={adocao.animalId} className="text-sm font-semibold text-[#755835]">
-                    <Link href={`/animais/${adocao.animalId}`} className="text-[#8AA36C] hover:underline">
-                      {adocao.nome}
-                    </Link>
-                    <span>{` — ${adocao.dataAdocao}`}</span>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-sm font-semibold text-[#755835]/70">Nenhum animal adotado</p>
-            )}
-          </section>
+          <AdocoesSection
+            idAdotante={initialState.id}
+            adocoes={initialState.adocoes}
+            disponiveis={animaisDisponiveis}
+            editing={editing}
+          />
         )}
 
         <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-[#755835]/15 mt-2">

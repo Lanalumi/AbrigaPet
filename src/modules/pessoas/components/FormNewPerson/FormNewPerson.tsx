@@ -27,6 +27,8 @@ type PersonFormInput = {
   dataInicio: string
   dataSaida: string
   tipo: string
+  email: string
+  senha: string
 }
 
 const headings: Record<PersonRole | 'pessoa', string> = {
@@ -58,6 +60,8 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
       dataInicio: '',
       dataSaida: '',
       tipo: role ?? '',
+      email: '',
+      senha: '',
     },
   })
 
@@ -122,28 +126,21 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
 
   return (
     <div className="w-full max-w-4xl mx-auto rounded-3xl border border-[#755835]/20 bg-white p-6 sm:p-10 shadow-[0_10px_30px_rgba(58,37,11,0.05)] font-poppins">
-      
       {/* Cabeçalho */}
       <header className="flex flex-col items-center justify-center text-center gap-2 pb-6 mb-8 border-b border-[#755835]/15">
         <div className="flex items-center justify-center gap-2.5">
           <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#755835]/10 text-[#755835] shrink-0">
             <img src="/images/icons/paw2.svg" alt="Patinha" width={22} height={22} className="object-contain" />
           </div>
-          <h1 className="text-2xl font-bold text-[#3A250B] tracking-tight">
-            {headings[tipo ?? 'pessoa']}
-          </h1>
+          <h1 className="text-2xl font-bold text-[#3A250B] tracking-tight">{headings[tipo ?? 'pessoa']}</h1>
         </div>
         <p className="text-xs text-[#755835]/80 font-medium">Preencha os dados cadastrais abaixo</p>
       </header>
 
       <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
-        
         {/* Mensagens de Validação de Erro */}
         {validationMessages.length > 0 && (
-          <div
-            role="alert"
-            className="rounded-2xl border border-[#B85454]/30 bg-[#FFF0ED] p-4 text-xs text-[#8A3B3B]"
-          >
+          <div role="alert" className="rounded-2xl border border-[#B85454]/30 bg-[#FFF0ED] p-4 text-xs text-[#8A3B3B]">
             <p className="font-bold">Corrija os erros abaixo:</p>
             <ul className="mt-1.5 list-disc pl-5 font-medium flex flex-col gap-0.5">
               {validationMessages.map((message) => (
@@ -155,7 +152,7 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
 
         {/* Seleção do Tipo de Pessoa (Compacto) */}
         {!role && (
-          <div className="w-full sm:w-1/2 [&_label]:font-bold [&_label]:text-[#3A250B] [&_select]:font-medium [&_select]:text-[#3A250B]">
+          <div className="w-full sm:w-1/2">
             <DropDown
               label="Tipo de pessoa"
               options={['Selecione', ...personRoles.map((personRoleOption) => personRoleOption.label)]}
@@ -174,6 +171,13 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
             <Field label="CPF" id="cpf" type="text" {...register('cpf')} />
             <DateField label="Data de nascimento" id="dataNascimento" {...register('dataNascimento')} />
             <Field label="Telefone" id="telefone" type="tel" {...register('telefone')} />
+            <Field
+              label={tipo === 'adotante' ? 'E-mail para contato' : 'E-mail'}
+              id="email"
+              type="email"
+              {...register('email')}
+            />
+            {tipo === 'voluntario' && <Field label="Senha" id="senha" type="password" {...register('senha')} />}
           </div>
         </section>
 
@@ -221,7 +225,6 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
             </Button>
           )}
         </div>
-
       </form>
     </div>
   )

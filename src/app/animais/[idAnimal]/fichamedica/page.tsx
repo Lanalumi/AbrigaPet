@@ -25,7 +25,7 @@ export default async function FichaMedicaAnimalPage({
   const { consulta: consultaParam } = await searchParams
   const requestedConsultaId = Array.isArray(consultaParam) ? consultaParam[0] : consultaParam
   const animal = await prisma.animal.findUnique({
-    where: { id: idAnimal },
+    where: { id: idAnimal, excluidoEm: null },
     select: {
       id: true,
       nome: true,
@@ -146,6 +146,9 @@ export default async function FichaMedicaAnimalPage({
                             {column}
                           </th>
                         ))}
+                        <th className="px-5 py-4">
+                          <span className="sr-only">Ações</span>
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#755835]/5">
@@ -157,6 +160,14 @@ export default async function FichaMedicaAnimalPage({
                           <td className="px-5 py-4 font-medium text-[#755835]">{prescricao.quantidade}</td>
                           <td className="px-5 py-4 font-medium text-[#755835]">{prescricao.duracaoTratamento}</td>
                           <td className="px-5 py-4 font-medium text-[#755835]">{prescricao.frequencia}</td>
+                          <td className="px-5 py-4 text-right">
+                            <Link
+                              href={`/saude/medicacoes/${prescricao.id}`}
+                              className="text-xs font-semibold text-[#8AA36C] hover:underline whitespace-nowrap"
+                            >
+                              Editar
+                            </Link>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -168,9 +179,15 @@ export default async function FichaMedicaAnimalPage({
 
           {/* Coluna Direita: Dados da Consulta */}
           <article className="flex w-full flex-col rounded-2xl border border-[#755835]/20 bg-[#FDF8F3] shadow-[0_4px_20px_rgba(58,37,11,0.03)] p-6">
-            <h2 className="font-poppins text-[15px] font-bold text-[#3A250B] mb-5 pb-3 border-b border-[#755835]/10">
-              Detalhes do atendimento
-            </h2>
+            <div className="flex items-center justify-between gap-3 mb-5 pb-3 border-b border-[#755835]/10">
+              <h2 className="font-poppins text-[15px] font-bold text-[#3A250B]">Detalhes do atendimento</h2>
+              <Link
+                href={`/saude/consultas/${consulta.id}`}
+                className="font-poppins text-xs font-semibold text-[#8AA36C] hover:underline whitespace-nowrap"
+              >
+                Editar consulta
+              </Link>
+            </div>
             <dl className="flex flex-col gap-4">
               <div className="flex flex-col gap-1">
                 <dt className="font-poppins text-[11px] font-bold uppercase tracking-wider text-[#755835]/60">Data de atendimento</dt>

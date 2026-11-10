@@ -185,13 +185,15 @@ export function LocalModal({ animalId }: LocalModalProps) {
                 {locais.length === 0 ? (
                   <p className="font-poppins text-sm font-semibold text-[#755835]/70">Nenhum local cadastrado.</p>
                 ) : (
-                  <DropDown
-                    label="Local"
-                    id={`local-${animalId}`}
-                    options={['Selecione', ...locais.map(localLabel)]}
-                    value={['', ...locais.map((local) => local.id)]}
-                    {...register('localizacaoId')}
-                  />
+                  <div className="w-[200px]">
+                    <DropDown
+                      label="Local"
+                      id={`local-${animalId}`}
+                      options={['Selecione', ...locais.map(localLabel)]}
+                      value={['', ...locais.map((local) => local.id)]}
+                      {...register('localizacaoId')}
+                    />
+                  </div>
                 )}
                 <DateField label="Data" id={`data-local-${animalId}`} {...register('dataEntrada')} />
               </div>

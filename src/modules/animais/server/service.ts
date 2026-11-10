@@ -7,7 +7,7 @@ import {
   listAnimalsResponseSchema,
   updateAnimalSchema,
 } from '@/schemas/animalSchema'
-import { animalById, animalCreate, animalDelete, animalFindMany, animalUpdate } from './repo'
+import { animalById, animalCreate, animalFindMany, animalSoftDelete, animalUpdate } from './repo'
 
 export async function createAnimal(raw: unknown) {
   const animal = createAnimalSchema.parse(raw)
@@ -93,9 +93,9 @@ export async function updateAnimalById(id: string, raw: unknown) {
 export async function deleteAnimalById(id: string) {
   const existingAnimal = await animalById(id)
 
-  if (!existingAnimal) throw new Error('Animal not found')
+  if (!existingAnimal) return false
 
-  await animalDelete(existingAnimal.id)
+  await animalSoftDelete(existingAnimal.id)
 
-  return
+  return true
 }

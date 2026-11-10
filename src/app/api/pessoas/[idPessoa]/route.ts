@@ -1,3 +1,4 @@
+import { hashPassword, isLoginRole, isUniqueViolation, normalizeEmail } from '@/lib/auth/credentials'
 import { prisma } from '@/lib/db'
 import { formatBrDate } from '@/modules/pessoas/components/FormNewPerson/functions/parseDate'
 import { deletePessoaById } from '@/modules/pessoas/server/deletePessoa'
@@ -17,6 +18,7 @@ function toPersonFields(pessoa: {
   cidade: string
   dataInicio: Date
   dataSaida: Date | null
+  email: string | null
 }) {
   return {
     id: pessoa.id,
@@ -30,6 +32,7 @@ function toPersonFields(pessoa: {
     cidade: pessoa.cidade,
     dataInicio: formatBrDate(pessoa.dataInicio),
     dataSaida: formatBrDate(pessoa.dataSaida),
+    email: pessoa.email ?? '',
   }
 }
 
@@ -39,11 +42,23 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   try {
     const body = await request.json()
     const data = updatePersonFieldsSchema.parse(body)
-    const existing = await prisma.pessoa.findUnique({ where: { id: idPessoa } })
+    const existing = await prisma.pessoa.findUnique({
+      where: { id: idPessoa },
+      include: { tipo: true },
+    })
 
     if (!existing) {
       return NextResponse.json({ message: 'Pessoa não encontrada' }, { status: 404 })
     }
+
+    const email = normalizeEmail(data.email)
+    const canSignIn = isLoginRole(existing.tipo.tipo)
+    if (canSignIn && !email) {
+      return NextResponse.json({ message: 'E-mail inválido' }, { status: 400 })
+    }
+
+    const senha = data.senha?.trim() ?? ''
+    const senhaHash = canSignIn && senha ? await hashPassword(senha) : null
 
     const pessoa = await prisma.pessoa.update({
       where: { id: idPessoa },
@@ -58,6 +73,8 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
         cidade: data.cidade,
         dataInicio: data.dataInicio,
         dataSaida: data.dataSaida,
+        email: email || null,
+        ...(canSignIn ? (senhaHash ? { senhaHash } : {}) : { senhaHash: null }),
       },
     })
 
@@ -65,6 +82,10 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json({ message: error.issues[0]?.message ?? 'Dados inválidos' }, { status: 400 })
+    }
+
+    if (isUniqueViolation(error)) {
+      return NextResponse.json({ message: 'Este e-mail já está em uso.' }, { status: 400 })
     }
 
     console.error('[PATCH /api/pessoas]', error)

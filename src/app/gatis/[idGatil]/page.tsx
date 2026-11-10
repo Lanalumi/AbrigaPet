@@ -27,7 +27,7 @@ export default async function GatilPage({ params }: { params: Promise<{ idGatil:
           status: true,
           dataEntrada: true,
           dataSaida: true,
-          animal: { select: { id: true, nome: true } },
+          animal: { select: { id: true, nome: true, excluidoEm: true } },
         },
       },
     },
@@ -100,9 +100,13 @@ export default async function GatilPage({ params }: { params: Promise<{ idGatil:
           <ul className="flex flex-col gap-2.5">
             {anteriores.map((historico) => (
               <li key={historico.id} className="text-xs font-semibold text-[#3A250B] flex items-center justify-between p-3 rounded-2xl bg-[#FDF8F3] border border-[#755835]/10">
-                <Link href={`/animais/${historico.animal.id}`} className="hover:text-[#5C7C3A] transition-colors font-bold">
-                  {historico.animal.nome}
-                </Link>
+                {historico.animal.excluidoEm ? (
+                  <span className="font-bold text-[#755835]/70">{`${historico.animal.nome} (excluído)`}</span>
+                ) : (
+                  <Link href={`/animais/${historico.animal.id}`} className="hover:text-[#5C7C3A] transition-colors font-bold">
+                    {historico.animal.nome}
+                  </Link>
+                )}
                 <span className="text-[#755835]/70 font-medium">
                   {formatDate(historico.dataEntrada)} até {historico.dataSaida ? formatDate(historico.dataSaida) : '—'}
                 </span>

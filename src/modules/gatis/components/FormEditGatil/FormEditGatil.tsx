@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import { useDeleteGatil } from '../../hooks/useDeleteGatil'
 import { useUpdateGatil } from '../../hooks/useUpdateGatil'
 import { Localizacao } from '../../types'
 
@@ -28,6 +29,7 @@ function formValuesFrom(local: Pick<Localizacao, 'nome' | 'tipoLocal' | 'ativo'>
 export function FormEditGatil({ initialState }: { initialState: Localizacao }) {
   const router = useRouter()
   const updateGatil = useUpdateGatil()
+  const deleteGatil = useDeleteGatil()
   const [saved, setSaved] = useState(initialState)
   const [editing, setEditing] = useState(false)
   const {
@@ -43,6 +45,23 @@ export function FormEditGatil({ initialState }: { initialState: Localizacao }) {
   const leaveEditMode = () => {
     reset(formValuesFrom(saved))
     setEditing(false)
+  }
+
+  const onDelete = () => {
+    if (deleteGatil.isPending) return
+    if (!confirm('Tem certeza que deseja excluir este gatil?')) return
+
+    deleteGatil.mutate(saved.id, {
+      onSuccess: ({ action }) => {
+        toast.success(
+          action === 'desativado' ? 'Gatil desativado, pois possui histórico de animais' : 'Gatil excluído com sucesso',
+        )
+        router.push('/gatis')
+      },
+      onError: (error) => {
+        toast.error(error instanceof ApiError ? error.message : 'Erro ao excluir gatil')
+      },
+    })
   }
 
   const onSubmit = (values: GatilEditFormInput) => {
@@ -159,7 +178,11 @@ export function FormEditGatil({ initialState }: { initialState: Localizacao }) {
               >
                 Cancelar
               </button>
-              
+
+              <Button type="button" red onClick={onDelete}>
+                {deleteGatil.isPending ? 'Excluindo...' : 'Excluir'}
+              </Button>
+
               {isLoading ? (
                 <Button type="submit" disabled icon="/images/icons/save-button.svg">
                   Salvando...

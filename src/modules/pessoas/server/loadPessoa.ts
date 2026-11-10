@@ -10,7 +10,7 @@ export async function loadPessoaById(id: string) {
       tipo: true,
       adocoes: {
         orderBy: { dataAdocao: 'desc' },
-        include: { animal: { select: { id: true, nome: true } } },
+        include: { animal: { select: { id: true, nome: true, excluidoEm: true } } },
       },
     },
   })
@@ -29,7 +29,8 @@ export type EditablePerson = {
   cidade: string
   dataInicio: string
   dataSaida: string
-  adocoes: { animalId: string; nome: string; dataAdocao: string }[]
+  email: string
+  adocoes: { animalId: string; nome: string; dataAdocao: string; excluido: boolean }[]
 }
 
 export function toEditablePerson(pessoa: NonNullable<Awaited<ReturnType<typeof loadPessoaById>>>): EditablePerson {
@@ -51,10 +52,12 @@ export function toEditablePerson(pessoa: NonNullable<Awaited<ReturnType<typeof l
     cidade: pessoa.cidade,
     dataInicio: formatBrDate(pessoa.dataInicio),
     dataSaida: formatBrDate(pessoa.dataSaida),
+    email: pessoa.email ?? '',
     adocoes: pessoa.adocoes.map((adocao) => ({
       animalId: adocao.animal.id,
       nome: adocao.animal.nome,
       dataAdocao: formatBrDate(adocao.dataAdocao),
+      excluido: adocao.animal.excluidoEm !== null,
     })),
   }
 }

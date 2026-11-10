@@ -22,6 +22,7 @@ export type UpdatedPersonFields = {
   cidade: string
   dataInicio: string
   dataSaida: string
+  email: string
 }
 
 const updatePessoa = async ({ id, updates }: { id: string; updates: UpdatePersonFields }) => {

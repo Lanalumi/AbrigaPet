@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/db'
+import { findOrCreateMotivo } from '@/modules/saude/server/lookup'
 import { createFichaMedicaSchema } from '@/schemas/saudeSchema'
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
@@ -11,7 +12,7 @@ export async function POST(request: Request) {
     const data = createFichaMedicaSchema.parse(body)
 
     const [animal, clinica] = await Promise.all([
-      prisma.animal.findUnique({ where: { id: data.animalId }, select: { id: true } }),
+      prisma.animal.findUnique({ where: { id: data.animalId, excluidoEm: null }, select: { id: true } }),
       prisma.clinica.findUnique({ where: { id: data.clinicaId }, select: { id: true } }),
     ])
 
@@ -23,12 +24,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: 'Clínica não encontrada' }, { status: 400 })
     }
 
-    const motivoNome = data.motivo.trim()
-    const motivoExistente = await prisma.motivo.findFirst({
-      where: { nome: { equals: motivoNome, mode: 'insensitive' } },
-      select: { id: true },
-    })
-    const motivo = motivoExistente ?? (await prisma.motivo.create({ data: { nome: motivoNome }, select: { id: true } }))
+    const motivo = await findOrCreateMotivo(data.motivo)
 
     const consulta = await prisma.consulta.create({
       data: {

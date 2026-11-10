@@ -7,6 +7,7 @@ import { Button } from '@/global/ui/Button/Button'
 import { DateField } from '@/global/ui/DateField/DateField'
 import { Field } from '@/global/ui/Field/Field'
 import { CheckBox } from '@/global/ui/CheckBox/CheckBox'
+import { ApiError } from '@/lib/client/errors'
 import { UpdateAnimal, Animal } from '../../types'
 import { useUpdateAnimal } from '../../hooks/useUpdateAnimal'
 import {
@@ -233,8 +234,8 @@ export default function FormEditAnimal({
           toast.success('Animal atualizado com sucesso')
           router.refresh()
         },
-        onError: () => {
-          toast.error('Erro ao atualizar animal')
+        onError: (error) => {
+          toast.error(error instanceof ApiError ? error.message : 'Erro ao atualizar animal')
         },
       },
     )
@@ -293,7 +294,7 @@ export default function FormEditAnimal({
               </div>
 
               {/* Aparência (Espécie, Cor, Raça, Pelagem) forçado em Grid de 2 colunas */}
-              <div className="[&_fieldset]:border-0 [&_fieldset]:p-0 [&_fieldset]:m-0 [&_legend]:hidden [&_fieldset]:grid [&_fieldset]:grid-cols-1 sm:[&_fieldset]:grid-cols-2 [&_fieldset]:gap-4 [&_label]:text-xs [&_label]:font-semibold [&_label]:text-[#3A250B] [&_div]:flex [&_div]:flex-col [&_div]:gap-1.5 [&_select]:w-full [&_select]:h-[42px] [&_select]:rounded-lg [&_select]:border-[#e5e7eb] [&_select]:bg-white [&_select]:px-3 [&_input]:w-full [&_input]:h-[42px] [&_input]:rounded-lg [&_input]:border-[#e5e7eb] [&_input]:px-3">
+              <div className="[&_fieldset]:border-0 [&_fieldset]:p-0 [&_fieldset]:m-0 [&_legend]:hidden [&_fieldset]:grid [&_fieldset]:grid-cols-1 sm:[&_fieldset]:grid-cols-2 [&_fieldset]:gap-4 [&_label]:text-xs [&_label]:font-semibold [&_label]:text-[#3A250B] [&_div]:flex [&_div]:flex-col [&_div]:gap-1.5 [&_input]:w-full [&_input]:h-[42px] [&_input]:rounded-lg [&_input]:border-[#e5e7eb] [&_input]:px-3">
                 <AnimalApearence register={register} editing={editing} />
               </div>
 
