@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db'
 import { cache } from 'react'
-import { nextDoseLabel } from '@/modules/animais/prescricao/schedule'
+import { isVacina, prescriptionNextDose } from '@/modules/animais/prescricao/schedule'
 import { personRole } from '@/modules/pessoas/personRole'
 import { deriveSituacao, situacaoAnimalLabel } from '@/schemas/animalSchema'
 import type { HomeAdocao, HomeAnimais, HomeComunidade, HomeGatil, HomeGato, HomeMedicamento } from '../types'
@@ -102,7 +102,7 @@ function soonestDose(labels: string[]) {
 
 const loadGatos = cache(async (): Promise<HomeGato[]> => {
   const animals = await prisma.animal.findMany({
-    where: { excluidoEm: null, especie: { equals: 'gato', mode: 'insensitive' } },
+    where: { excluidoEm: null },
     orderBy: { nome: 'asc' },
     select: {
       id: true,
@@ -134,6 +134,8 @@ const loadGatos = cache(async (): Promise<HomeGato[]> => {
               dosagem: true,
               frequencia: true,
               duracaoTratamento: true,
+              dataAplicacao: true,
+              dataProximaDose: true,
               medicamento: { select: { nome: true } },
             },
           },
@@ -147,7 +149,12 @@ const loadGatos = cache(async (): Promise<HomeGato[]> => {
 
     for (const consulta of animal.consultas) {
       for (const prescricao of consulta.prescricoes) {
-        const proximaDose = nextDoseLabel(consulta.dataAtendimento, prescricao.frequencia, prescricao.duracaoTratamento)
+        const proximaDose = prescriptionNextDose(
+          consulta.dataAtendimento,
+          prescricao.frequencia,
+          prescricao.duracaoTratamento,
+          prescricao.dataProximaDose,
+        )
         if (proximaDose === 'Tratamento encerrado') continue
 
         medicamentos.push({
@@ -157,6 +164,8 @@ const loadGatos = cache(async (): Promise<HomeGato[]> => {
           frequencia: prescricao.frequencia,
           duracaoTratamento: prescricao.duracaoTratamento,
           proximaDose,
+          vacina: isVacina(prescricao.frequencia),
+          dataAplicacao: prescricao.dataAplicacao ? formatDate(prescricao.dataAplicacao) : '',
         })
       }
     }
@@ -291,7 +300,7 @@ export function loadGatis() {
       nome: local.nome,
       tipoLocal: local.tipoLocal,
       totalAnimais: new Set(local.historicos.map((historico) => historico.animalId)).size,
-      gatos: gatos.filter((gato) => gato.localizacaoIds.includes(local.id)),
+      gatos: gatos.filter((gato) => gato.especieLabel === 'Gato' && gato.localizacaoIds.includes(local.id)),
     }))
   })
 }

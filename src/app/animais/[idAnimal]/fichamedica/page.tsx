@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/db'
+import { prescriptionNextDose } from '@/modules/animais/prescricao/schedule'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ClinicaInfoButton } from './ClinicaInfoButton'
@@ -11,7 +12,7 @@ function formatDate(value: Date) {
   return `${day}/${month}/${year}`
 }
 
-const prescriptionColumns = ['Nome', 'Tipo', 'Dosagem', 'Quantidade', 'Duração', 'Frequência'] as const
+const prescriptionColumns = ['Nome', 'Tipo', 'Dosagem', 'Quantidade', 'Duração', 'Frequência', 'Aplicada em', 'Próxima dose'] as const
 const historyColumns = ['Data', 'Clínica', 'Motivo', 'Observação'] as const
 
 export default async function FichaMedicaAnimalPage({
@@ -58,6 +59,8 @@ export default async function FichaMedicaAnimalPage({
               quantidade: true,
               frequencia: true,
               duracaoTratamento: true,
+              dataAplicacao: true,
+              dataProximaDose: true,
               medicamento: { select: { nome: true } },
             },
           },
@@ -160,6 +163,17 @@ export default async function FichaMedicaAnimalPage({
                           <td className="px-5 py-4 font-medium text-[#755835]">{prescricao.quantidade}</td>
                           <td className="px-5 py-4 font-medium text-[#755835]">{prescricao.duracaoTratamento}</td>
                           <td className="px-5 py-4 font-medium text-[#755835]">{prescricao.frequencia}</td>
+                          <td className="px-5 py-4 font-medium text-[#755835] whitespace-nowrap">
+                            {prescricao.dataAplicacao ? formatDate(prescricao.dataAplicacao) : '—'}
+                          </td>
+                          <td className="px-5 py-4 font-medium text-[#755835] whitespace-nowrap">
+                            {prescriptionNextDose(
+                              consulta.dataAtendimento,
+                              prescricao.frequencia,
+                              prescricao.duracaoTratamento,
+                              prescricao.dataProximaDose,
+                            )}
+                          </td>
                           <td className="px-5 py-4 text-right">
                             <Link
                               href={`/saude/medicacoes/${prescricao.id}`}

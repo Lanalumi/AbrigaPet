@@ -178,6 +178,8 @@ model Prescreve {
   quantidade        Int
   frequencia        String
   duracaoTratamento String
+  dataAplicacao     DateTime?
+  dataProximaDose   DateTime?
 
   consulta    Consulta    @relation(fields: [consultaId], references: [id])
   medicamento Medicamento @relation(fields: [medicamentoId], references: [id])
