@@ -1,11 +1,14 @@
 'use client'
 
 import { Button } from '@/global/ui/Button/Button'
+import { DateField } from '@/global/ui/DateField/DateField'
 import { Field } from '@/global/ui/Field/Field'
 import { API_URL } from '@/global/constants/api'
 import { useMutation } from '@/global/hooks/useMutation'
 import { api } from '@/lib/http/api'
 import { ApiError } from '@/lib/client/errors'
+import { DURACOES, FREQUENCIAS, withCurrentOption } from '@/modules/animais/prescricao/options'
+import { isVacina } from '@/modules/animais/prescricao/schedule'
 import { createMedicacaoSchema } from '@/schemas/saudeSchema'
 import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
@@ -26,6 +29,8 @@ export type MedicacaoFormInput = {
   quantidade: string
   frequencia: string
   duracaoTratamento: string
+  dataAplicacao: string
+  dataProximaDose: string
 }
 
 export function FormNewMedicacao({
@@ -80,6 +85,8 @@ export function FormNewMedicacao({
       quantidade: '',
       frequencia: '',
       duracaoTratamento: '',
+      dataAplicacao: '',
+      dataProximaDose: '',
     },
   })
 
@@ -105,6 +112,11 @@ export function FormNewMedicacao({
   }
 
   const selectedAnimalId = watch('animalId')
+  const frequencia = watch('frequencia')
+  const duracaoTratamento = watch('duracaoTratamento')
+  const vacina = isVacina(frequencia)
+  const frequenciaOptions = withCurrentOption(FREQUENCIAS, frequencia)
+  const duracaoOptions = withCurrentOption(DURACOES, duracaoTratamento)
   const consultasDoAnimal = useMemo(
     () => consultas.filter((consulta) => consulta.animalId === selectedAnimalId),
     [consultas, selectedAnimalId],
@@ -241,8 +253,42 @@ export function FormNewMedicacao({
             <div className="flex flex-col gap-5">
               <Field label="Dosagem" id="dosagem" type="text" placeholder="Ex: 2mg" {...register('dosagem')} />
               <Field label="Quantidade por dose" id="quantidade" type="number" min={1} placeholder="Ex: 1" {...register('quantidade')} />
-              <Field label="Frequência" id="frequencia" type="text" placeholder="Ex: A cada 12 horas" {...register('frequencia')} />
-              <Field label="Duração do tratamento" id="duracaoTratamento" type="text" placeholder="Ex: 7 dias" {...register('duracaoTratamento')} />
+              <SelectField
+                label="Frequência"
+                id="frequencia"
+                {...register('frequencia', {
+                  onChange: (event) => {
+                    if (isVacina(event.target.value)) {
+                      setValue('duracaoTratamento', '')
+                      return
+                    }
+                    setValue('dataAplicacao', '')
+                    setValue('dataProximaDose', '')
+                  },
+                })}
+              >
+                <option value="">Selecione a frequência</option>
+                {frequenciaOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </SelectField>
+              {vacina ? (
+                <>
+                  <DateField label="Data da aplicação" id="dataAplicacao" {...register('dataAplicacao')} />
+                  <DateField label="Próxima dose" id="dataProximaDose" {...register('dataProximaDose')} />
+                </>
+              ) : (
+                <SelectField label="Duração do tratamento" id="duracaoTratamento" {...register('duracaoTratamento')}>
+                  <option value="">Selecione a duração</option>
+                  {duracaoOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </SelectField>
+              )}
             </div>
           </fieldset>
 

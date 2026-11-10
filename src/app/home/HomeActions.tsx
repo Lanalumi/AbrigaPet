@@ -95,7 +95,11 @@ function CatInfo({ gato }: { gato: HomeGato }) {
               <dl className="mt-2 flex flex-col gap-1">
                 <InfoLine label="Dosagem" value={medicamento.dosagem} />
                 <InfoLine label="Frequência" value={medicamento.frequencia} />
-                <InfoLine label="Duração" value={medicamento.duracaoTratamento} />
+                {medicamento.vacina ? (
+                  <InfoLine label="Aplicada em" value={medicamento.dataAplicacao || '—'} />
+                ) : (
+                  <InfoLine label="Duração" value={medicamento.duracaoTratamento} />
+                )}
                 <InfoLine label="Próxima dose" value={medicamento.proximaDose} />
               </dl>
             </article>
@@ -124,21 +128,21 @@ function CatModal({ gato, onClose }: { gato: HomeGato | null; onClose: () => voi
   )
 }
 
-export function MedicacaoPanel({ gatos }: { gatos: HomeGato[] }) {
+export function MedicacaoPanel({ animais }: { animais: HomeGato[] }) {
   const [gato, setGato] = useState<HomeGato | null>(null)
 
   return (
     <DashboardCard
       title="Medicação pendente"
-      description="Acompanhe os gatos com tratamento em andamento"
+      description="Acompanhe os animais com tratamento em andamento"
       className="h-full"
     >
-      <Total value={gatos.length} />
-      {gatos.length === 0 ? (
-        <EmptyCopy>Nenhum gato com medicação pendente</EmptyCopy>
+      <Total value={animais.length} />
+      {animais.length === 0 ? (
+        <EmptyCopy>Nenhum animal com medicação pendente</EmptyCopy>
       ) : (
         <ul className={listClass}>
-          {gatos.map((item) => (
+          {animais.map((item) => (
             <li key={item.id}>
               <Card
                 title={item.nome}

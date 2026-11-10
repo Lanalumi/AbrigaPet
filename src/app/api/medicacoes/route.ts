@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/db'
 import { findOrCreateMedicamento } from '@/modules/saude/server/lookup'
+import { prescricaoScheduleData } from '@/modules/saude/server/prescricao'
 import { createMedicacaoSchema } from '@/schemas/saudeSchema'
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
@@ -29,8 +30,7 @@ export async function POST(request: Request) {
         tipo: data.tipo?.trim() || null,
         dosagem: data.dosagem.trim(),
         quantidade: data.quantidade,
-        frequencia: data.frequencia.trim(),
-        duracaoTratamento: data.duracaoTratamento.trim(),
+        ...prescricaoScheduleData(data),
       },
       select: { id: true, consultaId: true },
     })

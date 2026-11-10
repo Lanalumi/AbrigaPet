@@ -17,6 +17,8 @@ export default async function MedicacaoPage({ params }: { params: Promise<{ idPr
         quantidade: true,
         frequencia: true,
         duracaoTratamento: true,
+        dataAplicacao: true,
+        dataProximaDose: true,
         medicamento: { select: { nome: true } },
         consulta: { select: { animalId: true } },
       },
@@ -57,7 +59,9 @@ export default async function MedicacaoPage({ params }: { params: Promise<{ idPr
             dosagem: prescricao.dosagem,
             quantidade: String(prescricao.quantidade),
             frequencia: prescricao.frequencia,
-            duracaoTratamento: prescricao.duracaoTratamento,
+            duracaoTratamento: prescricao.duracaoTratamento === '—' ? '' : prescricao.duracaoTratamento,
+            dataAplicacao: formatBrDate(prescricao.dataAplicacao),
+            dataProximaDose: formatBrDate(prescricao.dataProximaDose),
           },
         }}
       />

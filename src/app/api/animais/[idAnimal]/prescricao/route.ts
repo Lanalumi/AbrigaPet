@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/db'
-import { formatStartDate, nextDoseLabel, periodOfDay } from '@/modules/animais/prescricao/schedule'
+import { formatStartDate, isVacina, periodOfDay, prescriptionNextDose } from '@/modules/animais/prescricao/schedule'
 import { latestPrescriptionSchema } from '@/schemas/saudeSchema'
 import { NextResponse } from 'next/server'
 
@@ -29,6 +29,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ idA
           dosagem: true,
           frequencia: true,
           duracaoTratamento: true,
+          dataAplicacao: true,
+          dataProximaDose: true,
           medicamento: { select: { nome: true } },
         },
       },
@@ -39,8 +41,15 @@ export async function GET(_request: Request, { params }: { params: Promise<{ idA
     consulta?.prescricoes.map((prescricao) => ({
       id: prescricao.id,
       nome: prescricao.medicamento.nome,
-      dataInicio: formatStartDate(consulta.dataAtendimento),
-      proximaDose: nextDoseLabel(consulta.dataAtendimento, prescricao.frequencia, prescricao.duracaoTratamento),
+      dataInicio: formatStartDate(
+        isVacina(prescricao.frequencia) && prescricao.dataAplicacao ? prescricao.dataAplicacao : consulta.dataAtendimento,
+      ),
+      proximaDose: prescriptionNextDose(
+        consulta.dataAtendimento,
+        prescricao.frequencia,
+        prescricao.duracaoTratamento,
+        prescricao.dataProximaDose,
+      ),
       dosagem: prescricao.dosagem,
       periodo: periodOfDay(prescricao.frequencia),
     })) ?? []

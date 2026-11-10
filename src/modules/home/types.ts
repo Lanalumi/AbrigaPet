@@ -5,6 +5,8 @@ export type HomeMedicamento = {
   frequencia: string
   duracaoTratamento: string
   proximaDose: string
+  vacina: boolean
+  dataAplicacao: string
 }
 
 export type HomeGato = {

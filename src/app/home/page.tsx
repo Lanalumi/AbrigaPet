@@ -130,7 +130,7 @@ async function ComunidadeMetrics() {
 async function MedicacaoSection() {
   const result = await loadMedicacao()
   if (!result.ok) return <ErrorCard title="Medicação pendente" />
-  return <MedicacaoPanel gatos={result.data} />
+  return <MedicacaoPanel animais={result.data} />
 }
 
 async function GatisSection() {
