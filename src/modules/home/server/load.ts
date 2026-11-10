@@ -27,6 +27,13 @@ function labelOf(value: string) {
   return LABELS[key] ?? value
 }
 
+function publicFoto(id: string, foto: string | null) {
+  const value = foto?.trim()
+  if (!value) return null
+  if (value.startsWith('data:')) return `/api/animais/${id}/foto`
+  return value
+}
+
 function formatDate(value: Date) {
   return new Intl.DateTimeFormat('pt-BR', {
     timeZone: TIME_ZONE,
@@ -191,7 +198,7 @@ const loadGatos = cache(async (): Promise<HomeGato[]> => {
     return {
       id: animal.id,
       nome: animal.nome,
-      foto: animal.foto,
+      foto: publicFoto(animal.id, animal.foto),
       sexoLabel: animal.sexo ? 'Macho' : 'Fêmea',
       especieLabel: labelOf(animal.especie),
       corLabel: labelOf(animal.cor),
@@ -239,7 +246,7 @@ export function loadAnimaisResumo() {
       items: animals.map((animal) => ({
         id: animal.id,
         nome: animal.nome,
-        foto: animal.foto,
+        foto: publicFoto(animal.id, animal.foto),
         sexoLabel: animal.sexo ? 'Macho' : 'Fêmea',
         especieLabel: labelOf(animal.especie),
         situacaoLabel: situacaoAnimalLabel[deriveSituacao(animal.motivoSaida, animal._count.adocoes > 0)],
@@ -339,7 +346,7 @@ export function loadAdocoesDoMes() {
       animal: {
         id: adocao.animal.id,
         nome: adocao.animal.nome,
-        foto: adocao.animal.foto,
+        foto: publicFoto(adocao.animal.id, adocao.animal.foto),
         especieLabel: labelOf(adocao.animal.especie),
         situacaoLabel: situacaoAnimalLabel[deriveSituacao(adocao.animal.motivoSaida, true)],
       },

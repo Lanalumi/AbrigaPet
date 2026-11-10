@@ -12,6 +12,8 @@ const poppins = Poppins({
   display: 'swap',
 })
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'AbrigaPet',
   description: 'Plataforma para ONGs de resgate de animais',
