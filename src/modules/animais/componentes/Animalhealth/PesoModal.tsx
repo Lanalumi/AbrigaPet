@@ -8,7 +8,13 @@ import { DateField } from '@/global/ui/DateField/DateField'
 import { Field } from '@/global/ui/Field/Field'
 import { api } from '@/lib/http/api'
 import { ApiError } from '@/lib/client/errors'
-import { createPesoSchema, pesoRegistroSchema, pesoResumoSchema, type PesoRegistro, type PesoResumo } from '@/schemas/pesoSchema'
+import {
+  createPesoSchema,
+  pesoRegistroSchema,
+  pesoResumoSchema,
+  type PesoRegistro,
+  type PesoResumo,
+} from '@/schemas/pesoSchema'
 import { useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
@@ -129,9 +135,12 @@ export function PesoModal({ animalId, enabled = true }: PesoModalProps) {
         className="flex flex-col gap-4 rounded-xl border border-[#755835]/15 bg-[#FDF8F3] p-5"
       >
         <p className="font-poppins text-[15px] font-bold text-[#3A250B]">Nova pesagem</p>
-        
+
         {validationMessages.length > 0 ? (
-          <div role="alert" className="rounded-xl border border-[#B85454]/30 bg-[#FFF0ED] px-4 py-3 text-xs font-poppins text-[#8A3B3B]">
+          <div
+            role="alert"
+            className="rounded-xl border border-[#B85454]/30 bg-[#FFF0ED] px-4 py-3 text-xs font-poppins text-[#8A3B3B]"
+          >
             <ul className="list-disc pl-4">
               {validationMessages.map((message) => (
                 <li key={message}>{message}</li>
@@ -165,22 +174,28 @@ export function PesoModal({ animalId, enabled = true }: PesoModalProps) {
         {peso.isPending ? (
           <p className="font-poppins text-sm font-medium text-[#755835]/70 text-center py-4">Carregando peso...</p>
         ) : null}
-        
+
         {peso.isError ? (
-          <p className="font-poppins text-sm font-medium text-[#8A3B3B] text-center py-4">Não foi possível carregar o peso.</p>
+          <p className="font-poppins text-sm font-medium text-[#8A3B3B] text-center py-4">
+            Não foi possível carregar o peso.
+          </p>
         ) : null}
-        
+
         {peso.data && !atual ? (
           <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-[#755835]/20 rounded-xl bg-white">
-            <p className="font-poppins text-sm font-medium text-[#755835]/60">Nenhuma pesagem registrada no histórico.</p>
+            <p className="font-poppins text-sm font-medium text-[#755835]/60">
+              Nenhuma pesagem registrada no histórico.
+            </p>
           </div>
         ) : null}
-        
+
         {atual ? (
           <>
             <section className="flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-xl border border-[#755835]/20 bg-[#FFF9F7] p-5">
               <div className="flex flex-col">
-                <p className="font-poppins text-xs font-semibold text-[#755835]/70 uppercase tracking-wider mb-1">Peso atual</p>
+                <p className="font-poppins text-xs font-semibold text-[#755835]/70 uppercase tracking-wider mb-1">
+                  Peso atual
+                </p>
                 <p className="font-poppins text-3xl font-bold text-[#3A250B]">{formatPeso(atual.quantidadePeso)}</p>
               </div>
               <div className="text-left md:text-right">
@@ -193,7 +208,9 @@ export function PesoModal({ animalId, enabled = true }: PesoModalProps) {
               <h2 className="shrink-0 font-poppins text-[15px] font-bold text-[#3A250B] mb-4">Histórico</h2>
               <div className="max-h-64 min-h-0 overflow-y-auto overscroll-y-contain pr-2 custom-scrollbar">
                 {historico.length === 0 ? (
-                  <p className="font-poppins text-sm font-medium text-[#755835]/60 text-center">Nenhuma pesagem anterior.</p>
+                  <p className="font-poppins text-sm font-medium text-[#755835]/60 text-center">
+                    Nenhuma pesagem anterior.
+                  </p>
                 ) : (
                   <ul className="flex w-full flex-col gap-3 pb-2">
                     {historico.map((registro) => (
