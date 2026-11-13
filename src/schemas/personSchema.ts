@@ -45,6 +45,27 @@ const personFieldsSchema = {
   senha: z.string().optional(),
 }
 
+export const personFormSchema = z.object({
+  nome: z.string().trim(),
+  cpf: z.string().trim(),
+  dataNascimento: z.string().trim(),
+  telefone: z.string().trim(),
+  rua: z.string().trim(),
+  numero: z.string().trim(),
+  bairro: z.string().trim(),
+  cidade: z.string().trim(),
+  dataInicio: z.string().trim(),
+  dataSaida: z
+    .string()
+    .trim()
+    .transform((value) => value || null),
+  email: z.string().trim(),
+  senha: z
+    .string()
+    .trim()
+    .transform((value) => value || undefined),
+} satisfies Record<keyof typeof personFieldsSchema, z.ZodType>)
+
 function validateOptionalEmail(email: string | undefined, ctx: z.RefinementCtx) {
   const value = email?.trim() ?? ''
   if (value && !z.string().email().safeParse(value).success) {
@@ -77,6 +98,8 @@ export const updatePersonFieldsSchema = z.object(personFieldsSchema).superRefine
     ctx.addIssue({ code: 'custom', path: ['senha'], message: 'A senha deve ter pelo menos 6 caracteres' })
   }
 })
+
+export type PersonFormInput = z.input<typeof personFormSchema>
 
 export const updatePersonSchema = updatePersonFieldsSchema
 export const personPublicSchema = personEntitySchema.extend({

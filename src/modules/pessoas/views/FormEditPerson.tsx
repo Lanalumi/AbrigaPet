@@ -9,27 +9,12 @@ import { useDeleteAdotante } from '@/modules/pessoas/hooks/useDeleteAdotante'
 import { useDeleteVoluntario } from '@/modules/pessoas/hooks/useDeleteVoluntario'
 import { useUpdatePessoa } from '@/modules/pessoas/hooks/useUpdatePessoa'
 import type { EditablePerson } from '@/modules/pessoas/server/loadPessoa'
-import { updatePersonFieldsSchema } from '@/schemas/personSchema'
+import { type PersonFormInput, personFormSchema, updatePersonFieldsSchema } from '@/schemas/personSchema'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-
-type PersonFormInput = {
-  nome: string
-  cpf: string
-  dataNascimento: string
-  telefone: string
-  rua: string
-  numero: string
-  bairro: string
-  cidade: string
-  dataInicio: string
-  dataSaida: string
-  email: string
-  senha: string
-}
 
 function formValuesFrom(person: EditablePerson): PersonFormInput {
   return {
@@ -102,38 +87,11 @@ export function FormEditPerson({
   const onSubmit = (values: PersonFormInput) => {
     setNoChangesMessage(null)
 
-    const payload = {
-      nome: values.nome.trim(),
-      cpf: values.cpf.trim(),
-      telefone: values.telefone.trim(),
-      dataNascimento: values.dataNascimento.trim(),
-      rua: values.rua.trim(),
-      numero: values.numero.trim(),
-      bairro: values.bairro.trim(),
-      cidade: values.cidade.trim(),
-      dataInicio: values.dataInicio.trim(),
-      dataSaida: isVolunteer ? values.dataSaida.trim() || null : saved.dataSaida || null,
-      email: values.email.trim(),
-      senha: values.senha.trim() || undefined,
-    }
+    const payload = personFormSchema.parse(values)
+    if (!isVolunteer) payload.dataSaida = saved.dataSaida || null
+    const current = personFormSchema.parse(formValuesFrom(saved))
 
-    const current = {
-      nome: saved.nome.trim(),
-      cpf: saved.cpf.trim(),
-      telefone: saved.telefone.trim(),
-      dataNascimento: saved.dataNascimento.trim(),
-      rua: saved.rua.trim(),
-      numero: String(saved.numero),
-      bairro: saved.bairro.trim(),
-      cidade: saved.cidade.trim(),
-      dataInicio: saved.dataInicio.trim(),
-      dataSaida: saved.dataSaida.trim() || null,
-      email: saved.email.trim(),
-    }
-
-    const changed =
-      Boolean(payload.senha) ||
-      (Object.keys(current) as (keyof typeof current)[]).some((key) => payload[key] !== current[key])
+    const changed = (Object.keys(payload) as (keyof typeof payload)[]).some((key) => payload[key] !== current[key])
     if (!changed) {
       setNoChangesMessage('Nenhum campo alterado')
       return
