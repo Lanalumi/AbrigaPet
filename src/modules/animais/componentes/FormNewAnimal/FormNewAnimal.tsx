@@ -4,8 +4,8 @@ import { AvatarUpload } from '@/global/ui/AvatarUpload/AvatarUpload'
 import { Button } from '@/global/ui/Button/Button'
 import { CheckBox } from '@/global/ui/CheckBox/CheckBox'
 import { DropDown } from '@/global/ui/DropDown/DropDown'
+import { DateField } from '@/global/ui/DateField/DateField'
 import { Field } from '@/global/ui/Field/Field'
-import { TextArea } from '@/global/ui/TextArea/TextArea'
 import { useRouter } from 'next/navigation'
 import { Controller, useForm } from 'react-hook-form'
 import { CreateAnimal, CreateAnimalForm } from '../../types'
@@ -16,11 +16,13 @@ import { useCreateAnimal } from '../../hooks/useCreateAnimal'
 import { ApiError } from '@/lib/client/errors'
 import { parseBrDate } from '@/modules/pessoas/components/FormNewPerson/functions/parseDate'
 
-type AnimalFormInput = Omit<CreateAnimalForm, 'dataNascimento' | 'dataChegada' | 'sexo' | 'motivoSaida'> & {
+type AnimalFormInput = Omit<
+  CreateAnimalForm,
+  'dataNascimento' | 'dataChegada' | 'dataSaida' | 'sexo' | 'motivoSaida'
+> & {
   dataNascimento: string
   dataChegada: string
   sexo: 'femea' | 'macho'
-  motivoSaida: string
   fiv?: boolean
   felv?: boolean
 }
@@ -48,7 +50,6 @@ export const FormNewAnimal = () => {
       foto: '',
       fiv: false,
       felv: false,
-      motivoSaida: '',
     },
   })
 
@@ -72,7 +73,8 @@ export const FormNewAnimal = () => {
       sexo: values.sexo === 'macho',
       dataNascimento,
       dataChegada,
-      motivoSaida: values.motivoSaida.trim() || null,
+      motivoSaida: null,
+      dataSaida: null,
       foto: values.foto || null,
       fiv: Boolean(values.fiv),
       felv: Boolean(values.felv),
@@ -110,7 +112,7 @@ export const FormNewAnimal = () => {
   const isLoading = createAnimalMutation.isPending || isSubmitting
 
   // Classe utilitária para padronizar e forçar os Dropdowns a colocarem a label em cima da caixa
-  const dropdownFixClass = "w-full [&>div]:flex [&>div]:flex-col [&>div]:items-start [&>div]:gap-1.5 [&_select]:w-full [&_label]:font-semibold [&_label]:text-[#3A250B]"
+  const dropdownFixClass = 'w-full'
 
   return (
     <div className="w-full max-w-5xl mx-auto rounded-3xl border border-[#755835]/20 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(58,37,11,0.05)]">
@@ -146,13 +148,11 @@ export const FormNewAnimal = () => {
 
         {/* Layout Principal em Duas Colunas */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
           {/* Lado Esquerdo: Formulário com Todos os Campos com Rótulo no Topo */}
           <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-5 items-start">
-            
             <Field label="Nome" id="nome" type="text" {...register('nome')} />
-            
-            <Field label="Data de Chegada" id="dataChegada" type="text" {...register('dataChegada')} />
+
+            <DateField label="Data de Chegada" id="dataChegada" {...register('dataChegada')} />
 
             <div className={dropdownFixClass}>
               <DropDown
@@ -186,7 +186,7 @@ export const FormNewAnimal = () => {
               />
             </div>
 
-            <Field label="Data de Nascimento" id="dataNascimento" type="text" {...register('dataNascimento')} />
+            <DateField label="Data de Nascimento" id="dataNascimento" {...register('dataNascimento')} />
 
             <div className="flex flex-col justify-end pt-1">
               <Controller
@@ -204,7 +204,6 @@ export const FormNewAnimal = () => {
                 )}
               />
             </div>
-
           </div>
 
           {/* Lado Direito: Foto + Sorologia */}
@@ -226,9 +225,7 @@ export const FormNewAnimal = () => {
             </div>
 
             <div className="w-full pt-4 border-t border-[#755835]/15 flex flex-col gap-3">
-              <span className="text-sm font-semibold text-[#3A250B] font-poppins">
-                Testes de Sorologia:
-              </span>
+              <span className="text-sm font-semibold text-[#3A250B] font-poppins">Testes de Sorologia:</span>
               <div className="flex flex-col gap-2.5 font-poppins text-sm text-[#755835]">
                 <label className="flex items-center gap-3 cursor-pointer select-none hover:opacity-80 transition-opacity">
                   <input
@@ -253,17 +250,6 @@ export const FormNewAnimal = () => {
               </p>
             </div>
           </div>
-
-        </div>
-
-        {/* Motivo de Saída */}
-        <div className="w-full pt-2">
-          <TextArea
-            label="Motivo de saída"
-            id="motivoSaida"
-            placeholder="Informe o motivo caso o animal já tenha sido adotado ou saído do abrigo..."
-            {...register('motivoSaida')}
-          />
         </div>
 
         {/* Botão de Salvar */}

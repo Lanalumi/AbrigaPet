@@ -5,7 +5,7 @@ import { useMutation } from '@/global/hooks/useMutation'
 import { API_URL } from '@/global/constants/api'
 import { Card } from '@/global/ui/Card/Card'
 import { DropDown } from '@/global/ui/DropDown/DropDown'
-import { Field } from '@/global/ui/Field/Field'
+import { DateField } from '@/global/ui/DateField/DateField'
 import { Modal } from '@/global/ui/Modal/modal'
 import { api } from '@/lib/http/api'
 import { ApiError } from '@/lib/client/errors'
@@ -185,21 +185,17 @@ export function LocalModal({ animalId }: LocalModalProps) {
                 {locais.length === 0 ? (
                   <p className="font-poppins text-sm font-semibold text-[#755835]/70">Nenhum local cadastrado.</p>
                 ) : (
-                  <DropDown
-                    label="Local"
-                    id={`local-${animalId}`}
-                    options={['Selecione', ...locais.map(localLabel)]}
-                    value={['', ...locais.map((local) => local.id)]}
-                    {...register('localizacaoId')}
-                  />
+                  <div className="w-[200px]">
+                    <DropDown
+                      label="Local"
+                      id={`local-${animalId}`}
+                      options={['Selecione', ...locais.map(localLabel)]}
+                      value={['', ...locais.map((local) => local.id)]}
+                      {...register('localizacaoId')}
+                    />
+                  </div>
                 )}
-                <Field
-                  label="Data"
-                  id={`data-local-${animalId}`}
-                  type="text"
-                  placeholder="dd/mm/aaaa"
-                  {...register('dataEntrada')}
-                />
+                <DateField label="Data" id={`data-local-${animalId}`} {...register('dataEntrada')} />
               </div>
               <button
                 type="submit"

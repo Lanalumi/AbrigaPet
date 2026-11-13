@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/db'
 import { listAnimals } from '@/modules/animais/server/service'
 import { createAnimalSchema } from '@/schemas/cadastroSchemas'
-import { animalPublicSchema, deriveSituacao } from '@/schemas/animalSchema'
+import { animalPublicSchema, deriveSituacao, saidaPairError } from '@/schemas/animalSchema'
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
 
@@ -9,6 +9,11 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
     const data = createAnimalSchema.parse(body)
+
+    const pairError = saidaPairError(data.motivoSaida, data.dataSaida)
+    if (pairError) {
+      return NextResponse.json({ message: pairError }, { status: 400 })
+    }
 
     const animal = await prisma.animal.create({
       data: {
@@ -19,10 +24,11 @@ export async function POST(request: Request) {
         pelagem: data.pelagem,
         dataNascimento: data.dataNascimento,
         dataChegada: data.dataChegada,
+        dataSaida: data.dataSaida,
         fivFelv: data.fivFelv,
         foto: data.foto || null,
         especie: data.especie,
-        motivoSaida: data.motivoSaida?.trim() || null,
+        motivoSaida: data.motivoSaida,
       },
     })
 
@@ -39,6 +45,7 @@ export async function POST(request: Request) {
       foto: animal.foto,
       especie: animal.especie,
       motivoSaida: animal.motivoSaida,
+      dataSaida: animal.dataSaida,
       adotado: false,
       situacao: deriveSituacao(animal.motivoSaida, false),
     })

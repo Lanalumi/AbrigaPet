@@ -24,7 +24,7 @@ function formatUtc(utc: number) {
   return `${day}/${month}/${year}`
 }
 
-function parseDurationDays(duracao: string) {
+export function parseDurationDays(duracao: string) {
   const text = normalize(duracao)
   if (/continu/.test(text)) return null
 
@@ -37,7 +37,7 @@ function parseDurationDays(duracao: string) {
   return null
 }
 
-function parseIntervalHours(frequencia: string) {
+export function parseIntervalHours(frequencia: string) {
   const text = normalize(frequencia)
   const slash = text.match(/(\d+)\s*\/\s*\d+\s*h/)
   if (slash) return Number(slash[1])
@@ -83,6 +83,29 @@ export function periodOfDay(frequencia: string) {
   return trimmed || '—'
 }
 
+export function isVacina(frequencia: string) {
+  return normalize(frequencia) === 'vacina'
+}
+
+export function understandsFrequency(frequencia: string) {
+  if (isVacina(frequencia)) return true
+  const hours = parseIntervalHours(frequencia)
+  return hours != null && hours > 0
+}
+
+export function understandsDuration(duracao: string) {
+  if (/continu/.test(normalize(duracao))) return true
+  const days = parseDurationDays(duracao)
+  return days != null && days > 0
+}
+
+export function vaccineDoseLabel(next: Date | null, now = new Date()) {
+  if (!next) return '—'
+  const nextUtc = dateOnlyUtc(next)
+  if (dateOnlyUtc(now) > nextUtc) return 'Tratamento encerrado'
+  return formatUtc(nextUtc)
+}
+
 export function nextDoseLabel(start: Date, frequencia: string, duracao: string, now = new Date()) {
   const startUtc = dateOnlyUtc(start)
   const todayUtc = dateOnlyUtc(now)
@@ -104,6 +127,17 @@ export function nextDoseLabel(start: Date, frequencia: string, duracao: string, 
 
   if (endUtc != null && nextUtc > endUtc) return 'Tratamento encerrado'
   return formatUtc(nextUtc)
+}
+
+export function prescriptionNextDose(
+  start: Date,
+  frequencia: string,
+  duracao: string,
+  dataProximaDose: Date | null,
+  now = new Date(),
+) {
+  if (isVacina(frequencia)) return vaccineDoseLabel(dataProximaDose, now)
+  return nextDoseLabel(start, frequencia, duracao, now)
 }
 
 export function formatStartDate(value: Date) {

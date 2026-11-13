@@ -12,6 +12,8 @@ type ModalProps = {
   onClose?: () => void
 }
 
+const escapeClosers: Array<() => void> = []
+
 const panelClasses =
   'fixed left-1/2 top-1/2 z-[70] flex max-h-[calc(100vh-2rem)] w-[calc(100%-2rem)] max-w-lg min-w-0 -translate-x-1/2 -translate-y-1/2 flex-col rounded-xl border border-[#3A250B]/30 bg-white shadow-[2px_8px_24px_rgba(58,37,11,0.18)] transition-[opacity,transform] duration-300 ease-out will-change-[opacity,transform] p-4 overflow-y-auto overflow-x-hidden'
 
@@ -35,8 +37,7 @@ export const Modal = ({ title, body, openButtonText, isOpen: isOpenProp, onClose
   useEffect(() => {
     if (!open) return
 
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key !== 'Escape') return
+    function close() {
       if (onClose) {
         onClose()
       } else {
@@ -44,8 +45,20 @@ export const Modal = ({ title, body, openButtonText, isOpen: isOpenProp, onClose
       }
     }
 
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key !== 'Escape') return
+      if (escapeClosers[escapeClosers.length - 1] !== close) return
+      event.preventDefault()
+      close()
+    }
+
+    escapeClosers.push(close)
     document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      const index = escapeClosers.indexOf(close)
+      if (index >= 0) escapeClosers.splice(index, 1)
+    }
   }, [open, onClose])
 
   const overlay = (

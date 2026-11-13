@@ -1,9 +1,5 @@
-import VoluntarioListView from '@/modules/pessoas/views/VoluntarioListView'
+import { redirect } from 'next/navigation'
 
 export default function Voluntarios() {
-  return (
-    <>
-      <VoluntarioListView />
-    </>
-  )
+  redirect('/comunidade')
 }

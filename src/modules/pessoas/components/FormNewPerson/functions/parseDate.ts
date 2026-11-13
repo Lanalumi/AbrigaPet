@@ -7,7 +7,7 @@ export function parseBrDate(value: unknown): Date | null {
     return null
   }
 
-  const match = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(value.trim())
+  const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value.trim())
   if (!match) return null
 
   const day = Number(match[1])
@@ -20,6 +20,19 @@ export function parseBrDate(value: unknown): Date | null {
   }
 
   return date
+}
+
+export function formatBrDate(value: Date | string | null | undefined) {
+  if (!value) return ''
+
+  const date = value instanceof Date ? value : new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+
+  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const year = date.getFullYear()
+
+  return `${day}/${month}/${year}`
 }
 
 export function parseStoredDate(value: unknown): Date | null {

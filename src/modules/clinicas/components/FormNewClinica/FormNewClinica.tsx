@@ -70,21 +70,22 @@ export function FormNewClinica() {
   const isLoading = createClinicaMutation.isPending || isSubmitting
 
   return (
-    <div className="w-full max-w-2xl mx-auto rounded-3xl border border-[#755835]/20 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(58,37,11,0.05)] font-poppins">
+    <div className="w-full max-w-4xl mx-auto rounded-3xl border border-[#755835]/20 bg-white p-6 sm:p-10 shadow-[0_10px_30px_rgba(58,37,11,0.05)] font-poppins">
       
       {/* Cabeçalho Centralizado com Ícone e Título */}
-      <header className="flex flex-col items-center justify-center text-center gap-2 pb-6 mb-6 border-b border-[#755835]/15">
+      <header className="flex flex-col items-center justify-center text-center gap-2 pb-6 mb-8 border-b border-[#755835]/15">
         <div className="flex items-center justify-center gap-2.5">
-          <div className="flex items-center justify-center w-9 h-9 rounded-2xl bg-[#755835]/10 text-[#755835] shrink-0">
-            <img src="/images/icons/paw2.svg" alt="Patinha" width={20} height={20} className="object-contain" />
+          <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#755835]/10 text-[#755835] shrink-0">
+            <img src="/images/icons/paw2.svg" alt="Patinha" width={22} height={22} className="object-contain" />
           </div>
-          <h1 className="text-xl font-bold text-[#3A250B] tracking-tight">
+          <h1 className="text-2xl font-bold text-[#3A250B] tracking-tight">
             Dados da clínica
           </h1>
         </div>
+        <p className="text-xs text-[#755835]/80 font-medium">Preencha os dados cadastrais da clínica parceira</p>
       </header>
 
-      <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
+      <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
         
         {/* Mensagens de Alerta de Erro */}
         {validationMessages.length > 0 && (
@@ -101,24 +102,29 @@ export function FormNewClinica() {
           </div>
         )}
 
-        {/* Grade de Formulário Equilibrada em 2 Colunas */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Nome" id="nome" type="text" {...register('nome')} />
-          <Field label="CNPJ" id="cnpj" type="text" {...register('cnpj')} />
+        {/* Seção 1: Informações Principais */}
+        <section className="flex flex-col gap-4">
+          <h2 className="text-sm font-bold text-[#3A250B] border-b border-[#755835]/10 pb-2">Informações da Clínica</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 [&_label]:font-bold [&_label]:text-[#3A250B] [&_input]:font-medium [&_input]:text-[#3A250B]">
+            <Field label="Nome" id="nome" type="text" {...register('nome')} />
+            <Field label="CNPJ" id="cnpj" type="text" {...register('cnpj')} />
+            <Field label="Telefone" id="telefone" type="tel" {...register('telefone')} />
+          </div>
+        </section>
 
-          <Field label="Telefone" id="telefone" type="tel" {...register('telefone')} />
-          <Field label="Rua" id="rua" type="text" {...register('rua')} />
-
-          <Field label="Número" id="numero" type="text" {...register('numero')} />
-          <Field label="Bairro" id="bairro" type="text" {...register('bairro')} />
-
-          <div className="sm:col-span-2">
+        {/* Seção 2: Endereço */}
+        <section className="flex flex-col gap-4 pt-2">
+          <h2 className="text-sm font-bold text-[#3A250B] border-b border-[#755835]/10 pb-2">Endereço</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 [&_label]:font-bold [&_label]:text-[#3A250B] [&_input]:font-medium [&_input]:text-[#3A250B]">
+            <Field label="Rua" id="rua" type="text" {...register('rua')} />
+            <Field label="Número" id="numero" type="text" {...register('numero')} />
+            <Field label="Bairro" id="bairro" type="text" {...register('bairro')} />
             <Field label="Cidade" id="cidade" type="text" {...register('cidade')} />
           </div>
-        </div>
+        </section>
 
         {/* Botões de Ação Centralizados */}
-        <div className="flex flex-wrap items-center justify-center gap-3 pt-4 border-t border-[#755835]/15 mt-2">
+        <div className="flex flex-wrap items-center justify-center gap-4 pt-6 border-t border-[#755835]/15 mt-2">
           {isLoading ? (
             <Button type="submit" disabled icon="/images/icons/save-button.svg">
               Salvando...

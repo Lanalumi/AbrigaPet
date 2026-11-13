@@ -17,7 +17,7 @@ function parsePesagemDate(val: unknown) {
 
   if (typeof val !== 'string') return val
 
-  const brazilian = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(val.trim())
+  const brazilian = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(val.trim())
   if (brazilian) {
     const day = Number(brazilian[1])
     const month = Number(brazilian[2])

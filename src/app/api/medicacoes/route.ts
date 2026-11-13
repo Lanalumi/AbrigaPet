@@ -1,4 +1,6 @@
 import { prisma } from '@/lib/db'
+import { findOrCreateMedicamento } from '@/modules/saude/server/lookup'
+import { prescricaoScheduleData } from '@/modules/saude/server/prescricao'
 import { createMedicacaoSchema } from '@/schemas/saudeSchema'
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
@@ -12,21 +14,14 @@ export async function POST(request: Request) {
 
     const consulta = await prisma.consulta.findUnique({
       where: { id: data.consultaId },
-      select: { id: true, animalId: true },
+      select: { id: true, animalId: true, animal: { select: { excluidoEm: true } } },
     })
 
-    if (!consulta || consulta.animalId !== data.animalId) {
+    if (!consulta || consulta.animalId !== data.animalId || consulta.animal.excluidoEm) {
       return NextResponse.json({ message: 'A ficha médica não pertence a este animal' }, { status: 400 })
     }
 
-    const medicamentoNome = data.medicamento.trim()
-    const medicamentoExistente = await prisma.medicamento.findFirst({
-      where: { nome: { equals: medicamentoNome, mode: 'insensitive' } },
-      select: { id: true },
-    })
-    const medicamento =
-      medicamentoExistente ??
-      (await prisma.medicamento.create({ data: { nome: medicamentoNome }, select: { id: true } }))
+    const medicamento = await findOrCreateMedicamento(data.medicamento)
 
     const prescricao = await prisma.prescreve.create({
       data: {
@@ -35,8 +30,7 @@ export async function POST(request: Request) {
         tipo: data.tipo?.trim() || null,
         dosagem: data.dosagem.trim(),
         quantidade: data.quantidade,
-        frequencia: data.frequencia.trim(),
-        duracaoTratamento: data.duracaoTratamento.trim(),
+        ...prescricaoScheduleData(data),
       },
       select: { id: true, consultaId: true },
     })

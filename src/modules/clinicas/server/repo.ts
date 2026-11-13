@@ -33,6 +33,11 @@ export async function clinicaFindMany(raw: unknown) {
   return { items, total, page, pageSize }
 }
 
+export const clinicaFindById = (id: string) => prisma.clinica.findUnique({ where: { id } })
+
 export const clinicaDelete = (id: string) => prisma.clinica.delete({ where: { id } })
 
 export const clinicaCreate = (data: Prisma.ClinicaCreateInput) => prisma.clinica.create({ data })
+
+export const clinicaUpdate = (id: string, data: Prisma.ClinicaUpdateInput) =>
+  prisma.clinica.update({ where: { id }, data })

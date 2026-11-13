@@ -1,9 +1,5 @@
-import AdotanteListView from '@/modules/pessoas/views/AdotanteListView'
+import { redirect } from 'next/navigation'
 
 export default function Adotantes() {
-  return (
-    <>
-      <AdotanteListView />
-    </>
-  )
+  redirect('/comunidade')
 }

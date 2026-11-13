@@ -42,3 +42,4 @@ yarn-error.log*
 # local notes (stay on this machine)
 /CONTEXT.md
 /DESIGN.md
+/MAPA-DA-INTERFACE.local.md

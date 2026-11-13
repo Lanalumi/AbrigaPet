@@ -4,22 +4,34 @@ import { Controller, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { Button } from '@/global/ui/Button/Button'
+import { DateField } from '@/global/ui/DateField/DateField'
 import { Field } from '@/global/ui/Field/Field'
-import { TextArea } from '@/global/ui/TextArea/TextArea'
 import { CheckBox } from '@/global/ui/CheckBox/CheckBox'
+import { ApiError } from '@/lib/client/errors'
 import { UpdateAnimal, Animal } from '../../types'
 import { useUpdateAnimal } from '../../hooks/useUpdateAnimal'
-import { updateAnimalSchema } from '@/schemas/animalSchema'
+import {
+  deriveSituacao,
+  normalizeMotivoSaida,
+  readSaidaFields,
+  situacaoAnimalLabel,
+  updateAnimalSchema,
+} from '@/schemas/animalSchema'
 import { toast } from 'react-toastify'
 import { AvatarUpload } from '@/global/ui/AvatarUpload/AvatarUpload'
 import { useDeleteAnimal } from '../../hooks/useDeleteAnimal'
 import { AnimalApearence } from '../AnimalApearence/AnimalApearence'
 import { AnimalHealth } from '../Animalhealth/AnimalHealth'
+import { MotivoSaidaCard } from '../MotivoSaidaCard/MotivoSaidaCard'
 import { LocalModal } from './LocalModal'
 
-export type AnimalEditFormInput = Omit<UpdateAnimal, 'dataNascimento' | 'dataChegada' | 'sexo' | 'motivoSaida'> & {
+export type AnimalEditFormInput = Omit<
+  UpdateAnimal,
+  'dataNascimento' | 'dataChegada' | 'dataSaida' | 'sexo' | 'motivoSaida'
+> & {
   dataNascimento: string
   dataChegada: string
+  dataSaida: string
   sexo: 'femea' | 'macho'
   motivoSaida: string
   fiv?: boolean
@@ -35,7 +47,7 @@ function parseBrDate(value: unknown): Date | null {
     return null
   }
 
-  const match = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(value.trim())
+  const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value.trim())
   if (!match) return null
 
   const day = Number(match[1])
@@ -87,7 +99,8 @@ function formValuesFrom(animal: Animal): AnimalEditFormInput {
     felv: Boolean((animal as any).felv ?? false),
     especie: animal.especie,
     foto: animal.foto,
-    motivoSaida: animal.motivoSaida ?? '',
+    motivoSaida: normalizeMotivoSaida(animal.motivoSaida) ?? '',
+    dataSaida: formatBrDate(animal.dataSaida),
   }
 }
 
@@ -155,12 +168,20 @@ export default function FormEditAnimal({
       return
     }
 
+    const saida = readSaidaFields(values.motivoSaida, values.dataSaida, parseBrDate)
+    if (!saida.ok) {
+      setError(saida.field, { message: saida.message })
+      toast.error(saida.message)
+      return
+    }
+
     const result = updateAnimalSchema.safeParse({
       ...values,
       sexo: values.sexo === 'macho',
       dataNascimento,
       dataChegada,
-      motivoSaida: values.motivoSaida.trim() || null,
+      motivoSaida: saida.motivoSaida,
+      dataSaida: saida.dataSaida,
       fivFelv: Boolean(values.fiv || values.felv || values.fivFelv),
     })
 
@@ -189,7 +210,13 @@ export default function FormEditAnimal({
     if (data.fivFelv !== saved.fivFelv) updates.fivFelv = data.fivFelv
     if (data.especie !== saved.especie) updates.especie = data.especie
     if ((data.foto ?? null) !== (saved.foto ?? null)) updates.foto = data.foto
-    if ((data.motivoSaida ?? '') !== (saved.motivoSaida ?? '')) updates.motivoSaida = data.motivoSaida?.trim() || null
+    const saidaChanged =
+      (data.motivoSaida ?? null) !== normalizeMotivoSaida(saved.motivoSaida) ||
+      !sameDate(data.dataSaida, saved.dataSaida)
+    if (saidaChanged) {
+      updates.motivoSaida = data.motivoSaida
+      updates.dataSaida = data.dataSaida
+    }
 
     if (Object.keys(updates).length === 0) {
       setNoChangesMessage('Nenhum campo alterado')
@@ -207,8 +234,8 @@ export default function FormEditAnimal({
           toast.success('Animal atualizado com sucesso')
           router.refresh()
         },
-        onError: () => {
-          toast.error('Erro ao atualizar animal')
+        onError: (error) => {
+          toast.error(error instanceof ApiError ? error.message : 'Erro ao atualizar animal')
         },
       },
     )
@@ -226,7 +253,7 @@ export default function FormEditAnimal({
           </div>
           <h1 className="text-2xl font-bold text-[#3A250B] font-poppins tracking-tight">{saved.nome || 'Animal'}</h1>
           <span className="bg-[#FFF9F7] text-[#755835] border border-[#755835]/40 text-xs font-semibold font-poppins px-3 py-1 rounded-xl shadow-xs">
-            Disponível
+            {situacaoAnimalLabel[deriveSituacao(saved.motivoSaida, saved.adotado)]}
           </span>
         </div>
         <p className="text-xs text-[#755835]/80 font-poppins">
@@ -259,21 +286,21 @@ export default function FormEditAnimal({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Lado Esquerdo: Formulário de Dados */}
           <div className="lg:col-span-8 flex flex-col gap-5">
-            <fieldset disabled={!editing} className="m-0 border-0 p-0 flex flex-col gap-5 disabled:opacity-95">
+            <fieldset disabled={!editing} className="m-0 border-0 p-0 flex flex-col gap-4 disabled:opacity-95">
               {/* Linha 1: Nome e Data de Chegada */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Field label="Nome" {...register('nome')} id="nome" type="text" />
-                <Field label="Data de Chegada" id="dataChegada" type="date" {...register('dataChegada')} />
+                <DateField label="Data de Chegada" id="dataChegada" {...register('dataChegada')} />
               </div>
 
-              {/* Aparência (Espécie, Cor, Raça, Pelagem) */}
-              <div className="[&_fieldset]:border-0 [&_fieldset]:p-0 [&_legend]:hidden [&_label]:text-xs [&_label]:font-semibold [&_label]:text-[#3A250B] [&_div]:flex [&_div]:flex-col [&_div]:gap-1.5 [&_select]:w-full [&_select]:h-[42px] [&_input]:h-[42px]">
+              {/* Aparência (Espécie, Cor, Raça, Pelagem) forçado em Grid de 2 colunas */}
+              <div className="[&_fieldset]:border-0 [&_fieldset]:p-0 [&_fieldset]:m-0 [&_legend]:hidden [&_fieldset]:grid [&_fieldset]:grid-cols-1 sm:[&_fieldset]:grid-cols-2 [&_fieldset]:gap-4 [&_label]:text-xs [&_label]:font-semibold [&_label]:text-[#3A250B] [&_div]:flex [&_div]:flex-col [&_div]:gap-1.5 [&_input]:w-full [&_input]:h-[42px] [&_input]:rounded-lg [&_input]:border-[#e5e7eb] [&_input]:px-3">
                 <AnimalApearence register={register} editing={editing} />
               </div>
 
               {/* Linha 2: Data de Nascimento + Sexo */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
-                <Field label="Data de Nascimento" id="dataNascimento" type="text" {...register('dataNascimento')} />
+                <DateField label="Data de Nascimento" id="dataNascimento" {...register('dataNascimento')} />
 
                 <div className="flex flex-col justify-end pb-1">
                   <Controller
@@ -304,7 +331,7 @@ export default function FormEditAnimal({
           </div>
 
           {/* Lado Direito: Card Lateral da Foto e Saúde */}
-          <div className="lg:col-span-4 flex flex-col items-center justify-between gap-6 p-6 rounded-2xl bg-[#FDF8F3] border border-[#755835]/15 h-full">
+          <div className="lg:col-span-4 flex flex-col items-center justify-start gap-6 p-6 rounded-2xl bg-[#FDF8F3] border border-[#755835]/15 h-full">
             {/* Foto do Animal */}
             <div className="w-full flex flex-col items-center">
               <Controller
@@ -366,17 +393,7 @@ export default function FormEditAnimal({
           </div>
         </div>
 
-        {/* Motivo de Saída: Totalmente Alinhado à Esquerda */}
-        <div className="w-full pt-2 flex flex-col items-start text-left [&_label]:text-left [&_label]:w-full [&_textarea]:w-full">
-          <fieldset disabled={!editing} className="m-0 border-0 p-0 w-full text-left">
-            <TextArea
-              label="Motivo de saída"
-              id="motivoSaida"
-              placeholder="Informe o motivo caso o animal já tenha sido adotado ou saído do abrigo..."
-              {...register('motivoSaida')}
-            />
-          </fieldset>
-        </div>
+        <MotivoSaidaCard register={register} disabled={!editing} />
 
         {/* Rodapé com Botões de Ação */}
         <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-[#755835]/15 mt-2">

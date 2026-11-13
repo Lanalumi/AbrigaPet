@@ -12,20 +12,9 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id           String   @id @default(cuid())
-  name         String?
-  email        String   @unique
-  passwordHash String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
 model TipoPessoa {
-  id    String @id @default(uuid())
-  tipo  String
-  email String
-  senha String
+  id   String @id @default(uuid())
+  tipo String
 
   pessoas Pessoa[]
 }
@@ -43,9 +32,24 @@ model Pessoa {
   bairro         String
   dataInicio     DateTime
   dataSaida      DateTime?
+  email          String?
+  senhaHash      String?
 
-  tipo    TipoPessoa @relation(fields: [tipoId], references: [id])
-  adocoes Adocao[]
+  tipo              TipoPessoa        @relation(fields: [tipoId], references: [id])
+  adocoes           Adocao[]
+  redefinicoesSenha RedefinicaoSenha[]
+}
+
+model RedefinicaoSenha {
+  id        String    @id @default(uuid())
+  pessoaId  String
+  tokenHash String
+  expiresAt DateTime
+  usedAt    DateTime?
+
+  pessoa Pessoa @relation(fields: [pessoaId], references: [id], onDelete: Cascade)
+
+  @@index([tokenHash])
 }
 
 model Adocao {
@@ -71,7 +75,9 @@ model Animal {
   dataNascimento DateTime?
   dataChegada    DateTime
   motivoSaida    String?
+  dataSaida      DateTime?
   foto           String?
+  excluidoEm     DateTime?
 
   adocoes               Adocao[]
   consultas             Consulta[]
@@ -172,6 +178,8 @@ model Prescreve {
   quantidade        Int
   frequencia        String
   duracaoTratamento String
+  dataAplicacao     DateTime?
+  dataProximaDose   DateTime?
 
   consulta    Consulta    @relation(fields: [consultaId], references: [id])
   medicamento Medicamento @relation(fields: [medicamentoId], references: [id])
