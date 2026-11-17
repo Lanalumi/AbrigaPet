@@ -24,19 +24,7 @@ import { AnimalApearence } from '../AnimalApearence/AnimalApearence'
 import { AnimalHealth } from '../Animalhealth/AnimalHealth'
 import { MotivoSaidaCard } from '../MotivoSaidaCard/MotivoSaidaCard'
 import { LocalModal } from './LocalModal'
-
-export type AnimalEditFormInput = Omit<
-  UpdateAnimal,
-  'dataNascimento' | 'dataChegada' | 'dataSaida' | 'sexo' | 'motivoSaida'
-> & {
-  dataNascimento: string
-  dataChegada: string
-  dataSaida: string
-  sexo: 'femea' | 'macho'
-  motivoSaida: string
-  fiv?: boolean
-  felv?: boolean
-}
+import { AnimalEditFormInput } from '../../types'
 
 function parseBrDate(value: unknown): Date | null {
   if (value instanceof Date && !Number.isNaN(value.getTime())) {
@@ -245,7 +233,6 @@ export default function FormEditAnimal({
 
   return (
     <div className="w-full max-w-5xl mx-auto rounded-3xl border border-[#755835]/20 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(58,37,11,0.05)]">
-      {/* Cabeçalho Centralizado: Nome e Tag "Disponível" */}
       <header className="flex flex-col items-center justify-center text-center gap-2 pb-6 mb-6 border-b border-[#755835]/15">
         <div className="flex items-center justify-center gap-3">
           <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#755835]/10 text-[#755835] shrink-0">
@@ -263,7 +250,6 @@ export default function FormEditAnimal({
         </p>
       </header>
 
-      {/* Alertas de Notificação */}
       {updateAnimalMutation.error && (
         <div
           role="alert"
@@ -282,23 +268,18 @@ export default function FormEditAnimal({
       )}
 
       <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
-        {/* Layout Principal em 2 Colunas */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Lado Esquerdo: Formulário de Dados */}
           <div className="lg:col-span-8 flex flex-col gap-5">
             <fieldset disabled={!editing} className="m-0 border-0 p-0 flex flex-col gap-4 disabled:opacity-95">
-              {/* Linha 1: Nome e Data de Chegada */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Field label="Nome" {...register('nome')} id="nome" type="text" />
                 <DateField label="Data de Chegada" id="dataChegada" {...register('dataChegada')} />
               </div>
 
-              {/* Aparência (Espécie, Cor, Raça, Pelagem) forçado em Grid de 2 colunas */}
               <div className="[&_fieldset]:border-0 [&_fieldset]:p-0 [&_fieldset]:m-0 [&_legend]:hidden [&_fieldset]:grid [&_fieldset]:grid-cols-1 sm:[&_fieldset]:grid-cols-2 [&_fieldset]:gap-4 [&_label]:text-xs [&_label]:font-semibold [&_label]:text-[#3A250B] [&_div]:flex [&_div]:flex-col [&_div]:gap-1.5 [&_input]:w-full [&_input]:h-[42px] [&_input]:rounded-lg [&_input]:border-[#e5e7eb] [&_input]:px-3">
                 <AnimalApearence register={register} editing={editing} />
               </div>
 
-              {/* Linha 2: Data de Nascimento + Sexo */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-end">
                 <DateField label="Data de Nascimento" id="dataNascimento" {...register('dataNascimento')} />
 
@@ -324,15 +305,12 @@ export default function FormEditAnimal({
               </div>
             </fieldset>
 
-            {/* Local Atual */}
             <div className="pt-3 border-t border-[#755835]/10">
               <LocalModal animalId={id} />
             </div>
           </div>
 
-          {/* Lado Direito: Card Lateral da Foto e Saúde */}
           <div className="lg:col-span-4 flex flex-col items-center justify-start gap-6 p-6 rounded-2xl bg-[#FDF8F3] border border-[#755835]/15 h-full">
-            {/* Foto do Animal */}
             <div className="w-full flex flex-col items-center">
               <Controller
                 name="foto"
@@ -350,7 +328,6 @@ export default function FormEditAnimal({
               />
             </div>
 
-            {/* Sorologia: Checkboxes FIV / FeLV */}
             <div className="w-full pt-4 border-t border-[#755835]/15 flex flex-col gap-3">
               <span className="text-sm font-semibold text-[#3A250B] font-poppins">Testes de Sorologia:</span>
               <div className="flex flex-col gap-2.5 font-poppins text-sm text-[#755835]">
@@ -383,7 +360,6 @@ export default function FormEditAnimal({
               </p>
             </div>
 
-            {/* Bloco Saúde: Sem Borda, Sem "Saúde" Duplicado e com Links Organizados */}
             <div className="w-full pt-4 border-t border-[#755835]/15 flex flex-col gap-1.5">
               <span className="text-sm font-semibold text-[#3A250B] font-poppins">Saúde</span>
               <div className="flex flex-col gap-1 font-poppins text-xs font-semibold text-[#5C7C3A] [&_fieldset]:border-0 [&_fieldset]:p-0 [&_fieldset]:m-0 [&_fieldset]:bg-transparent [&_fieldset]:shadow-none [&_div]:border-0 [&_div]:p-0 [&_div]:m-0 [&_div]:bg-transparent [&_div]:shadow-none [&_legend]:hidden [&_h2]:hidden [&_h3]:hidden [&_h4]:hidden [&_input]:hidden [&_label:has(input)]:hidden [&_div:has(>input)]:hidden [&_a]:text-[#5C7C3A] [&_a]:font-semibold [&_a]:text-xs [&_a]:block [&_a]:py-0.5 [&_a]:hover:underline [&_button]:text-[#5C7C3A] [&_button]:font-semibold [&_button]:text-xs [&_button]:block [&_button]:py-0.5 [&_button]:hover:underline">
@@ -395,7 +371,6 @@ export default function FormEditAnimal({
 
         <MotivoSaidaCard register={register} disabled={!editing} />
 
-        {/* Rodapé com Botões de Ação */}
         <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-[#755835]/15 mt-2">
           <button
             id="voltar-button"

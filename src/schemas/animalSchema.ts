@@ -148,7 +148,6 @@ export const listAnimalsResponseSchema = z.object({
   pageSize: z.number().int(),
 })
 
-// Extract only the filter fields for form validation (not pagination)
 export const animalsListFiltersSchema = listAnimalsQuerySchema
   .pick({
     search: true,
@@ -156,3 +155,24 @@ export const animalsListFiltersSchema = listAnimalsQuerySchema
     sortDir: true,
   })
   .partial()
+
+const animalFormFields = {
+  nome: z.string(),
+  sexo: z.enum(['femea', 'macho']),
+  cor: z.string(),
+  raca: z.string(),
+  pelagem: z.string(),
+  dataNascimento: z.string(),
+  dataChegada: z.string(),
+  dataSaida: z.string(),
+  fivFelv: z.boolean(),
+  foto: z.string().nullable().optional(),
+  especie: z.string(),
+  motivoSaida: z.string(),
+} satisfies Record<keyof typeof animalFields, z.ZodType>
+
+export const animalFormSchema = z.object({
+  ...animalFormFields,
+  fiv: z.boolean().optional(),
+  felv: z.boolean().optional(),
+})

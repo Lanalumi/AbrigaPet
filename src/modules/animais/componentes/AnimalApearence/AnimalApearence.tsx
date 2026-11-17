@@ -4,7 +4,7 @@ import { DropDown } from '@/global/ui/DropDown/DropDown'
 import { Field } from '@/global/ui/Field/Field'
 import { UseFormRegister } from 'react-hook-form'
 import { Cores, Especies, Pelagens } from '../FormNewAnimal/components/especies'
-import type { AnimalEditFormInput } from '../FormEditAnimal/FormEditAnimal'
+import type { AnimalEditFormInput } from '../../types'
 
 export function AnimalApearence({
   register,

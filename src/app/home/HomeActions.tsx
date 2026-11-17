@@ -2,7 +2,7 @@
 
 import { Button } from '@/global/ui/Button/Button'
 import { Card } from '@/global/ui/Card/Card'
-import { Modal } from '@/global/ui/Modal/modal'
+import { Modal } from '@/global/ui/Modal/Modal'
 import type { HomeAdocao, HomeGatil, HomeGato } from '@/modules/home/types'
 import Image from 'next/image'
 import Link from 'next/link'

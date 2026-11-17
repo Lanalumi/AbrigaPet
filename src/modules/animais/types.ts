@@ -1,4 +1,5 @@
 import {
+  animalFormSchema,
   animalPublicSchema,
   animalsListFiltersSchema,
   listAnimalsQuerySchema,
@@ -16,3 +17,4 @@ export type UpdateAnimal = z.infer<typeof updateAnimalSchema>
 export type ListAnimalsQuery = z.infer<typeof listAnimalsQuerySchema>
 export type ListAnimalsResponse = z.infer<typeof listAnimalsResponseSchema>
 export type AnimalsListFilters = z.infer<typeof animalsListFiltersSchema>
+export type AnimalEditFormInput = z.input<typeof animalFormSchema>

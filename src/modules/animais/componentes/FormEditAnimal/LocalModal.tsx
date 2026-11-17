@@ -6,7 +6,7 @@ import { API_URL } from '@/global/constants/api'
 import { Card } from '@/global/ui/Card/Card'
 import { DropDown } from '@/global/ui/DropDown/DropDown'
 import { DateField } from '@/global/ui/DateField/DateField'
-import { Modal } from '@/global/ui/Modal/modal'
+import { Modal } from '@/global/ui/Modal/Modal'
 import { api } from '@/lib/http/api'
 import { ApiError } from '@/lib/client/errors'
 import {

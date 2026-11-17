@@ -1,12 +1,10 @@
 'use client'
 
-import { CheckBox } from '@/global/ui/CheckBox/CheckBox'
-import { Modal } from '@/global/ui/Modal/modal'
+import { CheckBox, Modal, Button } from '@/global/ui/'
 import { Control, Controller } from 'react-hook-form'
-import Link from 'next/link'
 import { useState } from 'react'
 import { Sexos } from '../FormNewAnimal/components/especies'
-import type { AnimalEditFormInput } from '../FormEditAnimal/FormEditAnimal'
+import type { AnimalEditFormInput } from '../../types'
 import { FichaMedicaModal } from './FichaMedicaModal'
 import { PesoModal } from './PesoModal'
 
@@ -57,19 +55,9 @@ export function AnimalHealth({
           )}
         />
       </fieldset>
-      {/* <Link
-        href={`/animais/${animalId}/fichamedica`}
-        className="font-poppins text-sm font-semibold text-[#8AA36C] hover:underline"
-      >
-        Ficha médica
-      </Link> */}
-      <button
-        type="button"
-        onClick={() => setFichaMedicaOpen(true)}
-        className="w-fit font-poppins text-sm font-semibold text-[#8AA36C] hover:underline"
-      >
+      <Button type="button" onClick={() => setFichaMedicaOpen(true)}>
         Ficha Médica
-      </button>
+      </Button>
       <Modal
         title="Ficha médica"
         body={<FichaMedicaModal animalId={animalId} enabled={fichaMedicaOpen} />}
@@ -77,13 +65,9 @@ export function AnimalHealth({
         onClose={() => setFichaMedicaOpen(false)}
       ></Modal>
 
-      <button
-        type="button"
-        onClick={() => setPesoOpen(true)}
-        className="w-fit font-poppins text-sm font-semibold text-[#8AA36C] hover:underline"
-      >
+      <Button type="button" onClick={() => setPesoOpen(true)}>
         Histórico de peso
-      </button>
+      </Button>
       <Modal
         title="Histórico de peso"
         isOpen={pesoOpen}
