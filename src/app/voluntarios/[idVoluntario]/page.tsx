@@ -1,4 +1,4 @@
-import { FormEditPerson } from '@/modules/pessoas/views/FormEditPerson'
+import { FormEditPerson } from '@/modules/pessoas/components/FormEditPerson/FormEditPerson'
 import { requirePersonRole, toEditablePerson } from '@/modules/pessoas/server/loadPessoa'
 
 export default async function VoluntarioPage({ params }: { params: Promise<{ idVoluntario: string }> }) {

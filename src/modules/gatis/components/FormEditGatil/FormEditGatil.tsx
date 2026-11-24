@@ -1,16 +1,13 @@
 'use client'
 
-import { Button } from '@/global/ui/Button/Button'
-import { Field } from '@/global/ui/Field/Field'
+import { Button, Field } from '@/global/ui'
 import { ApiError } from '@/lib/client/errors'
-import { updateLocalizacaoSchema } from '@/schemas/localizacaoSchema'
+import { updateLocalizacaoSchema } from '@/schemas/localizacao/localizacaoSchema'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import { useDeleteGatil } from '../../hooks/useDeleteGatil'
-import { useUpdateGatil } from '../../hooks/useUpdateGatil'
-import { Localizacao } from '../../types'
+import { useDeleteGatil, useUpdateGatil, Localizacao } from '@/modules/gatis'
 
 type GatilEditFormInput = {
   nome: string
@@ -106,7 +103,6 @@ export function FormEditGatil({ initialState }: { initialState: Localizacao }) {
 
   return (
     <div className="w-full flex flex-col rounded-3xl border border-[#755835]/20 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(58,37,11,0.05)]">
-      {/* Cabeçalho */}
       <header className="flex flex-col items-center justify-center text-center gap-2 pb-6 mb-6 border-b border-[#755835]/15">
         <div className="flex items-center justify-center gap-3">
           <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#755835]/10 text-[#755835] shrink-0">
@@ -134,7 +130,6 @@ export function FormEditGatil({ initialState }: { initialState: Localizacao }) {
           </div>
         )}
 
-        {/* Campos em Grid de 3 Colunas */}
         <fieldset
           disabled={!editing}
           className={`m-0 p-0 border-0 grid grid-cols-1 sm:grid-cols-3 gap-6 items-start [&_label]:text-[13px] [&_label]:font-bold [&_label]:text-[#3A250B] [&_div]:flex [&_div]:flex-col [&_div]:gap-1.5 [&_select]:w-full [&_select]:h-[42px] [&_select]:rounded-lg [&_select]:border-[#755835]/20 [&_select]:bg-white [&_select]:px-3 [&_select]:text-sm [&_select]:font-medium [&_select]:text-[#755835] [&_input]:w-full [&_input]:h-[42px] [&_input]:rounded-lg [&_input]:border-[#755835]/20 [&_input]:bg-white [&_input]:px-3 [&_input]:text-sm [&_input]:font-medium [&_input]:text-[#755835] ${
@@ -143,7 +138,7 @@ export function FormEditGatil({ initialState }: { initialState: Localizacao }) {
         >
           <Field label="Nome" id="nome" type="text" disabled={!editing} {...register('nome')} />
           <Field label="Tipo de local" id="tipoLocal" type="text" disabled={!editing} {...register('tipoLocal')} />
-          
+
           <div className="flex flex-col">
             <label htmlFor="ativo">Status</label>
             <select
@@ -158,7 +153,6 @@ export function FormEditGatil({ initialState }: { initialState: Localizacao }) {
           </div>
         </fieldset>
 
-        {/* Rodapé com Botões alinhados à direita */}
         <div className="flex flex-wrap items-center justify-end gap-3 pt-6 mt-2 border-t border-[#755835]/15">
           {!editing ? (
             <button

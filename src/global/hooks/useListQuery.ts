@@ -9,16 +9,12 @@ export interface UseListQueryOptions<TData> {
   refetchOnWindowFocus?: boolean
 }
 
-/**
- * Generic hook for fetching list data with React Query
- * Provides consistent patterns for list queries across the app
- */
 export function useListQuery<TData = unknown>(options: UseListQueryOptions<TData>) {
   const {
     queryFn,
     queryKey,
     enabled = true,
-    staleTime = 5 * 60 * 1000, // 5 minutes
+    staleTime = 5 * 60 * 1000,
     retry = true,
     refetchOnWindowFocus = false,
   } = options

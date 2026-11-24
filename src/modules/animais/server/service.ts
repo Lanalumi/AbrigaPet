@@ -1,4 +1,4 @@
-import { createAnimalSchema, idSchema } from '@/schemas/cadastroSchemas'
+import { createAnimalSchema, idSchema } from '@/schemas/animais/animalSchema'
 import {
   animalEntitySchema,
   animalPublicSchema,
@@ -6,7 +6,7 @@ import {
   listAnimalsQuerySchema,
   listAnimalsResponseSchema,
   updateAnimalSchema,
-} from '@/schemas/animalSchema'
+} from '@/schemas/animais/animalSchema'
 import { animalById, animalCreate, animalFindMany, animalSoftDelete, animalUpdate } from './repo'
 
 export async function createAnimal(raw: unknown) {

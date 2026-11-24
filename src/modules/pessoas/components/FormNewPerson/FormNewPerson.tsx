@@ -1,11 +1,9 @@
 'use client'
 
-import { DateField } from '@/global/ui/DateField/DateField'
-import { Button, DropDown, Field } from '@/global/ui'
+import { Button, DropDown, Field, DateField } from '@/global/ui'
 import { ApiError } from '@/lib/client/errors'
-import { personHref, type PersonRole } from '@/modules/pessoas/personRole'
-import { useCreatePessoa } from '@/modules/pessoas/hooks/useCreatePessoa'
-import { createPersonSchema } from '@/schemas/personSchema'
+import { personHref, type PersonRole, useCreatePessoa } from '@/modules/pessoas'
+import { createPersonSchema } from '@/schemas/comunidade/personSchema'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
@@ -126,7 +124,6 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
 
   return (
     <div className="w-full max-w-4xl mx-auto rounded-3xl border border-[#755835]/20 bg-white p-6 sm:p-10 shadow-[0_10px_30px_rgba(58,37,11,0.05)] font-poppins">
-      {/* Cabeçalho */}
       <header className="flex flex-col items-center justify-center text-center gap-2 pb-6 mb-8 border-b border-[#755835]/15">
         <div className="flex items-center justify-center gap-2.5">
           <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#755835]/10 text-[#755835] shrink-0">
@@ -138,7 +135,6 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
       </header>
 
       <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
-        {/* Mensagens de Validação de Erro */}
         {validationMessages.length > 0 && (
           <div role="alert" className="rounded-2xl border border-[#B85454]/30 bg-[#FFF0ED] p-4 text-xs text-[#8A3B3B]">
             <p className="font-bold">Corrija os erros abaixo:</p>
@@ -150,7 +146,6 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
           </div>
         )}
 
-        {/* Seleção do Tipo de Pessoa (Compacto) */}
         {!role && (
           <div className="w-full sm:w-1/2">
             <DropDown
@@ -163,7 +158,6 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
           </div>
         )}
 
-        {/* Seção 1: Informações Pessoais */}
         <section className="flex flex-col gap-4">
           <h2 className="text-sm font-bold text-[#3A250B] border-b border-[#755835]/10 pb-2">Informações Pessoais</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 [&_label]:font-bold [&_label]:text-[#3A250B] [&_input]:font-medium [&_input]:text-[#3A250B]">
@@ -181,7 +175,6 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
           </div>
         </section>
 
-        {/* Seção 2: Endereço */}
         <section className="flex flex-col gap-4 pt-2">
           <h2 className="text-sm font-bold text-[#3A250B] border-b border-[#755835]/10 pb-2">Endereço</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 [&_label]:font-bold [&_label]:text-[#3A250B] [&_input]:font-medium [&_input]:text-[#3A250B]">
@@ -192,7 +185,6 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
           </div>
         </section>
 
-        {/* Seção 3: Campos Específicos para Voluntários */}
         {tipo === 'voluntario' && (
           <section className="flex flex-col gap-4 pt-2 border-t border-[#755835]/15">
             <h2 className="text-sm font-bold text-[#3A250B]">Dados do voluntariado</h2>
@@ -203,7 +195,6 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
           </section>
         )}
 
-        {/* Seção 4: Campos Específicos para Adotantes */}
         {tipo === 'adotante' && (
           <section className="flex flex-col gap-4 pt-2 border-t border-[#755835]/15">
             <h2 className="text-sm font-bold text-[#3A250B]">Dados do adotante</h2>
@@ -213,7 +204,6 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
           </section>
         )}
 
-        {/* Botão de Salvar Limpo e Centralizado */}
         <div className="flex justify-center items-center pt-6 border-t border-[#755835]/15 mt-2">
           {isLoading ? (
             <Button type="submit" disabled icon="/images/icons/save-button.svg">

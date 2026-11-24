@@ -1,12 +1,9 @@
 'use client'
 
-import { Button } from '@/global/ui/Button/Button'
-import { Field } from '@/global/ui/Field/Field'
+import { Button, Field } from '@/global/ui'
 import { ApiError } from '@/lib/client/errors'
-import { useDeleteClinica } from '@/modules/clinicas/hooks/useDeleteClinica'
-import { useUpdateClinica } from '@/modules/clinicas/hooks/useUpdateClinica'
-import type { Clinica } from '@/modules/clinicas/types'
-import { createClinicaSchema } from '@/schemas/clinicaSchema'
+import { useDeleteClinica, useUpdateClinica, Clinica } from '@/modules/clinicas/'
+import { createClinicaSchema } from '@/schemas/comunidade/clinicaSchema'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -135,7 +132,13 @@ export function FormEditClinica({ initialState }: { initialState: Clinica }) {
       <header className="flex flex-col items-center justify-center text-center gap-2 pb-6 mb-6 border-b border-[#755835]/15">
         <div className="flex items-center justify-center gap-3">
           <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#755835]/10 text-[#755835] shrink-0">
-            <Image src="/images/icons/paw2.svg" alt="Patinha" width={22} height={22} className="h-auto w-auto object-contain" />
+            <Image
+              src="/images/icons/paw2.svg"
+              alt="Patinha"
+              width={22}
+              height={22}
+              className="h-auto w-auto object-contain"
+            />
           </div>
           <h1 className="text-2xl font-bold text-[#3A250B] tracking-tight">{saved.nome}</h1>
         </div>

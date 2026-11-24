@@ -41,8 +41,6 @@ export default async function GatilPage({ params }: { params: Promise<{ idGatil:
 
   return (
     <div className="w-full max-w-7xl mx-auto flex flex-col gap-6 font-poppins pb-8">
-      
-      {/* Cabeçalho da Página */}
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#755835]/15">
         <div>
           <span className="text-xs font-semibold text-[#755835]/70 tracking-wide uppercase">Gatil</span>
@@ -59,27 +57,27 @@ export default async function GatilPage({ params }: { params: Promise<{ idGatil:
         </Link>
       </header>
 
-      {/* Formulário de Edição */}
       <div className="w-full">
         <FormEditGatil
           initialState={{ id: local.id, nome: local.nome, tipoLocal: local.tipoLocal, ativo: local.ativo }}
         />
       </div>
 
-      {/* Seção: Animais neste local */}
       <section className="rounded-3xl border border-[#755835]/20 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(58,37,11,0.05)] flex flex-col gap-4">
-        <h2 className="text-base font-bold text-[#3A250B] pb-2 border-b border-[#755835]/15">
-          Animais neste local
-        </h2>
+        <h2 className="text-base font-bold text-[#3A250B] pb-2 border-b border-[#755835]/15">Animais neste local</h2>
         {presentes.length === 0 ? (
-          <p className="text-xs font-medium text-[#755835]/70 italic py-2">
-            Nenhum animal está aqui agora.
-          </p>
+          <p className="text-xs font-medium text-[#755835]/70 italic py-2">Nenhum animal está aqui agora.</p>
         ) : (
           <ul className="flex flex-col gap-2.5">
             {presentes.map((historico) => (
-              <li key={historico.id} className="text-xs font-semibold text-[#3A250B] flex items-center justify-between p-3 rounded-2xl bg-[#FDF8F3] border border-[#755835]/10">
-                <Link href={`/animais/${historico.animal.id}`} className="hover:text-[#5C7C3A] transition-colors font-bold">
+              <li
+                key={historico.id}
+                className="text-xs font-semibold text-[#3A250B] flex items-center justify-between p-3 rounded-2xl bg-[#FDF8F3] border border-[#755835]/10"
+              >
+                <Link
+                  href={`/animais/${historico.animal.id}`}
+                  className="hover:text-[#5C7C3A] transition-colors font-bold"
+                >
                   {historico.animal.nome}
                 </Link>
                 <span className="text-[#755835]/70 font-medium">
@@ -91,19 +89,22 @@ export default async function GatilPage({ params }: { params: Promise<{ idGatil:
         )}
       </section>
 
-      {/* Seção: Passaram por aqui */}
       {anteriores.length > 0 && (
         <section className="rounded-3xl border border-[#755835]/20 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(58,37,11,0.05)] flex flex-col gap-4">
-          <h2 className="text-base font-bold text-[#3A250B] pb-2 border-b border-[#755835]/15">
-            Passaram por aqui
-          </h2>
+          <h2 className="text-base font-bold text-[#3A250B] pb-2 border-b border-[#755835]/15">Passaram por aqui</h2>
           <ul className="flex flex-col gap-2.5">
             {anteriores.map((historico) => (
-              <li key={historico.id} className="text-xs font-semibold text-[#3A250B] flex items-center justify-between p-3 rounded-2xl bg-[#FDF8F3] border border-[#755835]/10">
+              <li
+                key={historico.id}
+                className="text-xs font-semibold text-[#3A250B] flex items-center justify-between p-3 rounded-2xl bg-[#FDF8F3] border border-[#755835]/10"
+              >
                 {historico.animal.excluidoEm ? (
                   <span className="font-bold text-[#755835]/70">{`${historico.animal.nome} (excluído)`}</span>
                 ) : (
-                  <Link href={`/animais/${historico.animal.id}`} className="hover:text-[#5C7C3A] transition-colors font-bold">
+                  <Link
+                    href={`/animais/${historico.animal.id}`}
+                    className="hover:text-[#5C7C3A] transition-colors font-bold"
+                  >
                     {historico.animal.nome}
                   </Link>
                 )}
@@ -115,7 +116,6 @@ export default async function GatilPage({ params }: { params: Promise<{ idGatil:
           </ul>
         </section>
       )}
-
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { createPersonSchema, personPublicSchema } from '@/schemas/personSchema'
+import { createPersonSchema, personPublicSchema } from '@/schemas/comunidade/personSchema'
 import { z } from 'zod'
 
 export type CreatePessoa = z.infer<typeof createPersonSchema>

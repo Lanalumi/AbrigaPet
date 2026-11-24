@@ -1,4 +1,4 @@
-import { FormEditPerson } from '@/modules/pessoas/views/FormEditPerson'
+import { FormEditPerson } from '@/modules/pessoas/components/FormEditPerson/FormEditPerson'
 import { loadAnimaisDisponiveis } from '@/modules/pessoas/server/adocoes'
 import { requirePersonRole, toEditablePerson } from '@/modules/pessoas/server/loadPessoa'
 

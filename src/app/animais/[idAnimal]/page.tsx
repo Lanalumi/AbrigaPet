@@ -1,6 +1,6 @@
 import FormEditAnimal from '@/modules/animais/componentes/FormEditAnimal/FormEditAnimal'
 import { getAnimalById } from '@/modules/animais/server/service'
-import { idSchema } from '@/schemas/cadastroSchemas'
+import { idSchema } from '@/schemas/animais/animalSchema'
 import { notFound } from 'next/navigation'
 
 export default async function AnimalPage({ params }: { params: Promise<{ idAnimal: string }> }) {

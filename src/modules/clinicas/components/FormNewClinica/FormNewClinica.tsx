@@ -1,9 +1,8 @@
 'use client'
 
-import { Button } from '@/global/ui/Button/Button'
-import { Field } from '@/global/ui/Field/Field'
+import { Button, Field } from '@/global/ui'
 import { ApiError } from '@/lib/client/errors'
-import { createClinicaSchema } from '@/schemas/clinicaSchema'
+import { createClinicaSchema } from '@/schemas/comunidade/clinicaSchema'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
@@ -71,28 +70,19 @@ export function FormNewClinica() {
 
   return (
     <div className="w-full max-w-4xl mx-auto rounded-3xl border border-[#755835]/20 bg-white p-6 sm:p-10 shadow-[0_10px_30px_rgba(58,37,11,0.05)] font-poppins">
-      
-      {/* Cabeçalho Centralizado com Ícone e Título */}
       <header className="flex flex-col items-center justify-center text-center gap-2 pb-6 mb-8 border-b border-[#755835]/15">
         <div className="flex items-center justify-center gap-2.5">
           <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#755835]/10 text-[#755835] shrink-0">
             <img src="/images/icons/paw2.svg" alt="Patinha" width={22} height={22} className="object-contain" />
           </div>
-          <h1 className="text-2xl font-bold text-[#3A250B] tracking-tight">
-            Dados da clínica
-          </h1>
+          <h1 className="text-2xl font-bold text-[#3A250B] tracking-tight">Dados da clínica</h1>
         </div>
         <p className="text-xs text-[#755835]/80 font-medium">Preencha os dados cadastrais da clínica parceira</p>
       </header>
 
       <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
-        
-        {/* Mensagens de Alerta de Erro */}
         {validationMessages.length > 0 && (
-          <div
-            role="alert"
-            className="rounded-2xl border border-[#B85454]/30 bg-[#FFF0ED] p-4 text-xs text-[#8A3B3B]"
-          >
+          <div role="alert" className="rounded-2xl border border-[#B85454]/30 bg-[#FFF0ED] p-4 text-xs text-[#8A3B3B]">
             <p className="font-bold">Corrija os erros abaixo:</p>
             <ul className="mt-1.5 list-disc pl-5 font-medium flex flex-col gap-0.5">
               {validationMessages.map((message) => (
@@ -102,7 +92,6 @@ export function FormNewClinica() {
           </div>
         )}
 
-        {/* Seção 1: Informações Principais */}
         <section className="flex flex-col gap-4">
           <h2 className="text-sm font-bold text-[#3A250B] border-b border-[#755835]/10 pb-2">Informações da Clínica</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 [&_label]:font-bold [&_label]:text-[#3A250B] [&_input]:font-medium [&_input]:text-[#3A250B]">
@@ -112,7 +101,6 @@ export function FormNewClinica() {
           </div>
         </section>
 
-        {/* Seção 2: Endereço */}
         <section className="flex flex-col gap-4 pt-2">
           <h2 className="text-sm font-bold text-[#3A250B] border-b border-[#755835]/10 pb-2">Endereço</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 [&_label]:font-bold [&_label]:text-[#3A250B] [&_input]:font-medium [&_input]:text-[#3A250B]">
@@ -123,7 +111,6 @@ export function FormNewClinica() {
           </div>
         </section>
 
-        {/* Botões de Ação Centralizados */}
         <div className="flex flex-wrap items-center justify-center gap-4 pt-6 border-t border-[#755835]/15 mt-2">
           {isLoading ? (
             <Button type="submit" disabled icon="/images/icons/save-button.svg">
@@ -139,7 +126,6 @@ export function FormNewClinica() {
             Cancelar
           </Button>
         </div>
-
       </form>
     </div>
   )

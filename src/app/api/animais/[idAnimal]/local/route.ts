@@ -3,7 +3,7 @@ import {
   createHistoricoLocalSchema,
   historicoLocalRegistroSchema,
   historicoLocalResumoSchema,
-} from '@/schemas/localizacaoSchema'
+} from '@/schemas/localizacao/localizacaoSchema'
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
 

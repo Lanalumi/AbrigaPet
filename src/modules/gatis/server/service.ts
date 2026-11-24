@@ -4,7 +4,7 @@ import {
   localizacaoListItemSchema,
   localizacaoPublicSchema,
   updateLocalizacaoSchema,
-} from '@/schemas/localizacaoSchema'
+} from '@/schemas/localizacao/localizacaoSchema'
 import {
   localizacaoCreate,
   localizacaoDelete,

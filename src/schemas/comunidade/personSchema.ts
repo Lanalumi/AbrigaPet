@@ -114,3 +114,9 @@ export const listPeopleQuerySchema = z.object({
   sortBy: z.enum(['nome', 'dataNascimento']).default('nome'),
   sortDir: z.enum(['asc', 'desc']).default('asc'),
 })
+
+export const createAdocaoSchema = z.object({
+  animalId: z.string().uuid('Selecione um animal'),
+  dataAdocao: z.preprocess((val) => parseStoredDate(val) ?? val, z.date('Data inválida. Use dd/mm/aaaa')),
+})
+export type CreateAdocao = z.infer<typeof createAdocaoSchema>

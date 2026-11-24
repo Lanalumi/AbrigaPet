@@ -1,14 +1,11 @@
 'use client'
 
-import { Button } from '@/global/ui/Button/Button'
-import { Card } from '@/global/ui/Card/Card'
-import { Modal } from '@/global/ui/Modal/Modal'
-import type { HomeAdocao, HomeGatil, HomeGato } from '@/modules/home/types'
+import { Button, Card, Modal } from '@/global/ui'
+import { HomeAdocao, HomeGatil, HomeGato, DashboardCard, EmptyCopy, Total } from '@/modules/home'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState, type KeyboardEvent, type ReactNode } from 'react'
-import { DashboardCard, EmptyCopy, Total } from './HomePage'
 
 const listClass = 'flex max-h-80 flex-col gap-3 overflow-y-auto pr-1'
 

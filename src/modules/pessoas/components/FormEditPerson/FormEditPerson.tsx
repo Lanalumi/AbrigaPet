@@ -1,15 +1,16 @@
 'use client'
 
-import { Button } from '@/global/ui/Button/Button'
-import { DateField } from '@/global/ui/DateField/DateField'
-import { Field } from '@/global/ui/Field/Field'
+import { Button, DateField, Field } from '@/global/ui'
 import { ApiError } from '@/lib/client/errors'
-import { AdocoesSection, type AnimalDisponivel } from '@/modules/pessoas/components/AdocoesSection/AdocoesSection'
-import { useDeleteAdotante } from '@/modules/pessoas/hooks/useDeleteAdotante'
-import { useDeleteVoluntario } from '@/modules/pessoas/hooks/useDeleteVoluntario'
-import { useUpdatePessoa } from '@/modules/pessoas/hooks/useUpdatePessoa'
-import type { EditablePerson } from '@/modules/pessoas/server/loadPessoa'
-import { type PersonFormInput, personFormSchema, updatePersonFieldsSchema } from '@/schemas/personSchema'
+import {
+  AdocoesSection,
+  type AnimalDisponivel,
+  useDeleteAdotante,
+  useDeleteVoluntario,
+  useUpdatePessoa,
+  EditablePerson,
+} from '@/modules/pessoas'
+import { type PersonFormInput, personFormSchema, updatePersonFieldsSchema } from '@/schemas/comunidade/personSchema'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'

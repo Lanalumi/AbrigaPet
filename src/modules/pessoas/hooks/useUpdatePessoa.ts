@@ -6,7 +6,7 @@ import { ApiError } from '@/lib/client/errors'
 import { api } from '@/lib/http/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { z } from 'zod'
-import { updatePersonFieldsSchema } from '@/schemas/personSchema'
+import { updatePersonFieldsSchema } from '@/schemas/comunidade/personSchema'
 
 export type UpdatePersonFields = z.input<typeof updatePersonFieldsSchema>
 

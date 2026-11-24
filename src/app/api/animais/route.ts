@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/db'
 import { listAnimals } from '@/modules/animais/server/service'
-import { createAnimalSchema } from '@/schemas/cadastroSchemas'
-import { animalPublicSchema, deriveSituacao, saidaPairError } from '@/schemas/animalSchema'
+import { createAnimalSchema } from '@/schemas/animais/animalSchema'
+import { animalPublicSchema, deriveSituacao, saidaPairError } from '@/schemas/animais/animalSchema'
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
 

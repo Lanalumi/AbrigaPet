@@ -3,10 +3,7 @@
 import { CheckBox, Modal, Button } from '@/global/ui/'
 import { Control, Controller } from 'react-hook-form'
 import { useState } from 'react'
-import { Sexos } from '../FormNewAnimal/components/especies'
-import type { AnimalEditFormInput } from '../../types'
-import { FichaMedicaModal } from './FichaMedicaModal'
-import { PesoModal } from './PesoModal'
+import { Sexos, AnimalEditFormInput, FichaMedicaModal, PesoModal } from '@/modules/animais'
 
 export function AnimalHealth({
   control,

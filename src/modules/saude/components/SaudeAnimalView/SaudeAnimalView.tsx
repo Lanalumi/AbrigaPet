@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db'
-import { CommunityCardItem, CommunityColumn } from '../comunidade/CommunityColumn'
-import { SaudeActions } from './SaudeActions'
+import { CommunityCardItem, CommunityColumn } from '@/modules/comunidade'
+import { SaudeActions } from '@/modules/saude'
 
 function formatDate(value: Date) {
   const day = String(value.getDate()).padStart(2, '0')
@@ -130,8 +130,6 @@ export default async function SaudeAnimalView() {
 
   return (
     <div className="w-full max-w-7xl mx-auto flex flex-col gap-6 font-poppins pb-8">
-      
-      {/* Cabeçalho da Página */}
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#755835]/15">
         <div>
           <h1 className="text-2xl font-bold text-[#3A250B] tracking-tight">Saúde animal</h1>
@@ -142,7 +140,6 @@ export default async function SaudeAnimalView() {
         <SaudeActions />
       </header>
 
-      {/* Grade de 2 Colunas para Fichas e Consultas */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
         <CommunityColumn
           heading="Fichas Médicas"
@@ -179,7 +176,6 @@ export default async function SaudeAnimalView() {
           errorLabel={errorLabel}
         />
       </div>
-
     </div>
   )
 }

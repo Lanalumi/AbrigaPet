@@ -1,4 +1,8 @@
-import { clinicaPublicSchema, createClinicaSchema, listClinicasResponseSchema } from '@/schemas/clinicaSchema'
+import {
+  clinicaPublicSchema,
+  createClinicaSchema,
+  listClinicasResponseSchema,
+} from '@/schemas/comunidade/clinicaSchema'
 import { clinicaCreate, clinicaDelete, clinicaFindById, clinicaFindMany, clinicaUpdate } from './repo'
 
 export async function listClinicas(rawQuery: unknown) {

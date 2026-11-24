@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/db'
 import { formatBrDate } from '@/modules/pessoas/components/FormNewPerson/functions/parseDate'
 import { notFound } from 'next/navigation'
-import { FormNewMedicacao } from '../new/FormNewMedicacao'
+import { FormNewMedicacao } from '@/modules/saude'
 
 export default async function MedicacaoPage({ params }: { params: Promise<{ idPrescricao: string }> }) {
   const { idPrescricao } = await params

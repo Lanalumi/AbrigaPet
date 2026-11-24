@@ -1,20 +1,17 @@
 'use client'
 
-import { Button } from '@/global/ui/Button/Button'
-import { DateField } from '@/global/ui/DateField/DateField'
-import { Field } from '@/global/ui/Field/Field'
+import { Button, DateField, Field, SelectField } from '@/global/ui'
 import { API_URL } from '@/global/constants/api'
 import { useMutation } from '@/global/hooks/useMutation'
 import { api } from '@/lib/http/api'
 import { ApiError } from '@/lib/client/errors'
-import { DURACOES, FREQUENCIAS, withCurrentOption } from '@/modules/animais/prescricao/options'
+import { DURACOES, FREQUENCIAS, withCurrentOption } from '@/modules/animais'
 import { isVacina } from '@/modules/animais/prescricao/schedule'
-import { createMedicacaoSchema } from '@/schemas/saudeSchema'
+import { createMedicacaoSchema } from '@/schemas/saude/saudeSchema'
 import { useRouter } from 'next/navigation'
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import { SelectField } from '../../SelectField'
 
 type Option = { id: string; nome: string }
 type ConsultaOption = { id: string; animalId: string; label: string }
@@ -166,7 +163,6 @@ export function FormNewMedicacao({
 
   return (
     <div className="w-full max-w-4xl mx-auto rounded-3xl border border-[#755835]/20 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(58,37,11,0.05)] mt-4">
-      {/* Cabeçalho Centralizado */}
       <header className="flex flex-col items-center justify-center text-center gap-2 pb-6 mb-6 border-b border-[#755835]/15">
         <div className="flex items-center justify-center gap-3">
           <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#755835]/10 text-[#755835] shrink-0">
@@ -201,10 +197,10 @@ export function FormNewMedicacao({
             </div>
           )}
 
-          {/* Grid do Formulário - Hierarquia Visual Corrigida */}
-          <fieldset disabled={!editing} className="m-0 border-0 p-0 grid grid-cols-1 md:grid-cols-2 gap-6 items-start [&_label]:text-[13px] [&_label]:font-bold [&_label]:text-[#3A250B] [&_div]:flex [&_div]:flex-col [&_div]:gap-1.5 [&_select]:w-full [&_select]:h-[42px] [&_select]:rounded-lg [&_select]:border-[#755835]/20 [&_select]:bg-white [&_select]:px-3 [&_select]:text-sm [&_select]:font-medium [&_select]:text-[#755835] [&_input]:w-full [&_input]:h-[42px] [&_input]:rounded-lg [&_input]:border-[#755835]/20 [&_input]:bg-white [&_input]:px-3 [&_input]:text-sm [&_input]:font-medium [&_input]:text-[#755835] [&_input::placeholder]:font-normal [&_input::placeholder]:text-[#755835]/40">
-            
-            {/* Coluna Esquerda */}
+          <fieldset
+            disabled={!editing}
+            className="m-0 border-0 p-0 grid grid-cols-1 md:grid-cols-2 gap-6 items-start [&_label]:text-[13px] [&_label]:font-bold [&_label]:text-[#3A250B] [&_div]:flex [&_div]:flex-col [&_div]:gap-1.5 [&_select]:w-full [&_select]:h-[42px] [&_select]:rounded-lg [&_select]:border-[#755835]/20 [&_select]:bg-white [&_select]:px-3 [&_select]:text-sm [&_select]:font-medium [&_select]:text-[#755835] [&_input]:w-full [&_input]:h-[42px] [&_input]:rounded-lg [&_input]:border-[#755835]/20 [&_input]:bg-white [&_input]:px-3 [&_input]:text-sm [&_input]:font-medium [&_input]:text-[#755835] [&_input::placeholder]:font-normal [&_input::placeholder]:text-[#755835]/40"
+          >
             <div className="flex flex-col gap-5">
               <SelectField
                 label="Animal"
@@ -222,7 +218,12 @@ export function FormNewMedicacao({
               </SelectField>
 
               <div className="flex flex-col gap-1">
-                <SelectField label="Consulta vinculada" id="consultaId" {...register('consultaId')} disabled={!selectedAnimalId}>
+                <SelectField
+                  label="Consulta vinculada"
+                  id="consultaId"
+                  {...register('consultaId')}
+                  disabled={!selectedAnimalId}
+                >
                   <option value="">{selectedAnimalId ? 'Selecione a consulta' : 'Escolha o animal primeiro'}</option>
                   {consultasDoAnimal.map((consulta) => (
                     <option key={consulta.id} value={consulta.id}>
@@ -238,7 +239,14 @@ export function FormNewMedicacao({
               </div>
 
               <div>
-                <Field label="Medicamento" id="medicamento" type="text" list="medicamentos" placeholder="Ex: Meloxicam" {...register('medicamento')} />
+                <Field
+                  label="Medicamento"
+                  id="medicamento"
+                  type="text"
+                  list="medicamentos"
+                  placeholder="Ex: Meloxicam"
+                  {...register('medicamento')}
+                />
                 <datalist id="medicamentos">
                   {medicamentos.map((medicamento) => (
                     <option key={medicamento} value={medicamento} />
@@ -246,13 +254,25 @@ export function FormNewMedicacao({
                 </datalist>
               </div>
 
-              <Field label="Tipo (Comprimido, Gotas, Pomada...)" id="tipo" type="text" placeholder="Ex: Comprimido" {...register('tipo')} />
+              <Field
+                label="Tipo (Comprimido, Gotas, Pomada...)"
+                id="tipo"
+                type="text"
+                placeholder="Ex: Comprimido"
+                {...register('tipo')}
+              />
             </div>
 
-            {/* Coluna Direita */}
             <div className="flex flex-col gap-5">
               <Field label="Dosagem" id="dosagem" type="text" placeholder="Ex: 2mg" {...register('dosagem')} />
-              <Field label="Quantidade por dose" id="quantidade" type="number" min={1} placeholder="Ex: 1" {...register('quantidade')} />
+              <Field
+                label="Quantidade por dose"
+                id="quantidade"
+                type="number"
+                min={1}
+                placeholder="Ex: 1"
+                {...register('quantidade')}
+              />
               <SelectField
                 label="Frequência"
                 id="frequencia"
@@ -292,7 +312,6 @@ export function FormNewMedicacao({
             </div>
           </fieldset>
 
-          {/* Rodapé com Botões */}
           {existing ? (
             <div className="flex flex-wrap items-center justify-end gap-3 pt-6 mt-2 border-t border-[#755835]/15">
               {!editing ? (

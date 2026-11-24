@@ -1,6 +1,6 @@
 import { hashPassword, isUniqueViolation, normalizeEmail } from '@/lib/auth/credentials'
 import { prisma } from '@/lib/db'
-import { createPersonSchema } from '@/schemas/personSchema'
+import { createPersonSchema } from '@/schemas/comunidade/personSchema'
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
 

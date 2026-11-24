@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db'
 import { findOrCreateMotivo } from '@/modules/saude/server/lookup'
-import { createFichaMedicaSchema } from '@/schemas/saudeSchema'
+import { createFichaMedicaSchema } from '@/schemas/saude/saudeSchema'
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
 

@@ -1,14 +1,12 @@
 'use client'
 
 import { Button } from '@/global/ui/Button/Button'
-import { localizacoesListFiltersSchema } from '@/schemas/localizacaoSchema'
+import { localizacoesListFiltersSchema } from '@/schemas/localizacao/localizacaoSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useGatisList } from '../hooks/useGatisList'
-import { ListLocalizacoesQuery, LocalizacoesListFilters } from '../types'
-import { GatisActions } from './GatisActions'
+import { useGatisList, ListLocalizacoesQuery, LocalizacoesListFilters, GatisActions } from '@/modules/gatis'
 
 export default function GatisView() {
   const [filters, setFilters] = useState<LocalizacoesListFilters>({})
@@ -49,7 +47,9 @@ export default function GatisView() {
       <div className="w-full max-w-7xl mx-auto font-poppins py-12 flex flex-col items-center justify-center">
         <div className="p-6 rounded-3xl bg-[#FFF0ED] border border-[#B85454]/20 text-center flex flex-col items-center gap-2 max-w-md">
           <span className="text-base font-bold text-[#8A3B3B]">Erro ao carregar gatis</span>
-          <p className="text-xs text-[#8A3B3B]/80 font-medium">Ocorreu uma falha ao carregar os locais. Tente recarregar a página.</p>
+          <p className="text-xs text-[#8A3B3B]/80 font-medium">
+            Ocorreu uma falha ao carregar os locais. Tente recarregar a página.
+          </p>
         </div>
       </div>
     )
@@ -57,8 +57,6 @@ export default function GatisView() {
 
   return (
     <div className="w-full max-w-7xl mx-auto flex flex-col gap-6 font-poppins pb-8">
-      
-      {/* Cabeçalho */}
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#755835]/15">
         <div>
           <h1 className="text-2xl font-bold text-[#3A250B] tracking-tight">Gatis</h1>
@@ -67,9 +65,11 @@ export default function GatisView() {
         <GatisActions />
       </header>
 
-      {/* Painel de Filtros e Busca Harmonizado */}
       <div className="rounded-3xl border border-[#755835]/20 bg-white p-5 shadow-[0_10px_30px_rgba(58,37,11,0.05)] flex flex-col md:flex-row items-center justify-between gap-4">
-        <form onSubmit={handleSubmit(onFiltersSubmit)} className="flex flex-wrap items-center gap-3 w-full md:w-auto flex-1">
+        <form
+          onSubmit={handleSubmit(onFiltersSubmit)}
+          className="flex flex-wrap items-center gap-3 w-full md:w-auto flex-1"
+        >
           <div className="flex-1 min-w-[200px]">
             <input
               {...register('search')}
@@ -104,7 +104,6 @@ export default function GatisView() {
           </button>
         </form>
 
-        {/* Seleção de itens por página */}
         <div className="flex items-center gap-2 shrink-0 self-end md:self-auto pt-2 md:pt-0 border-t md:border-t-0 border-[#755835]/10 w-full md:w-auto justify-end">
           <label htmlFor="pageSize" className="text-xs font-semibold text-[#755835]">
             Exibir:
@@ -126,13 +125,15 @@ export default function GatisView() {
         </div>
       </div>
 
-      {/* Indicador de Quantidade e Páginas */}
       <div className="flex items-center justify-between text-xs font-semibold text-[#755835] px-1">
-        <span>Mostrando {items.length} de {total} Gatis</span>
-        <span>Página {page} de {totalPages}</span>
+        <span>
+          Mostrando {items.length} de {total} Gatis
+        </span>
+        <span>
+          Página {page} de {totalPages}
+        </span>
       </div>
 
-      {/* Listagem em Grade */}
       {isLoading ? (
         <div className="py-12 text-center text-xs font-semibold text-[#755835]/70 italic flex items-center justify-center gap-2">
           <div className="w-4 h-4 border-2 border-[#755835]/30 border-t-[#755835] rounded-full animate-spin" />
@@ -152,7 +153,9 @@ export default function GatisView() {
                       >
                         {local.nome}
                       </Link>
-                      <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${local.ativo ? 'bg-[#5C7C3A]/10 text-[#5C7C3A]' : 'bg-[#8A3B3B]/10 text-[#8A3B3B]'}`}>
+                      <span
+                        className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full ${local.ativo ? 'bg-[#5C7C3A]/10 text-[#5C7C3A]' : 'bg-[#8A3B3B]/10 text-[#8A3B3B]'}`}
+                      >
                         {local.ativo ? 'Ativo' : 'Inativo'}
                       </span>
                     </div>
@@ -180,7 +183,6 @@ export default function GatisView() {
             ))}
           </ul>
 
-          {/* Paginação */}
           {totalPages > 1 && (
             <nav className="mt-4 flex items-center justify-center gap-3" aria-label="Paginação">
               <button

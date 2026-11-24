@@ -1,4 +1,4 @@
-import { FormNewFicha } from '@/app/saude/fichas/new/FormNewFicha'
+import { FormNewFicha } from '@/modules/consultas/components/FormNewFicha/FormNewFicha'
 import { prisma } from '@/lib/db'
 
 export default async function NovaConsultaPage({
@@ -24,11 +24,9 @@ export default async function NovaConsultaPage({
           </div>
           <h1 className="text-2xl font-bold text-[#3A250B] font-poppins tracking-tight">Nova consulta</h1>
         </div>
-        <p className="text-xs text-[#755835]/80 font-poppins">
-          Registro de atendimento clínico e histórico de saúde
-        </p>
+        <p className="text-xs text-[#755835]/80 font-poppins">Registro de atendimento clínico e histórico de saúde</p>
       </header>
-      
+
       <FormNewFicha
         animais={animais}
         clinicas={clinicas}

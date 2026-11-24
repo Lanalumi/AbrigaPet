@@ -3,7 +3,7 @@
 import { API_URL } from '@/global/constants/api'
 import { useListQuery } from '@/global/hooks/useListQuery'
 import { api } from '@/lib/http/api'
-import { listLocalizacoesQuerySchema } from '@/schemas/localizacaoSchema'
+import { listLocalizacoesQuerySchema } from '@/schemas/localizacao/localizacaoSchema'
 import { ListLocalizacoesQuery, ListLocalizacoesResponse } from '../types'
 
 const fetchGatisList = async (query: Partial<ListLocalizacoesQuery> = {}): Promise<ListLocalizacoesResponse> => {

@@ -1,5 +1,3 @@
-// Creates the admin account when it does not exist yet.
-// Run: npx tsx prisma/seed-admin.ts
 import 'dotenv/config'
 import { PrismaPg } from '@prisma/adapter-pg'
 import bcrypt from 'bcryptjs'

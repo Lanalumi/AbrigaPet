@@ -1,13 +1,6 @@
 import { prisma } from '@/lib/db'
-import { FormNewMedicacao } from './FormNewMedicacao'
-
-function formatDate(value: Date) {
-  const day = String(value.getDate()).padStart(2, '0')
-  const month = String(value.getMonth() + 1).padStart(2, '0')
-  const year = value.getFullYear()
-
-  return `${day}/${month}/${year}`
-}
+import { formatBrDate } from '@/modules/pessoas/components/FormNewPerson/functions/parseDate'
+import { FormNewMedicacao } from '@/modules/saude'
 
 export default async function NovaMedicacaoPage({
   searchParams,
@@ -40,7 +33,7 @@ export default async function NovaMedicacaoPage({
         consultas={consultas.map((consulta) => ({
           id: consulta.id,
           animalId: consulta.animalId,
-          label: `${formatDate(consulta.dataAtendimento)} — ${consulta.motivo.nome}`,
+          label: `${formatBrDate(consulta.dataAtendimento)} — ${consulta.motivo.nome}`,
         }))}
         medicamentos={medicamentos.map((medicamento) => medicamento.nome)}
         animalId={selectedAnimalId}

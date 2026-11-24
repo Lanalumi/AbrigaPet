@@ -7,7 +7,7 @@ import {
   normalizeMotivoSaida,
   saidaPairError,
   updateAnimalSchema,
-} from '@/schemas/animalSchema'
+} from '@/schemas/animais/animalSchema'
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
 

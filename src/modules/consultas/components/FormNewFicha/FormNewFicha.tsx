@@ -1,20 +1,15 @@
 'use client'
 
-import { Button } from '@/global/ui/Button/Button'
-import { DateField } from '@/global/ui/DateField/DateField'
-import { Field } from '@/global/ui/Field/Field'
-import { TextArea } from '@/global/ui/TextArea/TextArea'
+import { Button, DateField, Field, TextArea, SelectField } from '@/global/ui'
 import { API_URL } from '@/global/constants/api'
 import { useMutation } from '@/global/hooks/useMutation'
 import { api } from '@/lib/http/api'
 import { ApiError } from '@/lib/client/errors'
 import { parseBrDate } from '@/modules/pessoas/components/FormNewPerson/functions/parseDate'
-import { createFichaMedicaSchema } from '@/schemas/saudeSchema'
+import { createFichaMedicaSchema } from '@/schemas/saude/saudeSchema'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import { SelectField } from '../../SelectField'
 
 type Option = { id: string; nome: string }
 
@@ -34,37 +29,30 @@ export function FormNewFicha({
   clinicas,
   motivos,
   animalId,
-  existing,
 }: {
   animais: Option[]
   clinicas: Option[]
   motivos: string[]
   animalId?: string
-  existing?: { id: string; totalPrescricoes: number; values: FichaFormInput }
 }) {
   const router = useRouter()
-  const [editing, setEditing] = useState(!existing)
   const initialAnimalId = animais.some((animal) => animal.id === animalId) ? animalId : ''
   const saveFicha = useMutation<SavedConsulta, ApiError, FichaFormInput>({
     mutationFn: (values) =>
-      api(existing ? `${API_URL}/fichas/${existing.id}` : `${API_URL}/fichas`, {
-        method: existing ? 'PATCH' : 'POST',
+      api(`${API_URL}/fichas`, {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
       }),
-  })
-  const deleteFicha = useMutation<SavedConsulta, ApiError, string>({
-    mutationFn: (id) => api(`${API_URL}/fichas/${id}`, { method: 'DELETE' }),
   })
 
   const {
     register,
     handleSubmit,
     setError,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm<FichaFormInput>({
-    defaultValues: existing?.values ?? {
+    defaultValues: {
       animalId: initialAnimalId ?? '',
       clinicaId: '',
       motivo: '',
@@ -73,29 +61,6 @@ export function FormNewFicha({
       dataRetorno: '',
     },
   })
-
-  const leaveEditMode = () => {
-    if (existing) reset(existing.values)
-    setEditing(false)
-  }
-
-  const onDelete = () => {
-    if (!existing || deleteFicha.isPending) return
-    const total = existing.totalPrescricoes
-    const extra = total === 0 ? '' : total === 1 ? ' e sua medicação' : ` e suas ${total} medicações`
-    if (!confirm(`Tem certeza que deseja excluir esta consulta${extra}?`)) return
-
-    deleteFicha.mutate(existing.id, {
-      onSuccess: (deleted) => {
-        toast.success('Consulta excluída com sucesso')
-        router.push(`/animais/${deleted.animalId}/fichamedica`)
-        router.refresh()
-      },
-      onError: (error) => {
-        toast.error(error instanceof ApiError ? error.message : 'Erro ao excluir consulta')
-      },
-    })
-  }
 
   const onSubmit = (values: FichaFormInput) => {
     const dataAtendimento = parseBrDate(values.dataAtendimento)
@@ -137,13 +102,12 @@ export function FormNewFicha({
       },
       {
         onSuccess: (saved) => {
-          toast.success(existing ? 'Consulta atualizada' : 'Consulta registrada')
+          toast.success('Consulta registrada')
           router.push(`/animais/${saved.animalId}/fichamedica?consulta=${saved.id}`)
           router.refresh()
         },
         onError: (error) => {
-          const fallback = existing ? 'Erro ao atualizar consulta' : 'Erro ao registrar consulta'
-          toast.error(error instanceof ApiError ? error.message : fallback)
+          toast.error(error instanceof ApiError ? error.message : 'Erro ao registrar consulta')
         },
       },
     )
@@ -181,7 +145,7 @@ export function FormNewFicha({
               </ul>
             </div>
           )}
-          <fieldset disabled={!editing} className="m-0 flex flex-col gap-4 border-0 p-0">
+          <fieldset className="m-0 flex flex-col gap-4 border-0 p-0">
             <div className="flex flex-col gap-4 md:flex-row">
               <div className="flex flex-col gap-4">
                 <SelectField label="Animal" id="animalId" {...register('animalId')}>
@@ -221,53 +185,20 @@ export function FormNewFicha({
               />
             </div>
           </fieldset>
-          {existing ? (
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              {!editing ? (
-                <>
-                  <Button type="button" green icon="/images/icons/edit-button.svg" onClick={() => setEditing(true)}>
-                    Editar Consulta
-                  </Button>
-                  <Button type="button" onClick={() => router.back()}>
-                    Voltar
-                  </Button>
-                </>
-              ) : (
-                <>
-                  {isLoading ? (
-                    <Button type="submit" disabled icon="/images/icons/save-button.svg">
-                      Salvando...
-                    </Button>
-                  ) : (
-                    <Button type="submit" green icon="/images/icons/save-button.svg">
-                      Salvar Alterações
-                    </Button>
-                  )}
-                  <Button type="button" red onClick={onDelete}>
-                    {deleteFicha.isPending ? 'Excluindo...' : 'Excluir'}
-                  </Button>
-                  <Button type="button" onClick={leaveEditMode}>
-                    Cancelar
-                  </Button>
-                </>
-              )}
-            </div>
-          ) : (
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              {isLoading ? (
-                <Button type="submit" disabled icon="/images/icons/save-button.svg">
-                  Salvando...
-                </Button>
-              ) : (
-                <Button type="submit" green icon="/images/icons/save-button.svg">
-                  Salvar
-                </Button>
-              )}
-              <Button type="button" onClick={() => router.push('/saude')}>
-                Cancelar
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            {isLoading ? (
+              <Button type="submit" disabled icon="/images/icons/save-button.svg">
+                Salvando...
               </Button>
-            </div>
-          )}
+            ) : (
+              <Button type="submit" green icon="/images/icons/save-button.svg">
+                Salvar
+              </Button>
+            )}
+            <Button type="button" onClick={() => router.push('/saude')}>
+              Cancelar
+            </Button>
+          </div>
         </form>
       )}
     </div>

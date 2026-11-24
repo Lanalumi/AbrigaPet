@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db'
-import { normalizeMotivoSaida } from '@/schemas/animalSchema'
-import { createAdocaoSchema } from '@/schemas/cadastroSchemas'
+import { normalizeMotivoSaida } from '@/schemas/animais/animalSchema'
+import { createAdocaoSchema } from '@/schemas/comunidade/personSchema'
 import { personRole } from '../personRole'
 
 type AdocaoResult = { ok: true } | { ok: false; status: number; message: string }
@@ -17,9 +17,7 @@ export async function loadAnimaisDisponiveis() {
     select: { id: true, nome: true, motivoSaida: true },
   })
 
-  return animais
-    .filter((animal) => availableForAdoption(animal.motivoSaida))
-    .map(({ id, nome }) => ({ id, nome }))
+  return animais.filter((animal) => availableForAdoption(animal.motivoSaida)).map(({ id, nome }) => ({ id, nome }))
 }
 
 async function isAdotante(pessoaId: string) {

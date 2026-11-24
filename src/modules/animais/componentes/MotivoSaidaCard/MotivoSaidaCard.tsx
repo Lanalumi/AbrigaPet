@@ -1,7 +1,7 @@
 'use client'
 
-import { DateField } from '@/global/ui/DateField/DateField'
-import { motivoSaidaLabel, motivoSaidaValues } from '@/schemas/animalSchema'
+import { DropDown, DateField } from '@/global/ui'
+import { motivoSaidaLabel, motivoSaidaValues } from '@/schemas/animais/animalSchema'
 import type { FieldValues, Path, UseFormRegister } from 'react-hook-form'
 
 type SaidaForm = FieldValues & {
@@ -25,18 +25,13 @@ export function MotivoSaidaCard<T extends SaidaForm>({
             <label className="font-poppins text-base font-semibold text-[#755835]" htmlFor="motivoSaida">
               Motivo
             </label>
-            <select
+            <DropDown
+              label="Motivo de saída"
+              options={motivoSaidaValues.map((value) => motivoSaidaLabel[value])}
+              value={motivoSaidaValues.map((value) => value)}
               id="motivoSaida"
-              className="w-full rounded-md border border-[#3A250B]/30 bg-white p-2 font-poppins text-base font-semibold text-[#755835] focus:outline-none disabled:cursor-not-allowed"
               {...register('motivoSaida' as Path<T>)}
-            >
-              <option value="">Selecione</option>
-              {motivoSaidaValues.map((value) => (
-                <option key={value} value={value}>
-                  {motivoSaidaLabel[value]}
-                </option>
-              ))}
-            </select>
+            />
           </div>
           <DateField label="Data" id="dataSaida" {...register('dataSaida' as Path<T>)} />
         </div>

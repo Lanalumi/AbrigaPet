@@ -1,6 +1,6 @@
 import { Prisma } from '@/generated/prisma/client'
 import { prisma } from '@/lib/db'
-import { listClinicasQuerySchema } from '@/schemas/clinicaSchema'
+import { listClinicasQuerySchema } from '@/schemas/comunidade/clinicaSchema'
 
 export async function clinicaFindMany(raw: unknown) {
   const { page, pageSize, search, sortBy, sortDir } = listClinicasQuerySchema.parse(raw)

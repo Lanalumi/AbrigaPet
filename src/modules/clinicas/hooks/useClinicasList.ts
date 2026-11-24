@@ -1,7 +1,7 @@
 import { API_URL } from '@/global/constants/api'
 import { useListQuery } from '@/global/hooks/useListQuery'
 import { api } from '@/lib/http/api'
-import { listClinicasQuerySchema } from '@/schemas/clinicaSchema'
+import { listClinicasQuerySchema } from '@/schemas/comunidade/clinicaSchema'
 import { ListClinicasQuery, ListClinicasResponse } from '../types'
 
 const fetchClinicasList = async (query: Partial<ListClinicasQuery> = {}): Promise<ListClinicasResponse> => {

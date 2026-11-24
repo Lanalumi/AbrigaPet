@@ -3,10 +3,7 @@
 import { useListQuery } from '@/global/hooks/useListQuery'
 import { useMutation } from '@/global/hooks/useMutation'
 import { API_URL } from '@/global/constants/api'
-import { Card } from '@/global/ui/Card/Card'
-import { DropDown } from '@/global/ui/DropDown/DropDown'
-import { DateField } from '@/global/ui/DateField/DateField'
-import { Modal } from '@/global/ui/Modal/Modal'
+import { Card, DropDown, DateField, Modal } from '@/global/ui'
 import { api } from '@/lib/http/api'
 import { ApiError } from '@/lib/client/errors'
 import {
@@ -15,11 +12,12 @@ import {
   historicoLocalResumoSchema,
   type HistoricoLocalRegistro,
   type HistoricoLocalResumo,
-} from '@/schemas/localizacaoSchema'
+} from '@/schemas/localizacao/localizacaoSchema'
 import { useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import { formatBrDate } from '@/modules/pessoas/components/FormNewPerson/functions/parseDate'
 
 type LocalModalProps = {
   animalId: string
@@ -36,14 +34,6 @@ function formatDate(value: Date) {
   const year = value.getUTCFullYear()
 
   return `${day}/${month}/${year}`
-}
-
-function todayBr() {
-  const now = new Date()
-  const day = String(now.getDate()).padStart(2, '0')
-  const month = String(now.getMonth() + 1).padStart(2, '0')
-
-  return `${day}/${month}/${now.getFullYear()}`
 }
 
 function localLabel(local: { nome: string; tipoLocal: string }) {
@@ -82,7 +72,7 @@ export function LocalModal({ animalId }: LocalModalProps) {
   } = useForm<LocalFormInput>({
     defaultValues: {
       localizacaoId: '',
-      dataEntrada: todayBr(),
+      dataEntrada: formatBrDate(new Date()),
     },
   })
   const createLocal = useMutation<HistoricoLocalRegistro, ApiError, LocalFormInput>({
@@ -96,7 +86,7 @@ export function LocalModal({ animalId }: LocalModalProps) {
     },
     onSuccess: async () => {
       toast.success('Local registrado')
-      reset({ localizacaoId: '', dataEntrada: todayBr() })
+      reset({ localizacaoId: '', dataEntrada: formatBrDate(new Date()) })
       await queryClient.invalidateQueries({ queryKey: ['local', animalId] })
       await queryClient.invalidateQueries({ queryKey: ['animais'] })
     },
@@ -185,7 +175,7 @@ export function LocalModal({ animalId }: LocalModalProps) {
                 {locais.length === 0 ? (
                   <p className="font-poppins text-sm font-semibold text-[#755835]/70">Nenhum local cadastrado.</p>
                 ) : (
-                  <div className="w-[200px]">
+                  <div className="w-50">
                     <DropDown
                       label="Local"
                       id={`local-${animalId}`}

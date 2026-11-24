@@ -3,7 +3,7 @@ import {
   listLocalizacoesResponseSchema,
   localizacaoPublicSchema,
   localizacoesListFiltersSchema,
-} from '@/schemas/localizacaoSchema'
+} from '@/schemas/localizacao/localizacaoSchema'
 import { z } from 'zod'
 
 export type Localizacao = z.infer<typeof localizacaoPublicSchema>

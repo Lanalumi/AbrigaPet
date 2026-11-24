@@ -6,7 +6,7 @@ import { ApiError } from '@/lib/client/errors'
 import { api } from '@/lib/http/api'
 import { useQueryClient } from '@tanstack/react-query'
 import { Clinica } from '../types'
-import { createClinicaSchema } from '@/schemas/clinicaSchema'
+import { createClinicaSchema } from '@/schemas/comunidade/clinicaSchema'
 import { z } from 'zod'
 
 export type CreateClinica = z.infer<typeof createClinicaSchema>

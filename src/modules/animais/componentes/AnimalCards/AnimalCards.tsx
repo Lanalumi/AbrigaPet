@@ -1,20 +1,10 @@
 import Link from 'next/link'
-import { Card } from '@/global/ui/Card/Card'
-import { Animal } from '../../types'
+import { Card } from '@/global/ui'
+import { Animal } from '@/modules/animais'
+import { formatBrDate } from '@/modules/pessoas/components/FormNewPerson/functions/parseDate'
 
 type AnimalCardsProps = {
   items: Animal[]
-}
-
-function formatArrivalDate(value: Animal['dataChegada'] | string) {
-  const date = value instanceof Date ? value : new Date(value)
-  if (Number.isNaN(date.getTime())) return String(value)
-
-  const day = String(date.getDate()).padStart(2, '0')
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const year = date.getFullYear()
-
-  return `${day}/${month}/${year}`
 }
 
 export default function AnimalCards({ items }: AnimalCardsProps) {
@@ -44,7 +34,7 @@ export default function AnimalCards({ items }: AnimalCardsProps) {
               alt: `Foto de ${animal.nome}`,
             }}
             infos={[
-              { label: 'Data de chegada', value: formatArrivalDate(animal.dataChegada) },
+              { label: 'Data de chegada', value: formatBrDate(animal.dataChegada) },
               { label: 'Sexo', value: animal.sexo ? 'Macho' : 'Fêmea' },
               { label: 'Localização', value: animal.localizacaoAtual?.trim() || 'Não informada' },
             ]}

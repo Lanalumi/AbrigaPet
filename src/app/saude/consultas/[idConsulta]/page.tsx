@@ -1,5 +1,5 @@
-import { FormNewFicha } from '@/app/saude/fichas/new/FormNewFicha'
 import { prisma } from '@/lib/db'
+import { FormEditFicha } from '@/modules/consultas/components/FormEditFicha/FormEditFicha'
 import { formatBrDate } from '@/modules/pessoas/components/FormNewPerson/functions/parseDate'
 import { notFound } from 'next/navigation'
 
@@ -39,11 +39,11 @@ export default async function ConsultaPage({ params }: { params: Promise<{ idCon
         <p className="text-xs text-[#755835]/80 font-poppins">Registro de atendimento clínico e histórico de saúde</p>
       </header>
 
-      <FormNewFicha
+      <FormEditFicha
         animais={animais}
         clinicas={clinicas}
         motivos={motivos.map((motivo) => motivo.nome)}
-        existing={{
+        consulta={{
           id: consulta.id,
           totalPrescricoes: consulta._count.prescricoes,
           values: {

@@ -73,16 +73,11 @@ export function CommunityColumn({
 
   return (
     <section className="flex flex-col gap-4 rounded-3xl border border-[#755835]/20 bg-white p-5 sm:p-6 shadow-[0_10px_30px_rgba(58,37,11,0.05)] w-full font-poppins">
-      
-      {/* Título do Card */}
       <div className="pb-2 border-b border-[#755835]/15">
         <h2 className="text-lg font-bold text-[#3A250B]">{heading}</h2>
       </div>
 
-      {/* Formulário e Filtros Harmonizados */}
       <div className="flex flex-col gap-3">
-        
-        {/* Campo de Busca (Com a mesma fonte, altura e esteticismo dos selects) */}
         <div className="flex flex-col gap-1">
           <label htmlFor={searchId} className="sr-only">
             {searchPlaceholder}
@@ -97,7 +92,6 @@ export function CommunityColumn({
           />
         </div>
 
-        {/* Campo de Ordenação por Parâmetro */}
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
@@ -110,7 +104,6 @@ export function CommunityColumn({
           ))}
         </select>
 
-        {/* Campo de Ordem (Ascendente/Descendente) */}
         <select
           value={sortDir}
           onChange={(e) => setSortDir(e.target.value as SortDir)}
@@ -120,7 +113,6 @@ export function CommunityColumn({
           <option value="desc">Descendente</option>
         </select>
 
-        {/* Botão de Limpar/Aplicar Filtros */}
         {search && (
           <button
             type="button"
@@ -132,12 +124,10 @@ export function CommunityColumn({
         )}
       </div>
 
-      {/* Contador de Resultados */}
       <div className="pt-2 border-t border-[#755835]/10 text-[11px] font-semibold text-[#755835]">
         Mostrando {filteredItems.length} de {items.length}
       </div>
 
-      {/* Lista de Itens Cadastrados */}
       <div className="flex flex-col gap-3 min-h-[180px]">
         {errorLabel ? (
           <div className="p-4 rounded-2xl bg-[#FFF0ED] border border-[#B85454]/20 text-xs font-medium text-[#8A3B3B]">
@@ -173,7 +163,6 @@ export function CommunityColumn({
           })
         )}
       </div>
-
     </section>
   )
 }

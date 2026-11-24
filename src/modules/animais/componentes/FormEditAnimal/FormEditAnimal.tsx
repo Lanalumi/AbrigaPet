@@ -3,65 +3,28 @@
 import { Controller, useForm } from 'react-hook-form'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { Button } from '@/global/ui/Button/Button'
-import { DateField } from '@/global/ui/DateField/DateField'
-import { Field } from '@/global/ui/Field/Field'
-import { CheckBox } from '@/global/ui/CheckBox/CheckBox'
+import { Button, DateField, Field, CheckBox, AvatarUpload } from '@/global/ui'
 import { ApiError } from '@/lib/client/errors'
-import { UpdateAnimal, Animal } from '../../types'
-import { useUpdateAnimal } from '../../hooks/useUpdateAnimal'
+import {
+  UpdateAnimal,
+  Animal,
+  useUpdateAnimal,
+  useDeleteAnimal,
+  AnimalApearence,
+  AnimalHealth,
+  MotivoSaidaCard,
+  LocalModal,
+  AnimalEditFormInput,
+} from '@/modules/animais'
 import {
   deriveSituacao,
   normalizeMotivoSaida,
   readSaidaFields,
   situacaoAnimalLabel,
   updateAnimalSchema,
-} from '@/schemas/animalSchema'
+} from '@/schemas/animais/animalSchema'
 import { toast } from 'react-toastify'
-import { AvatarUpload } from '@/global/ui/AvatarUpload/AvatarUpload'
-import { useDeleteAnimal } from '../../hooks/useDeleteAnimal'
-import { AnimalApearence } from '../AnimalApearence/AnimalApearence'
-import { AnimalHealth } from '../Animalhealth/AnimalHealth'
-import { MotivoSaidaCard } from '../MotivoSaidaCard/MotivoSaidaCard'
-import { LocalModal } from './LocalModal'
-import { AnimalEditFormInput } from '../../types'
-
-function parseBrDate(value: unknown): Date | null {
-  if (value instanceof Date && !Number.isNaN(value.getTime())) {
-    return value
-  }
-
-  if (typeof value !== 'string') {
-    return null
-  }
-
-  const match = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(value.trim())
-  if (!match) return null
-
-  const day = Number(match[1])
-  const month = Number(match[2])
-  const year = Number(match[3])
-  const date = new Date(year, month - 1, day)
-
-  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
-    return null
-  }
-
-  return date
-}
-
-function formatBrDate(value: Date | string | null): string {
-  if (!value) return ''
-
-  const date = value instanceof Date ? value : new Date(value)
-  if (Number.isNaN(date.getTime())) return ''
-
-  const day = String(date.getDate()).padStart(2, '0')
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const year = date.getFullYear()
-
-  return `${day}/${month}/${year}`
-}
+import { parseBrDate, formatBrDate } from '@/modules/pessoas/components/FormNewPerson/functions/parseDate'
 
 function sameDate(a: Date | null, b: Date | string | null): boolean {
   if (!a && !b) return true

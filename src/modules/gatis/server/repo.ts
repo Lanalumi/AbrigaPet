@@ -1,6 +1,6 @@
 import { Prisma } from '@/generated/prisma/client'
 import { prisma } from '@/lib/db'
-import { listLocalizacoesQuerySchema } from '@/schemas/localizacaoSchema'
+import { listLocalizacoesQuerySchema } from '@/schemas/localizacao/localizacaoSchema'
 
 export async function localizacaoFindMany(raw: unknown) {
   const { page, pageSize, search, sortBy, sortDir } = listLocalizacoesQuerySchema.parse(raw)

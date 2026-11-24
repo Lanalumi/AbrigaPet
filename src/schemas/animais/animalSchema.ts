@@ -10,6 +10,8 @@ function asOptionalDate(val: unknown) {
   return asDate(val)
 }
 
+export const idSchema = z.string().uuid('ID inválido')
+
 export const motivoSaidaValues = ['falecimento', 'adocao', 'saiu'] as const
 
 export const motivoSaidaLabel = {
@@ -104,7 +106,7 @@ const animalFields = {
 }
 
 export const animalEntitySchema = z.object({
-  id: z.uuid(),
+  id: idSchema,
   ...animalFields,
 })
 
@@ -121,7 +123,7 @@ export function deriveSituacao(motivoSaida: string | null | undefined, adotado: 
 
 export const situacaoAnimalLabel = {
   abrigo: 'Disponível',
-  adotado: 'Adoção',
+  adotado: 'Adotado',
   obito: 'Falecimento',
   saiu: 'Saiu',
 } as const
@@ -176,3 +178,5 @@ export const animalFormSchema = z.object({
   fiv: z.boolean().optional(),
   felv: z.boolean().optional(),
 })
+
+export const createAnimalSchema = updateAnimalSchema

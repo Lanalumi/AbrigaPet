@@ -6,7 +6,7 @@ import { API_URL } from '@/global/constants/api'
 
 import { api } from '@/lib/http/api'
 
-import { latestPrescriptionSchema, type LatestPrescription } from '@/schemas/saudeSchema'
+import { latestPrescriptionSchema, type LatestPrescription } from '@/schemas/saude/saudeSchema'
 
 import Link from 'next/link'
 
@@ -38,8 +38,6 @@ export function FichaMedicaModal({ animalId, enabled = true }: FichaMedicaModalP
 
   return (
     <div className="flex flex-col gap-3.5 w-full">
-      {/* Estado de Carregamento */}
-
       {prescription.isPending ? (
         <div className="flex items-center gap-2 font-poppins text-xs font-medium text-[#755835]">
           <div className="w-3.5 h-3.5 border-2 border-[#755835]/30 border-t-[#755835] rounded-full animate-spin" />
@@ -47,23 +45,17 @@ export function FichaMedicaModal({ animalId, enabled = true }: FichaMedicaModalP
         </div>
       ) : null}
 
-      {/* Estado de Erro */}
-
       {prescription.isError ? (
         <p className="font-poppins text-xs font-medium text-[#8A3B3B] bg-[#FFF0ED] p-3 rounded-2xl border border-[#B85454]/20">
           Não foi possível carregar a prescrição.
         </p>
       ) : null}
 
-      {/* Estado Vazio */}
-
       {prescription.data && prescription.data.medicamentos.length === 0 ? (
         <p className="font-poppins text-xs font-medium text-[#755835]/80 italic">
           Nenhuma prescrição registrada no momento.
         </p>
       ) : null}
-
-      {/* Cartões de Medicamentos */}
 
       {prescription.data?.medicamentos.map((medicamento) => (
         <article
@@ -91,8 +83,6 @@ export function FichaMedicaModal({ animalId, enabled = true }: FichaMedicaModalP
           </dl>
         </article>
       ))}
-
-      {/* Link para Ficha Médica Completa */}
 
       <div className="pt-1">
         <Link

@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/db'
-import { createPesoSchema, pesoRegistroSchema, pesoResumoSchema } from '@/schemas/pesoSchema'
+import { createPesoSchema, pesoRegistroSchema, pesoResumoSchema } from '@/schemas/animais/pesoSchema'
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
 

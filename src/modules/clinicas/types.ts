@@ -3,7 +3,7 @@ import {
   clinicasListFiltersSchema,
   listClinicasQuerySchema,
   listClinicasResponseSchema,
-} from '@/schemas/clinicaSchema'
+} from '@/schemas/comunidade/clinicaSchema'
 import { z } from 'zod'
 
 export type Clinica = z.infer<typeof clinicaPublicSchema>

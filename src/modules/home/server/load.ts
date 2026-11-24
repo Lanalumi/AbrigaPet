@@ -2,7 +2,7 @@ import { prisma } from '@/lib/db'
 import { cache } from 'react'
 import { isVacina, prescriptionNextDose } from '@/modules/animais/prescricao/schedule'
 import { personRole } from '@/modules/pessoas/personRole'
-import { deriveSituacao, situacaoAnimalLabel } from '@/schemas/animalSchema'
+import { deriveSituacao, situacaoAnimalLabel } from '@/schemas/animais/animalSchema'
 import type { HomeAdocao, HomeAnimais, HomeComunidade, HomeGatil, HomeGato, HomeMedicamento } from '../types'
 
 const TIME_ZONE = 'America/Sao_Paulo'

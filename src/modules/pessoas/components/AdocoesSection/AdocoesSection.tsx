@@ -2,9 +2,8 @@
 
 import { DateField } from '@/global/ui/DateField/DateField'
 import { ApiError } from '@/lib/client/errors'
-import { formatBrDate } from '@/modules/pessoas/components/FormNewPerson/functions/parseDate'
-import { useDesvincularAdocao, useVincularAdocao } from '@/modules/pessoas/hooks/useAdocoes'
-import type { EditablePerson } from '@/modules/pessoas/server/loadPessoa'
+import { formatBrDate, useDesvincularAdocao, useVincularAdocao, EditablePerson } from '@/modules/pessoas'
+import { createAdocaoSchema } from '@/schemas/comunidade/personSchema'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -27,11 +26,11 @@ export function AdocoesSection({ idAdotante, adocoes, disponiveis, editing }: Ad
   const [dataAdocao, setDataAdocao] = useState(() => formatBrDate(new Date()))
 
   const onVincular = () => {
-    if (!animalId) {
-      toast.error('Selecione um animal')
+    const result = createAdocaoSchema.safeParse({ animalId, dataAdocao })
+    if (!result.success) {
+      toast.error(result.error.issues[0]?.message ?? 'Verifique os campos da adoção')
       return
     }
-
     vincularMutation.mutate(
       { idAdotante, animalId, dataAdocao: dataAdocao.trim() },
       {
@@ -70,7 +69,10 @@ export function AdocoesSection({ idAdotante, adocoes, disponiveis, editing }: Ad
       {adocoes.length > 0 ? (
         <ul className="flex flex-col gap-2">
           {adocoes.map((adocao) => (
-            <li key={adocao.animalId} className="flex flex-wrap items-center gap-3 text-sm font-semibold text-[#755835]">
+            <li
+              key={adocao.animalId}
+              className="flex flex-wrap items-center gap-3 text-sm font-semibold text-[#755835]"
+            >
               <span>
                 {adocao.excluido ? (
                   <span className="text-[#755835]/70">{`${adocao.nome} (excluído)`}</span>

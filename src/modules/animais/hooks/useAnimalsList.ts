@@ -1,14 +1,10 @@
 import { api } from '@/lib/http/api'
-import { listAnimalsQuerySchema } from '@/schemas/animalSchema'
+import { listAnimalsQuerySchema } from '@/schemas/animais/animalSchema'
 import { ListAnimalsQuery, ListAnimalsResponse } from '../types'
 import { API_URL } from '@/global/constants/api'
 import { useListQuery } from '@/global/hooks/useListQuery'
 
-/**
- * Fetches animals list from the API
- */
 const fetchAnimalsList = async (query: Partial<ListAnimalsQuery> = {}): Promise<ListAnimalsResponse> => {
-  // Use Zod schema to provide defaults
   const validatedQuery = listAnimalsQuerySchema.parse(query)
   const searchParams = new URLSearchParams()
 
@@ -22,10 +18,6 @@ const fetchAnimalsList = async (query: Partial<ListAnimalsQuery> = {}): Promise<
   return api<ListAnimalsResponse>(url)
 }
 
-/**
- * React Query hook for fetching animals list
- * Accepts optional query parameters for search, pagination, and sorting
- */
 export const useAnimalsList = (query: Partial<ListAnimalsQuery> = {}) => {
   return useListQuery({
     queryKey: ['animais', query],

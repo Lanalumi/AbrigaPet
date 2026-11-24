@@ -2,7 +2,7 @@ import { hashPassword, isLoginRole, isUniqueViolation, normalizeEmail } from '@/
 import { prisma } from '@/lib/db'
 import { formatBrDate } from '@/modules/pessoas/components/FormNewPerson/functions/parseDate'
 import { deletePessoaById } from '@/modules/pessoas/server/deletePessoa'
-import { updatePersonFieldsSchema } from '@/schemas/personSchema'
+import { updatePersonFieldsSchema } from '@/schemas/comunidade/personSchema'
 import { NextResponse } from 'next/server'
 import { ZodError } from 'zod'
 

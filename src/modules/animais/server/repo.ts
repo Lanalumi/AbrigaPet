@@ -1,6 +1,6 @@
 import { Prisma } from '@/generated/prisma/client'
 import { prisma } from '@/lib/db'
-import { listAnimalsQuerySchema, motivoFromSearch } from '@/schemas/animalSchema'
+import { listAnimalsQuerySchema, motivoFromSearch } from '@/schemas/animais/animalSchema'
 
 export const animalById = (id: string) => {
   const where: Prisma.AnimalWhereUniqueInput = { id, excluidoEm: null }

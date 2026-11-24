@@ -5,8 +5,8 @@ import {
   listAnimalsQuerySchema,
   listAnimalsResponseSchema,
   updateAnimalSchema,
-} from '@/schemas/animalSchema'
-import { createAnimalSchema } from '@/schemas/cadastroSchemas'
+} from '@/schemas/animais/animalSchema'
+import { createAnimalSchema } from '@/schemas/animais/animalSchema'
 
 import { z } from 'zod'
 

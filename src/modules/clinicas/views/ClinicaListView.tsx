@@ -1,14 +1,13 @@
 'use client'
 
 import { Button } from '@/global/ui/Button/Button'
-import { clinicasListFiltersSchema } from '@/schemas/clinicaSchema'
+import { clinicasListFiltersSchema } from '@/schemas/comunidade/clinicaSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import ClinicasTable from '../components/ClinicasTable/ClinicasTable'
-import { useClinicasList } from '../hooks/useClinicasList'
-import { ClinicasListFilters, ListClinicasQuery } from '../types'
+import { ClinicasListFilters, ListClinicasQuery, useClinicasList } from '@/modules/clinicas'
 
 export default function ClinicaListView() {
   const route = useRouter()
@@ -68,7 +67,9 @@ export default function ClinicaListView() {
       <div className="w-full max-w-7xl mx-auto font-poppins py-12 flex flex-col items-center justify-center">
         <div className="p-6 rounded-3xl bg-[#FFF0ED] border border-[#B85454]/20 text-center flex flex-col items-center gap-2 max-w-md">
           <span className="text-base font-bold text-[#8A3B3B]">Erro ao carregar clínicas</span>
-          <p className="text-xs text-[#8A3B3B]/80 font-medium">Não foi possível carregar as clínicas parceiras. Tente novamente.</p>
+          <p className="text-xs text-[#8A3B3B]/80 font-medium">
+            Não foi possível carregar as clínicas parceiras. Tente novamente.
+          </p>
         </div>
       </div>
     )
@@ -76,8 +77,6 @@ export default function ClinicaListView() {
 
   return (
     <div className="w-full max-w-7xl mx-auto flex flex-col gap-6 font-poppins pb-8">
-      
-      {/* Cabeçalho */}
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#755835]/15">
         <div>
           <h1 className="text-2xl font-bold text-[#3A250B] tracking-tight">Clínicas</h1>
@@ -88,10 +87,12 @@ export default function ClinicaListView() {
         </Button>
       </header>
 
-      {/* Painel Unificado de Filtros, Busca e Paginação */}
       <div className="rounded-3xl border border-[#755835]/20 bg-white p-5 shadow-[0_10px_30px_rgba(58,37,11,0.05)] flex flex-col gap-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <form onSubmit={handleSubmit(onFiltersSubmit)} className="flex flex-wrap items-center gap-3 w-full md:w-auto flex-1">
+          <form
+            onSubmit={handleSubmit(onFiltersSubmit)}
+            className="flex flex-wrap items-center gap-3 w-full md:w-auto flex-1"
+          >
             <div className="flex-1 min-w-[200px]">
               <input
                 {...register('search')}
@@ -127,7 +128,6 @@ export default function ClinicaListView() {
             </button>
           </form>
 
-          {/* Seleção de itens por página */}
           <div className="flex items-center gap-2 shrink-0 self-end md:self-auto pt-2 md:pt-0 border-t md:border-t-0 border-[#755835]/10 w-full md:w-auto justify-end">
             <label htmlFor="pageSize" className="text-xs font-semibold text-[#755835]">
               Exibir:
@@ -146,14 +146,16 @@ export default function ClinicaListView() {
           </div>
         </div>
 
-        {/* Linha de Contagem Integrada */}
         <div className="flex items-center justify-between text-xs font-semibold text-[#755835] pt-3 border-t border-[#755835]/10 px-1">
-          <span>Mostrando {items.length} de {total} Clínicas</span>
-          <span>Página {page} de {totalPages}</span>
+          <span>
+            Mostrando {items.length} de {total} Clínicas
+          </span>
+          <span>
+            Página {page} de {totalPages}
+          </span>
         </div>
       </div>
 
-      {/* Conteúdo: Tabela ou Estado Vazio Harmonizado */}
       {isLoading ? (
         <div className="py-12 text-center text-xs font-semibold text-[#755835]/70 italic flex items-center justify-center gap-2">
           <div className="w-4 h-4 border-2 border-[#755835]/30 border-t-[#755835] rounded-full animate-spin" />
@@ -182,7 +184,6 @@ export default function ClinicaListView() {
           </p>
         </div>
       )}
-
     </div>
   )
 }

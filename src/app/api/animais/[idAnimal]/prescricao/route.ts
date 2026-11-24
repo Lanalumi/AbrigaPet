@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db'
 import { formatStartDate, isVacina, periodOfDay, prescriptionNextDose } from '@/modules/animais/prescricao/schedule'
-import { latestPrescriptionSchema } from '@/schemas/saudeSchema'
+import { latestPrescriptionSchema } from '@/schemas/saude/saudeSchema'
 import { NextResponse } from 'next/server'
 
 export const runtime = 'nodejs'
@@ -42,7 +42,9 @@ export async function GET(_request: Request, { params }: { params: Promise<{ idA
       id: prescricao.id,
       nome: prescricao.medicamento.nome,
       dataInicio: formatStartDate(
-        isVacina(prescricao.frequencia) && prescricao.dataAplicacao ? prescricao.dataAplicacao : consulta.dataAtendimento,
+        isVacina(prescricao.frequencia) && prescricao.dataAplicacao
+          ? prescricao.dataAplicacao
+          : consulta.dataAtendimento,
       ),
       proximaDose: prescriptionNextDose(
         consulta.dataAtendimento,

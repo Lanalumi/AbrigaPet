@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db'
-import { CommunityActions } from './CommunityActions'
-import { CommunityCardItem, CommunityColumn } from './CommunityColumn'
+import { CommunityActions } from '../CommunityActions/CommunityActions'
+import { CommunityCardItem, CommunityColumn } from '../CommunityColumn/CommunityColumn'
 
 function normalizeRole(value: string) {
   return value.normalize('NFD').replace(/\p{M}/gu, '').toLowerCase()
@@ -131,8 +131,6 @@ export default async function ComunidadeView() {
 
   return (
     <div className="w-full max-w-7xl mx-auto flex flex-col gap-6 font-poppins pb-8">
-      
-      {/* Cabeçalho da Página */}
       <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-[#755835]/15">
         <div>
           <h1 className="text-2xl font-bold text-[#3A250B] tracking-tight">Comunidade</h1>
@@ -143,7 +141,6 @@ export default async function ComunidadeView() {
         <CommunityActions />
       </header>
 
-      {/* Grade de Colunas de Comunidade */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 items-start">
         <CommunityColumn
           heading="Voluntários"
@@ -195,7 +192,6 @@ export default async function ComunidadeView() {
           errorLabel={errorLabel}
         />
       </div>
-
     </div>
   )
 }

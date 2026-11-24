@@ -3,9 +3,7 @@
 import { useListQuery } from '@/global/hooks/useListQuery'
 import { useMutation } from '@/global/hooks/useMutation'
 import { API_URL } from '@/global/constants/api'
-import { Card } from '@/global/ui/Card/Card'
-import { DateField } from '@/global/ui/DateField/DateField'
-import { Field } from '@/global/ui/Field/Field'
+import { Card, DateField, Field } from '@/global/ui'
 import { api } from '@/lib/http/api'
 import { ApiError } from '@/lib/client/errors'
 import {
@@ -14,10 +12,11 @@ import {
   pesoResumoSchema,
   type PesoRegistro,
   type PesoResumo,
-} from '@/schemas/pesoSchema'
+} from '@/schemas/animais/pesoSchema'
 import { useQueryClient } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import { formatBrDate } from '@/modules/pessoas/components/FormNewPerson/functions/parseDate'
 
 type PesoModalProps = {
   animalId: string
@@ -34,14 +33,6 @@ function formatDate(value: Date) {
 
 function formatPeso(value: number) {
   return `${value.toLocaleString('pt-BR', { maximumFractionDigits: 2 })} kg`
-}
-
-function todayBr() {
-  const now = new Date()
-  const day = String(now.getDate()).padStart(2, '0')
-  const month = String(now.getMonth() + 1).padStart(2, '0')
-
-  return `${day}/${month}/${now.getFullYear()}`
 }
 
 type PesoFormInput = {
@@ -77,7 +68,7 @@ export function PesoModal({ animalId, enabled = true }: PesoModalProps) {
   } = useForm<PesoFormInput>({
     defaultValues: {
       quantidadePeso: '',
-      dataPesagem: todayBr(),
+      dataPesagem: formatBrDate(new Date()),
     },
   })
   const createPeso = useMutation<PesoRegistro, ApiError, PesoFormInput>({
@@ -91,7 +82,7 @@ export function PesoModal({ animalId, enabled = true }: PesoModalProps) {
     },
     onSuccess: async () => {
       toast.success('Pesagem registrada')
-      reset({ quantidadePeso: '', dataPesagem: todayBr() })
+      reset({ quantidadePeso: '', dataPesagem: formatBrDate(new Date()) })
       await queryClient.invalidateQueries({ queryKey: ['peso', animalId] })
     },
     onError: (error) => {

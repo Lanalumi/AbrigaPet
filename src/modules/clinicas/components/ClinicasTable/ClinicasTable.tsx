@@ -1,10 +1,9 @@
 'use client'
 
-import { Table, TableColumn } from '@/global/ui/Table/Table'
+import { Table, TableColumn } from '@/global/ui'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
-import { useDeleteClinica } from '../../hooks/useDeleteClinica'
-import { Clinica } from '../../types'
+import { Clinica, useDeleteClinica } from '@/modules/clinicas'
 
 type ClinicasTableProps = {
   items: Clinica[]
@@ -46,7 +45,7 @@ export default function ClinicasTable({
     {
       key: 'nome',
       label: 'Nome',
-      sortable: false, // <-- Remove a setinha de ordenação daqui
+      sortable: false,
     },
     {
       key: 'cnpj',
@@ -75,7 +74,7 @@ export default function ClinicasTable({
           >
             <img src="/images/icons/green-edit-button.svg" alt="Editar" className="w-4 h-4" />
           </button>
-          
+
           <button
             type="button"
             id="delete-button"

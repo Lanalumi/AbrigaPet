@@ -1,18 +1,11 @@
 'use client'
 
-import { AvatarUpload } from '@/global/ui/AvatarUpload/AvatarUpload'
-import { Button } from '@/global/ui/Button/Button'
-import { CheckBox } from '@/global/ui/CheckBox/CheckBox'
-import { DropDown } from '@/global/ui/DropDown/DropDown'
-import { DateField } from '@/global/ui/DateField/DateField'
-import { Field } from '@/global/ui/Field/Field'
+import { AvatarUpload, Button, CheckBox, DropDown, DateField, Field } from '@/global/ui'
 import { useRouter } from 'next/navigation'
 import { Controller, useForm } from 'react-hook-form'
-import { CreateAnimal, CreateAnimalForm } from '../../types'
+import { CreateAnimal, CreateAnimalForm, Especies, Cores, Sexos, Pelagens, useCreateAnimal } from '@/modules/animais'
 import { toast } from 'react-toastify'
-import { Especies, Cores, Sexos, Pelagens } from './components/especies'
-import { createAnimalSchema } from '@/schemas/cadastroSchemas'
-import { useCreateAnimal } from '../../hooks/useCreateAnimal'
+import { createAnimalSchema } from '@/schemas/animais/animalSchema'
 import { ApiError } from '@/lib/client/errors'
 import { parseBrDate } from '@/modules/pessoas/components/FormNewPerson/functions/parseDate'
 
@@ -111,12 +104,10 @@ export const FormNewAnimal = () => {
 
   const isLoading = createAnimalMutation.isPending || isSubmitting
 
-  // Classe utilitária para padronizar e forçar os Dropdowns a colocarem a label em cima da caixa
   const dropdownFixClass = 'w-full'
 
   return (
     <div className="w-full max-w-5xl mx-auto rounded-3xl border border-[#755835]/20 bg-white p-6 sm:p-8 shadow-[0_10px_30px_rgba(58,37,11,0.05)]">
-      {/* Cabeçalho */}
       <header className="flex items-center gap-3 pb-6 mb-6 border-b border-[#755835]/15">
         <div className="flex items-center justify-center w-10 h-10 rounded-2xl bg-[#755835]/10 text-[#755835] shrink-0">
           <img src="/images/icons/paw2.svg" alt="Ícone Patinha" width={22} height={22} className="object-contain" />
@@ -128,7 +119,6 @@ export const FormNewAnimal = () => {
       </header>
 
       <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
-        {/* Mensagens de Erro */}
         {validationMessages.length > 0 && (
           <div
             role="alert"
@@ -146,9 +136,7 @@ export const FormNewAnimal = () => {
           </div>
         )}
 
-        {/* Layout Principal em Duas Colunas */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Lado Esquerdo: Formulário com Todos os Campos com Rótulo no Topo */}
           <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-5 items-start">
             <Field label="Nome" id="nome" type="text" {...register('nome')} />
 
@@ -206,7 +194,6 @@ export const FormNewAnimal = () => {
             </div>
           </div>
 
-          {/* Lado Direito: Foto + Sorologia */}
           <div className="lg:col-span-4 flex flex-col items-center justify-between gap-6 p-6 rounded-2xl bg-[#FDF8F3] border border-[#755835]/15 h-full">
             <div className="w-full flex flex-col items-center">
               <Controller
@@ -252,7 +239,6 @@ export const FormNewAnimal = () => {
           </div>
         </div>
 
-        {/* Botão de Salvar */}
         <div className="flex items-center justify-end pt-4 border-t border-[#755835]/15">
           {isLoading ? (
             <Button type="submit" disabled icon="/images/icons/save-button.svg">

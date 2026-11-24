@@ -17,37 +17,26 @@ export class ApiError extends Error {
   }
 }
 
-/**
- * Generic error handler for client-side API errors
- * Handles common error scenarios (network, server errors, etc.)
- */
 export function handleGenericError(error: unknown): never {
-  // Network errors and fetch failures
   if (error instanceof TypeError && error.message.includes('fetch')) {
     console.error('Network error:', error)
     throw new ApiError(CLIENT_ERROR_MESSAGES.NETWORK_ERROR, 0)
   }
 
-  // API errors from our backend
   if (error instanceof ApiError) {
     console.error('API error:', error.message, 'Status:', error.status)
-    throw error // Re-throw to let caller handle specific logic if needed
+    throw error
   }
 
-  // Generic errors
   if (error instanceof Error) {
     console.error('Unexpected error:', error)
     throw new ApiError(CLIENT_ERROR_MESSAGES.UNEXPECTED_ERROR, 500)
   }
 
-  // Fallback for unknown error types
   console.error('Unknown error type:', error)
   throw new ApiError(CLIENT_ERROR_MESSAGES.UNEXPECTED_ERROR, 500)
 }
 
-/**
- * Processes fetch response and throws appropriate errors
- */
 export async function processFetchResponse<T>(response: Response): Promise<T> {
   if (!response.ok) {
     let errorMessage = CLIENT_ERROR_MESSAGES.REQUEST_FAILED(response.status)
@@ -56,14 +45,12 @@ export async function processFetchResponse<T>(response: Response): Promise<T> {
       const errorData = (await response.json()) as ApiErrorResponse
       errorMessage = errorData.message ?? errorData.error ?? errorMessage
     } catch {
-      // If response is not JSON, use default message
       errorMessage = response.statusText || errorMessage
     }
 
     throw new ApiError(errorMessage, response.status, response)
   }
 
-  // Handle empty responses (like 204 No Content)
   if (response.status === 204) {
     return undefined as T
   }

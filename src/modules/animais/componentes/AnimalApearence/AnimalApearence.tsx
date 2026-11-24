@@ -1,10 +1,8 @@
 'use client'
 
-import { DropDown } from '@/global/ui/DropDown/DropDown'
-import { Field } from '@/global/ui/Field/Field'
+import { DropDown, Field } from '@/global/ui'
 import { UseFormRegister } from 'react-hook-form'
-import { Cores, Especies, Pelagens } from '../FormNewAnimal/components/especies'
-import type { AnimalEditFormInput } from '../../types'
+import { Cores, Especies, Pelagens, AnimalEditFormInput } from '@/modules/animais'
 
 export function AnimalApearence({
   register,
