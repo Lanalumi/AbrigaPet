@@ -1,5 +1,6 @@
 'use client'
 
+import { DropDown } from '@/global/ui'
 import Link from 'next/link'
 import { useMemo, useState } from 'react'
 
@@ -92,26 +93,21 @@ export function CommunityColumn({
           />
         </div>
 
-        <select
-          value={sortBy}
+        <DropDown
+          id={`${searchId}-sort`}
+          options={sortOptions.map((opt) => opt.label)}
+          value={sortOptions.map((opt) => opt.value)}
+          selected={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="w-full h-[42px] rounded-xl border border-[#755835]/30 bg-[#FDF8F3] px-3.5 py-2 text-xs font-semibold text-[#3A250B] focus:border-[#755835] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#755835] transition-all cursor-pointer"
-        >
-          {sortOptions.map((opt) => (
-            <option key={opt.value} value={opt.value}>
-              {opt.label}
-            </option>
-          ))}
-        </select>
+        />
 
-        <select
-          value={sortDir}
+        <DropDown
+          id={`${searchId}-dir`}
+          options={['Ascendente', 'Descendente']}
+          value={['asc', 'desc']}
+          selected={sortDir}
           onChange={(e) => setSortDir(e.target.value as SortDir)}
-          className="w-full h-[42px] rounded-xl border border-[#755835]/30 bg-[#FDF8F3] px-3.5 py-2 text-xs font-semibold text-[#3A250B] focus:border-[#755835] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#755835] transition-all cursor-pointer"
-        >
-          <option value="asc">Ascendente</option>
-          <option value="desc">Descendente</option>
-        </select>
+        />
 
         {search && (
           <button

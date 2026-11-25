@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/global/ui/Button/Button'
+import { Button, DropDown } from '@/global/ui'
 import { clinicasListFiltersSchema } from '@/schemas/comunidade/clinicaSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
@@ -103,23 +103,19 @@ export default function ClinicaListView() {
               />
             </div>
 
-            <select
+            <DropDown
+              id="sortBy"
+              options={['Nome', 'Cidade', 'CNPJ']}
+              value={['nome', 'cidade', 'cnpj']}
               {...register('sortBy')}
-              className="h-[42px] rounded-xl border border-[#755835]/30 bg-[#FDF8F3] px-3.5 py-2 text-xs font-semibold text-[#3A250B] focus:border-[#755835] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#755835] transition-all cursor-pointer"
-            >
-              <option value="nome">Nome</option>
-              <option value="cidade">Cidade</option>
-              <option value="cnpj">CNPJ</option>
-            </select>
+            />
 
-            <select
+            <DropDown
+              id="sortDir"
+              options={['Ascendente', 'Descendente']}
+              value={['asc', 'desc']}
               {...register('sortDir')}
-              className="h-[42px] rounded-xl border border-[#755835]/30 bg-[#FDF8F3] px-3.5 py-2 text-xs font-semibold text-[#3A250B] focus:border-[#755835] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#755835] transition-all cursor-pointer"
-            >
-              <option value="asc">Ascendente</option>
-              <option value="desc">Descendente</option>
-            </select>
-
+            />
             <button
               type="submit"
               className="h-[42px] px-4 py-2 rounded-xl bg-[#755835] text-white hover:bg-[#3A250B] text-xs font-bold transition-all cursor-pointer shadow-xs"
@@ -132,17 +128,13 @@ export default function ClinicaListView() {
             <label htmlFor="pageSize" className="text-xs font-semibold text-[#755835]">
               Exibir:
             </label>
-            <select
+            <DropDown
               id="pageSize"
-              value={pageSize}
+              options={['10 por página', '20 por página', '50 por página', '100 por página']}
+              value={['10', '20', '50', '100']}
+              selected={String(pageSize)}
               onChange={(e) => onPageSizeChange(Number(e.target.value))}
-              className="h-[36px] rounded-xl border border-[#755835]/30 bg-[#FDF8F3] px-2.5 text-xs font-bold text-[#3A250B] focus:outline-none transition-all cursor-pointer"
-            >
-              <option value={10}>10 por página</option>
-              <option value={20}>20 por página</option>
-              <option value={50}>50 por página</option>
-              <option value={100}>100 por página</option>
-            </select>
+            />
           </div>
         </div>
 

@@ -8,8 +8,8 @@ import {
   useDeleteAdotante,
   useDeleteVoluntario,
   useUpdatePessoa,
-  EditablePerson,
 } from '@/modules/pessoas'
+import type { EditablePerson } from '@/modules/pessoas/server/loadPessoa'
 import { type PersonFormInput, personFormSchema, updatePersonFieldsSchema } from '@/schemas/comunidade/personSchema'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'

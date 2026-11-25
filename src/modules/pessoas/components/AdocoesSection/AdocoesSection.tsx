@@ -1,8 +1,9 @@
 'use client'
 
-import { DateField } from '@/global/ui/DateField/DateField'
+import { DateField, DropDown } from '@/global/ui'
 import { ApiError } from '@/lib/client/errors'
-import { formatBrDate, useDesvincularAdocao, useVincularAdocao, EditablePerson } from '@/modules/pessoas'
+import { formatBrDate, useDesvincularAdocao, useVincularAdocao } from '@/modules/pessoas'
+import type { EditablePerson } from '@/modules/pessoas/server/loadPessoa'
 import { createAdocaoSchema } from '@/schemas/comunidade/personSchema'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -103,22 +104,19 @@ export function AdocoesSection({ idAdotante, adocoes, disponiveis, editing }: Ad
       {editing && (
         <div className="grid grid-cols-1 items-end gap-4 rounded-2xl border border-[#755835]/20 bg-[#FFF9F7] p-4 sm:grid-cols-[1fr_auto_auto]">
           <div className="flex flex-col">
-            <label className="font-poppins text-base font-semibold text-[#755835]" htmlFor="adocaoAnimal">
-              Animal
-            </label>
-            <select
-              id="adocaoAnimal"
-              value={animalId}
-              onChange={(event) => setAnimalId(event.target.value)}
-              className="w-full rounded-md border border-[#3A250B]/30 bg-white p-2 font-poppins text-base font-semibold text-[#755835] focus:outline-none"
-            >
-              <option value="">{disponiveis.length > 0 ? 'Selecione' : 'Nenhum animal disponível'}</option>
-              {disponiveis.map((animal) => (
-                <option key={animal.id} value={animal.id}>
-                  {animal.nome}
-                </option>
-              ))}
-            </select>
+            <div className="max-w-60">
+              <DropDown
+                label="Animal"
+                id="adocaoAnimal"
+                options={[
+                  disponiveis.length > 0 ? 'Selecione' : 'Nenhum animal disponível',
+                  ...disponiveis.map((animal) => animal.nome),
+                ]}
+                value={['', ...disponiveis.map((animal) => animal.id)]}
+                selected={animalId}
+                onChange={(event) => setAnimalId(event.target.value)}
+              />
+            </div>
           </div>
           <div className="[&_input]:bg-white">
             <DateField

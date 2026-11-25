@@ -122,7 +122,7 @@ export function FormNewClinica() {
             </Button>
           )}
 
-          <Button type="button" onClick={() => router.push('/clinicas')}>
+          <Button type="button" onClick={() => router.push('/comunidade')}>
             Cancelar
           </Button>
         </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, DateField, Field, TextArea, SelectField } from '@/global/ui'
+import { Button, DateField, DropDown, Field, TextArea } from '@/global/ui'
 import { API_URL } from '@/global/constants/api'
 import { useMutation } from '@/global/hooks/useMutation'
 import { api } from '@/lib/http/api'
@@ -148,22 +148,22 @@ export function FormNewFicha({
           <fieldset className="m-0 flex flex-col gap-4 border-0 p-0">
             <div className="flex flex-col gap-4 md:flex-row">
               <div className="flex flex-col gap-4">
-                <SelectField label="Animal" id="animalId" {...register('animalId')}>
-                  <option value="">Selecione</option>
-                  {animais.map((animal) => (
-                    <option key={animal.id} value={animal.id}>
-                      {animal.nome}
-                    </option>
-                  ))}
-                </SelectField>
-                <SelectField label="Clínica" id="clinicaId" {...register('clinicaId')}>
-                  <option value="">Selecione</option>
-                  {clinicas.map((clinica) => (
-                    <option key={clinica.id} value={clinica.id}>
-                      {clinica.nome}
-                    </option>
-                  ))}
-                </SelectField>
+                <div className="max-w-48 flex flex-col gap-2">
+                  <DropDown
+                    label="Animal"
+                    id="animalId"
+                    options={['Selecione', ...animais.map((animal) => animal.nome)]}
+                    value={['', ...animais.map((animal) => animal.id)]}
+                    {...register('animalId')}
+                  />
+                  <DropDown
+                    label="Clínica"
+                    id="clinicaId"
+                    options={['Selecione', ...clinicas.map((clinica) => clinica.nome)]}
+                    value={['', ...clinicas.map((clinica) => clinica.id)]}
+                    {...register('clinicaId')}
+                  />
+                </div>
                 <Field label="Motivo" id="motivo" type="text" list="motivos" {...register('motivo')} />
                 <datalist id="motivos">
                   {motivos.map((motivo) => (

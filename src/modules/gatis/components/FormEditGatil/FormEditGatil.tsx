@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, Field } from '@/global/ui'
+import { Button, Field, DropDown } from '@/global/ui'
 import { ApiError } from '@/lib/client/errors'
 import { updateLocalizacaoSchema } from '@/schemas/localizacao/localizacaoSchema'
 import { useRouter } from 'next/navigation'
@@ -139,18 +139,14 @@ export function FormEditGatil({ initialState }: { initialState: Localizacao }) {
           <Field label="Nome" id="nome" type="text" disabled={!editing} {...register('nome')} />
           <Field label="Tipo de local" id="tipoLocal" type="text" disabled={!editing} {...register('tipoLocal')} />
 
-          <div className="flex flex-col">
-            <label htmlFor="ativo">Status</label>
-            <select
-              id="ativo"
-              disabled={!editing}
-              {...register('ativo')}
-              className="disabled:bg-[#FDF8F3]/50 disabled:cursor-not-allowed"
-            >
-              <option value="true">Ativo</option>
-              <option value="false">Inativo</option>
-            </select>
-          </div>
+          <DropDown
+            label="Status"
+            id="ativo"
+            options={['Ativo', 'Inativo']}
+            value={['true', 'false']}
+            disabled={!editing}
+            {...register('ativo')}
+          />
         </fieldset>
 
         <div className="flex flex-wrap items-center justify-end gap-3 pt-6 mt-2 border-t border-[#755835]/15">

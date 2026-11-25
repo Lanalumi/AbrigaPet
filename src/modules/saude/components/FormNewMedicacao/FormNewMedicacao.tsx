@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, DateField, Field, SelectField } from '@/global/ui'
+import { Button, DateField, Field, DropDown } from '@/global/ui'
 import { API_URL } from '@/global/constants/api'
 import { useMutation } from '@/global/hooks/useMutation'
 import { api } from '@/lib/http/api'
@@ -201,36 +201,30 @@ export function FormNewMedicacao({
             disabled={!editing}
             className="m-0 border-0 p-0 grid grid-cols-1 md:grid-cols-2 gap-6 items-start [&_label]:text-[13px] [&_label]:font-bold [&_label]:text-[#3A250B] [&_div]:flex [&_div]:flex-col [&_div]:gap-1.5 [&_select]:w-full [&_select]:h-[42px] [&_select]:rounded-lg [&_select]:border-[#755835]/20 [&_select]:bg-white [&_select]:px-3 [&_select]:text-sm [&_select]:font-medium [&_select]:text-[#755835] [&_input]:w-full [&_input]:h-[42px] [&_input]:rounded-lg [&_input]:border-[#755835]/20 [&_input]:bg-white [&_input]:px-3 [&_input]:text-sm [&_input]:font-medium [&_input]:text-[#755835] [&_input::placeholder]:font-normal [&_input::placeholder]:text-[#755835]/40"
           >
-            <div className="flex flex-col gap-5">
-              <SelectField
+            <div className="flex flex-col max-w-60 gap-2">
+              <DropDown
                 label="Animal"
                 id="animalId"
+                options={['Selecione o animal', ...animais.map((animal) => animal.nome)]}
+                value={['', ...animais.map((animal) => animal.id)]}
                 {...register('animalId', {
                   onChange: () => setValue('consultaId', ''),
                 })}
-              >
-                <option value="">Selecione o animal</option>
-                {animais.map((animal) => (
-                  <option key={animal.id} value={animal.id}>
-                    {animal.nome}
-                  </option>
-                ))}
-              </SelectField>
+              />
 
               <div className="flex flex-col gap-1">
-                <SelectField
+                <DropDown
                   label="Consulta vinculada"
                   id="consultaId"
-                  {...register('consultaId')}
                   disabled={!selectedAnimalId}
-                >
-                  <option value="">{selectedAnimalId ? 'Selecione a consulta' : 'Escolha o animal primeiro'}</option>
-                  {consultasDoAnimal.map((consulta) => (
-                    <option key={consulta.id} value={consulta.id}>
-                      {consulta.label}
-                    </option>
-                  ))}
-                </SelectField>
+                  options={[
+                    selectedAnimalId ? 'Selecione a consulta' : 'Escolha o animal primeiro',
+                    ...consultasDoAnimal.map((consulta) => consulta.label),
+                  ]}
+                  value={['', ...consultasDoAnimal.map((consulta) => consulta.id)]}
+                  {...register('consultaId')}
+                />
+
                 {selectedAnimalId && consultasDoAnimal.length === 0 && (
                   <p className="font-poppins text-[11px] font-medium text-[#8A3B3B] mt-1">
                     * Este animal não tem consultas. A medicação precisa de uma consulta.
@@ -273,41 +267,39 @@ export function FormNewMedicacao({
                 placeholder="Ex: 1"
                 {...register('quantidade')}
               />
-              <SelectField
-                label="Frequência"
-                id="frequencia"
-                {...register('frequencia', {
-                  onChange: (event) => {
-                    if (isVacina(event.target.value)) {
-                      setValue('duracaoTratamento', '')
-                      return
-                    }
-                    setValue('dataAplicacao', '')
-                    setValue('dataProximaDose', '')
-                  },
-                })}
-              >
-                <option value="">Selecione a frequência</option>
-                {frequenciaOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
-                ))}
-              </SelectField>
+              <div className="max-w-60">
+                <DropDown
+                  label="Frequência"
+                  id="frequencia"
+                  options={['Selecione a frequência', ...frequenciaOptions]}
+                  value={['', ...frequenciaOptions]}
+                  {...register('frequencia', {
+                    onChange: (event) => {
+                      if (isVacina(event.target.value)) {
+                        setValue('duracaoTratamento', '')
+                        return
+                      }
+                      setValue('dataAplicacao', '')
+                      setValue('dataProximaDose', '')
+                    },
+                  })}
+                />
+              </div>
               {vacina ? (
                 <>
                   <DateField label="Data da aplicação" id="dataAplicacao" {...register('dataAplicacao')} />
                   <DateField label="Próxima dose" id="dataProximaDose" {...register('dataProximaDose')} />
                 </>
               ) : (
-                <SelectField label="Duração do tratamento" id="duracaoTratamento" {...register('duracaoTratamento')}>
-                  <option value="">Selecione a duração</option>
-                  {duracaoOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </SelectField>
+                <div className="max-w-60">
+                  <DropDown
+                    label="Duração do tratamento"
+                    id="duracaoTratamento"
+                    options={['Selecione a duração', ...duracaoOptions]}
+                    value={['', ...duracaoOptions]}
+                    {...register('duracaoTratamento')}
+                  />
+                </div>
               )}
             </div>
           </fieldset>
@@ -345,13 +337,9 @@ export function FormNewMedicacao({
             </div>
           ) : (
             <div className="flex flex-wrap items-center justify-end gap-3 pt-6 mt-2 border-t border-[#755835]/15">
-              <button
-                type="button"
-                onClick={() => router.push('/saude')}
-                className="cursor-pointer rounded-xl border border-[#755835]/30 bg-[#FDF8F3] hover:bg-[#755835]/10 px-6 py-2.5 font-poppins text-[13px] font-bold text-[#3A250B] transition-all"
-              >
+              <Button type="button" onClick={() => router.push('/saude')}>
                 Cancelar
-              </button>
+              </Button>
 
               {isLoading ? (
                 <Button type="submit" disabled icon="/images/icons/save-button.svg">

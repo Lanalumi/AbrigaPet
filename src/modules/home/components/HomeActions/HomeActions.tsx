@@ -1,7 +1,8 @@
 'use client'
 
 import { Button, Card, Modal } from '@/global/ui'
-import { HomeAdocao, HomeGatil, HomeGato, DashboardCard, EmptyCopy, Total } from '@/modules/home'
+import type { HomeAdocao, HomeGatil, HomeGato } from '@/modules/home/types'
+import { DashboardCard, EmptyCopy, Total } from '../HomePage/HomePage'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'

@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import AnimalCards from '../componentes/AnimalCards/AnimalCards'
 import { useAnimalsList, AnimalsListFilters, ListAnimalsQuery } from '@/modules/animais'
 import { animalsListFiltersSchema } from '@/schemas/animais/animalSchema'
-import { Field, Button } from '@/global/ui'
+import { Field, Button, DropDown } from '@/global/ui'
 import { useRouter } from 'next/navigation'
 
 export default function AnimalListView() {
@@ -110,42 +110,32 @@ export default function AnimalListView() {
           </div>
 
           <div className="md:col-span-3 flex flex-col gap-1">
-            <label htmlFor="sortBy" className="text-xs font-semibold text-[#3A250B] font-poppins">
-              Ordenar por
-            </label>
-            <select
+            <DropDown
+              label="Ordenar por"
               id="sortBy"
+              options={['Data de chegada', 'Nome', 'Data de nascimento', 'Sexo']}
+              value={['dataChegada', 'nome', 'dataNascimento', 'sexo']}
               {...register('sortBy')}
-              className="w-full border border-[#755835]/30 rounded-xl px-3 py-2 text-[#3A250B] bg-[#FDF8F3] font-poppins text-xs font-medium focus:ring-2 focus:ring-[#755835]/30 outline-none transition-all h-10.5 cursor-pointer"
-            >
-              <option value="dataChegada">Data de chegada</option>
-              <option value="nome">Nome</option>
-              <option value="dataNascimento">Data de nascimento</option>
-              <option value="sexo">Sexo</option>
-            </select>
+            />
           </div>
 
           <div className="md:col-span-2 flex flex-col gap-1">
-            <label htmlFor="sortDir" className="text-xs font-semibold text-[#3A250B] font-poppins">
-              Ordem
-            </label>
-            <select
+            <DropDown
+              label="Ordem"
               id="sortDir"
+              options={['Descendente', 'Ascendente']}
+              value={['desc', 'asc']}
               {...register('sortDir')}
-              className="w-full border border-[#755835]/30 rounded-xl px-3 py-2 text-[#3A250B] bg-[#FDF8F3] font-poppins text-xs font-medium focus:ring-2 focus:ring-[#755835]/30 outline-none transition-all h-10.5 cursor-pointer"
-            >
-              <option value="desc">Descendente</option>
-              <option value="asc">Ascendente</option>
-            </select>
+            />
           </div>
 
           <div className="md:col-span-2 flex items-end">
-            <button
+            <Button
               type="submit"
-              className="w-full h-10.5 border border-[#755835]/30 rounded-xl px-4 text-[#3A250B] bg-[#FDF8F3] hover:bg-[#755835]/15 font-poppins font-semibold text-xs transition-all cursor-pointer flex items-center justify-center"
+              className="h-[42px] px-4 py-2 rounded-xl bg-[#755835] text-white hover:bg-[#3A250B] text-xs font-bold transition-all cursor-pointer shadow-xs"
             >
               Aplicar filtros
-            </button>
+            </Button>
           </div>
         </form>
 
@@ -161,17 +151,13 @@ export default function AnimalListView() {
             <label htmlFor="pageSize" className="font-medium text-[#755835]">
               Itens por página:
             </label>
-            <select
+            <DropDown
               id="pageSize"
-              value={pageSize}
+              options={['10', '20', '50', '100']}
+              value={['10', '20', '50', '100']}
+              selected={String(pageSize)}
               onChange={(e) => onPageSizeChange(Number(e.target.value))}
-              className="border border-[#755835]/30 rounded-lg px-2.5 py-1 text-[#3A250B] bg-[#FDF8F3] font-poppins text-xs font-semibold outline-none cursor-pointer"
-            >
-              <option value={10}>10</option>
-              <option value={20}>20</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
-            </select>
+            />
           </div>
         </div>
       </div>

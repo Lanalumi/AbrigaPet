@@ -193,13 +193,13 @@ export function FormEditClinica({ initialState }: { initialState: Clinica }) {
         </fieldset>
 
         <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-[#755835]/15 mt-2">
-          <button
+          <Button
             type="button"
-            onClick={() => router.push('/clinicas')}
+            onClick={() => router.push('/comunidade')}
             className="cursor-pointer rounded-xl border border-[#755835]/30 bg-[#FDF8F3] hover:bg-[#755835]/10 px-4 py-2.5 text-xs font-semibold text-[#3A250B] transition-all"
           >
             ← Voltar para lista
-          </button>
+          </Button>
 
           <div className="flex flex-wrap items-center gap-3">
             {!editing ? (

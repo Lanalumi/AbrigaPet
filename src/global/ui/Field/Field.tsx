@@ -8,17 +8,17 @@ type FieldProps = ComponentProps<'input'> & {
 
 export const Field = ({ label, id, type, ...inputProps }: FieldProps) => {
   return (
-    <div className="flex flex-col max-w-60">
+    <div className="flex w-full flex-col gap-1 max-w-80">
       {label && (
-        <label className="font-poppins font-semibold text-base text-[#755835]" htmlFor={id}>
+        <label className="font-poppins text-xs font-semibold text-[#3A250B]" htmlFor={id}>
           {label}
         </label>
       )}
       <input
-        className="w-full max-w-full text-[#755835] bg-[#FFF9F7] border border-[#3A250B]/30 rounded-md focus:outline-none font-poppins font-semibold text-base"
-        id={id}
         type={type}
         {...inputProps}
+        id={id}
+        className="h-[42px] w-full rounded-xl border border-[#755835]/30 bg-[#FDF8F3] px-3 font-poppins text-xs font-medium text-[#3A250B] outline-none transition-all placeholder:font-medium placeholder:text-[#755835]/60 focus:ring-2 focus:ring-[#755835]/30 disabled:cursor-default"
       />
     </div>
   )

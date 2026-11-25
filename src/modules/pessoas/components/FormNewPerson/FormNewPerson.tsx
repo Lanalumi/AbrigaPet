@@ -147,7 +147,7 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
         )}
 
         {!role && (
-          <div className="w-full sm:w-1/2">
+          <div className="max-w-60 sm:w-1/2">
             <DropDown
               label="Tipo de pessoa"
               options={['Selecione', ...personRoles.map((personRoleOption) => personRoleOption.label)]}
@@ -204,7 +204,10 @@ export const FormNewPerson = ({ role }: { role?: PersonRole }) => {
           </section>
         )}
 
-        <div className="flex justify-center items-center pt-6 border-t border-[#755835]/15 mt-2">
+        <div className="flex justify-center items-center pt-6 border-t border-[#755835]/15 mt-2 gap-4">
+          <Button type="button" cancel onClick={() => router.push('/comunidade')}>
+            Cancelar
+          </Button>
           {isLoading ? (
             <Button type="submit" disabled icon="/images/icons/save-button.svg">
               Salvando...

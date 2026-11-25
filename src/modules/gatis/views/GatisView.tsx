@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@/global/ui/Button/Button'
+import { Button, DropDown } from '@/global/ui'
 import { localizacoesListFiltersSchema } from '@/schemas/localizacao/localizacaoSchema'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
@@ -70,7 +70,7 @@ export default function GatisView() {
           onSubmit={handleSubmit(onFiltersSubmit)}
           className="flex flex-wrap items-center gap-3 w-full md:w-auto flex-1"
         >
-          <div className="flex-1 min-w-[200px]">
+          <div className="flex-1 min-w-[200px] ">
             <input
               {...register('search')}
               placeholder="Pesquisar gatis..."
@@ -79,22 +79,21 @@ export default function GatisView() {
               className="w-full h-[42px] rounded-xl border border-[#755835]/30 bg-[#FDF8F3] px-3.5 py-2 text-xs font-semibold text-[#3A250B] placeholder:text-[#755835]/60 placeholder:font-medium focus:border-[#755835] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#755835] transition-all"
             />
           </div>
+          <div className="max-w-[400px] min-w-140 flex flex-row gap-4">
+            <DropDown
+              id="sortBy"
+              options={['Ordenar por Nome', 'Ordenar por Tipo']}
+              value={['nome', 'tipoLocal']}
+              {...register('sortBy')}
+            />
 
-          <select
-            {...register('sortBy')}
-            className="h-[42px] rounded-xl border border-[#755835]/30 bg-[#FDF8F3] px-3.5 py-2 text-xs font-semibold text-[#3A250B] focus:border-[#755835] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#755835] transition-all cursor-pointer"
-          >
-            <option value="nome">Ordenar por Nome</option>
-            <option value="tipoLocal">Ordenar por Tipo</option>
-          </select>
-
-          <select
-            {...register('sortDir')}
-            className="h-[42px] rounded-xl border border-[#755835]/30 bg-[#FDF8F3] px-3.5 py-2 text-xs font-semibold text-[#3A250B] focus:border-[#755835] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#755835] transition-all cursor-pointer"
-          >
-            <option value="asc">Ascendente</option>
-            <option value="desc">Descendente</option>
-          </select>
+            <DropDown
+              id="sortDir"
+              options={['Ascendente', 'Descendente']}
+              value={['asc', 'desc']}
+              {...register('sortDir')}
+            />
+          </div>
 
           <button
             type="submit"
@@ -108,20 +107,16 @@ export default function GatisView() {
           <label htmlFor="pageSize" className="text-xs font-semibold text-[#755835]">
             Exibir:
           </label>
-          <select
+          <DropDown
             id="pageSize"
-            value={pageSize}
+            options={['10 por página', '20 por página', '50 por página', '100 por página']}
+            value={['10', '20', '50', '100']}
+            selected={String(pageSize)}
             onChange={(event) => {
               setPageSize(Number(event.target.value))
               setCurrentPage(1)
             }}
-            className="h-[36px] rounded-xl border border-[#755835]/30 bg-[#FDF8F3] px-2.5 text-xs font-bold text-[#3A250B] focus:outline-none transition-all cursor-pointer"
-          >
-            <option value={10}>10 por página</option>
-            <option value={20}>20 por página</option>
-            <option value={50}>50 por página</option>
-            <option value={100}>100 por página</option>
-          </select>
+          />
         </div>
       </div>
 
